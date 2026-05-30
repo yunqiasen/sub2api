@@ -16,6 +16,14 @@ const (
 	StatusExpired  = domain.StatusExpired
 )
 
+// Account error filter constants.
+const (
+	AccountErrorFilterNetwork     = domain.AccountErrorFilterNetwork
+	AccountErrorFilterAuthInvalid = domain.AccountErrorFilterAuthInvalid
+	AccountErrorFilterCF          = domain.AccountErrorFilterCF
+	AccountErrorFilterOther       = domain.AccountErrorFilterOther
+)
+
 // Role constants
 const (
 	RoleAdmin = domain.RoleAdmin

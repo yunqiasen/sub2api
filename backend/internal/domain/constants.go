@@ -10,6 +10,15 @@ const (
 	StatusExpired  = "expired"
 )
 
+// Account error filter constants.
+// These are virtual list filters for admin UI; they do not change persisted account status.
+const (
+	AccountErrorFilterNetwork     = "error_network"
+	AccountErrorFilterAuthInvalid = "error_auth_invalid"
+	AccountErrorFilterCF          = "error_cf"
+	AccountErrorFilterOther       = "error_other"
+)
+
 // Role constants
 const (
 	RoleAdmin = "admin"

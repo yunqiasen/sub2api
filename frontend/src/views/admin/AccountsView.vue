@@ -1396,6 +1396,19 @@ const handleBulkUpdated = () => {
 const handleDataImported = () => { showImportData.value = false; reload() }
 const ACCOUNT_UNGROUPED_GROUP_QUERY_VALUE = 'ungrouped'
 const ACCOUNT_PRIVACY_MODE_UNSET_QUERY_VALUE = '__unset__'
+const accountErrorKeywords = {
+  authInvalid: ['token_invalidated', 'authentication token has been invalidated', 'invalidated', 'token revoked', 'revoked', 'refresh token expired', 'token expired', 'expired', 'unauthorized', 'invalid_grant', 'account_disabled_auth_error', 'invalid refresh token', '401'],
+  network: ['eof', 'connection reset', 'connection refused', 'timeout', 'i/o timeout', 'proxyconnect', 'no such host', 'tls handshake', 'temporary failure in name resolution', 'network is unreachable', 'context deadline exceeded', 'dial tcp'],
+  cf: ['cloudflare', 'cf challenge', 'cf-ray', 'access forbidden', 'temporary cooldown', 'challenge', '403']
+}
+const hasAccountErrorKeyword = (message: string, keywords: string[]) => keywords.some(keyword => message.includes(keyword))
+const classifyAccountErrorMessage = (rawMessage?: string | null): 'auth_invalid' | 'network' | 'cf' | 'other' => {
+  const message = String(rawMessage || '').trim().toLowerCase()
+  if (hasAccountErrorKeyword(message, accountErrorKeywords.authInvalid)) return 'auth_invalid'
+  if (hasAccountErrorKeyword(message, accountErrorKeywords.network)) return 'network'
+  if (hasAccountErrorKeyword(message, accountErrorKeywords.cf)) return 'cf'
+  return 'other'
+}
 const buildAccountQueryFilters = () => ({
   platform: params.platform || '',
   type: params.type || '',
@@ -1425,6 +1438,14 @@ const accountMatchesCurrentFilters = (account: Account) => {
       if (account.status !== 'active' || !isTempUnschedulable) return false
     } else if (filters.status === 'unschedulable') {
       if (account.status !== 'active' || account.schedulable || isRateLimited || isTempUnschedulable) return false
+    } else if (filters.status === 'error') {
+      if (account.status !== 'error' || classifyAccountErrorMessage(account.error_message) !== 'auth_invalid') return false
+    } else if (filters.status === 'error_network') {
+      if (account.status !== 'error' || classifyAccountErrorMessage(account.error_message) !== 'network') return false
+    } else if (filters.status === 'error_cf') {
+      if (account.status !== 'error' || classifyAccountErrorMessage(account.error_message) !== 'cf') return false
+    } else if (filters.status === 'error_other') {
+      if (account.status !== 'error' || classifyAccountErrorMessage(account.error_message) !== 'other') return false
     } else if (account.status !== filters.status) {
       return false
     }

@@ -381,6 +381,66 @@ func (s *AccountRepoSuite) TestListWithFilters() {
 			},
 		},
 		{
+			name: "filter_by_status_error_network_matches_eof_and_transport_errors",
+			setup: func(client *dbent.Client) {
+				mustCreateAccount(s.T(), client, &service.Account{Name: "eof-error", Status: service.StatusError, ErrorMessage: `Post "https://chatgpt.com/backend-api/codex/responses": EOF`})
+				mustCreateAccount(s.T(), client, &service.Account{Name: "timeout-error", Status: service.StatusError, ErrorMessage: "proxyconnect tcp: i/o timeout"})
+				mustCreateAccount(s.T(), client, &service.Account{Name: "token-error", Status: service.StatusError, ErrorMessage: "token_invalidated: Your authentication token has been invalidated"})
+				mustCreateAccount(s.T(), client, &service.Account{Name: "active-eof-note", Status: service.StatusActive, ErrorMessage: "EOF"})
+			},
+			status:    service.AccountErrorFilterNetwork,
+			wantCount: 2,
+			validate: func(accounts []service.Account) {
+				names := []string{accounts[0].Name, accounts[1].Name}
+				s.ElementsMatch([]string{"eof-error", "timeout-error"}, names)
+			},
+		},
+		{
+			name: "filter_by_status_error_matches_invalid_credentials_only",
+			setup: func(client *dbent.Client) {
+				mustCreateAccount(s.T(), client, &service.Account{Name: "invalidated-error", Status: service.StatusError, ErrorMessage: "token_invalidated: Your authentication token has been invalidated"})
+				mustCreateAccount(s.T(), client, &service.Account{Name: "expired-error", Status: service.StatusError, ErrorMessage: "refresh token expired"})
+				mustCreateAccount(s.T(), client, &service.Account{Name: "eof-error", Status: service.StatusError, ErrorMessage: "unexpected EOF"})
+				mustCreateAccount(s.T(), client, &service.Account{Name: "active-invalidated-note", Status: service.StatusActive, ErrorMessage: "token_invalidated"})
+			},
+			status:    service.StatusError,
+			wantCount: 2,
+			validate: func(accounts []service.Account) {
+				names := []string{accounts[0].Name, accounts[1].Name}
+				s.ElementsMatch([]string{"invalidated-error", "expired-error"}, names)
+			},
+		},
+		{
+			name: "filter_by_status_error_cf_matches_403_and_challenge_errors",
+			setup: func(client *dbent.Client) {
+				mustCreateAccount(s.T(), client, &service.Account{Name: "cf-error", Status: service.StatusError, ErrorMessage: "OpenAI 403 temporary cooldown: Access forbidden Cloudflare challenge"})
+				mustCreateAccount(s.T(), client, &service.Account{Name: "challenge-error", Status: service.StatusError, ErrorMessage: "cf challenge detected"})
+				mustCreateAccount(s.T(), client, &service.Account{Name: "token-error", Status: service.StatusError, ErrorMessage: "token revoked"})
+			},
+			status:    service.AccountErrorFilterCF,
+			wantCount: 2,
+			validate: func(accounts []service.Account) {
+				names := []string{accounts[0].Name, accounts[1].Name}
+				s.ElementsMatch([]string{"cf-error", "challenge-error"}, names)
+			},
+		},
+		{
+			name: "filter_by_status_error_other_excludes_known_error_buckets",
+			setup: func(client *dbent.Client) {
+				mustCreateAccount(s.T(), client, &service.Account{Name: "other-error", Status: service.StatusError, ErrorMessage: "model not available for this account"})
+				mustCreateAccount(s.T(), client, &service.Account{Name: "empty-error", Status: service.StatusError, ErrorMessage: ""})
+				mustCreateAccount(s.T(), client, &service.Account{Name: "eof-error", Status: service.StatusError, ErrorMessage: "unexpected EOF"})
+				mustCreateAccount(s.T(), client, &service.Account{Name: "token-error", Status: service.StatusError, ErrorMessage: "token revoked"})
+				mustCreateAccount(s.T(), client, &service.Account{Name: "cf-error", Status: service.StatusError, ErrorMessage: "403 Access forbidden Cloudflare"})
+			},
+			status:    service.AccountErrorFilterOther,
+			wantCount: 2,
+			validate: func(accounts []service.Account) {
+				names := []string{accounts[0].Name, accounts[1].Name}
+				s.ElementsMatch([]string{"other-error", "empty-error"}, names)
+			},
+		},
+		{
 			name: "filter_by_search",
 			setup: func(client *dbent.Client) {
 				mustCreateAccount(s.T(), client, &service.Account{Name: "alpha-account"})

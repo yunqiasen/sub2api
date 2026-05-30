@@ -476,6 +476,29 @@ func (r *accountRepository) ListWithFilters(ctx context.Context, params paginati
 	}
 	if status != "" {
 		switch status {
+		case service.StatusError, service.AccountErrorFilterAuthInvalid:
+			q = q.Where(
+				dbaccount.StatusEQ(service.StatusError),
+				accountErrorAuthInvalidPredicate(),
+			)
+		case service.AccountErrorFilterNetwork:
+			q = q.Where(
+				dbaccount.StatusEQ(service.StatusError),
+				dbaccount.Not(accountErrorAuthInvalidPredicate()),
+				accountErrorNetworkPredicate(),
+			)
+		case service.AccountErrorFilterCF:
+			q = q.Where(
+				dbaccount.StatusEQ(service.StatusError),
+				dbaccount.Not(accountErrorAuthInvalidPredicate()),
+				dbaccount.Not(accountErrorNetworkPredicate()),
+				accountErrorCFPredicate(),
+			)
+		case service.AccountErrorFilterOther:
+			q = q.Where(
+				dbaccount.StatusEQ(service.StatusError),
+				dbaccount.Not(accountErrorKnownPredicate()),
+			)
 		case service.StatusActive:
 			q = q.Where(
 				dbaccount.StatusEQ(status),
