@@ -211,7 +211,13 @@ const kindBadgeClass = (kind: string) => {
                     {{ t('admin.ops.requestDetails.table.status') }}
                   </th>
                   <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    {{ t('admin.ops.requestDetails.table.ip') }}
+                  </th>
+                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     {{ t('admin.ops.requestDetails.table.requestId') }}
+                  </th>
+                  <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    {{ t('admin.ops.requestDetails.table.prompt') }}
                   </th>
                   <th class="px-4 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     {{ t('admin.ops.requestDetails.table.actions') }}
@@ -240,6 +246,11 @@ const kindBadgeClass = (kind: string) => {
                   <td class="whitespace-nowrap px-4 py-3 text-xs text-gray-600 dark:text-gray-300">
                     {{ row.status_code ?? '-' }}
                   </td>
+                  <td class="whitespace-nowrap px-4 py-3 text-xs text-gray-600 dark:text-gray-300">
+                    <span class="inline-block max-w-[180px] truncate" :title="row.client_ip || ''">
+                      {{ row.client_ip || '-' }}
+                    </span>
+                  </td>
                   <td class="px-4 py-3">
                     <div v-if="row.request_id" class="flex items-center gap-2">
                       <span class="max-w-[220px] truncate font-mono text-[11px] text-gray-700 dark:text-gray-200" :title="row.request_id">
@@ -253,6 +264,11 @@ const kindBadgeClass = (kind: string) => {
                       </button>
                     </div>
                     <span v-else class="text-xs text-gray-400">-</span>
+                  </td>
+                  <td class="max-w-[320px] px-4 py-3 text-xs text-gray-600 dark:text-gray-300">
+                    <span class="inline-block max-w-[320px] truncate" :title="row.request_prompt || ''">
+                      {{ row.request_prompt || '-' }}
+                    </span>
                   </td>
                   <td class="whitespace-nowrap px-4 py-3 text-right">
                     <button

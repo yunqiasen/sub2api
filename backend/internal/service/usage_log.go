@@ -97,7 +97,9 @@ type UsageLog struct {
 	APIKeyID  int64
 	AccountID int64
 	RequestID string
-	Model     string
+	// RequestPrompt stores a human-readable prompt extracted from the request body.
+	RequestPrompt *string
+	Model         string
 	// RequestedModel is the client-requested model name recorded for stable user/admin display.
 	// Empty should be treated as Model for backward compatibility with historical rows.
 	RequestedModel string

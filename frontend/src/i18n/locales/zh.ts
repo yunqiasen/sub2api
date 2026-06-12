@@ -4680,6 +4680,10 @@ export default {
       billingModeImage: '按次(图片)',
       allBillingModes: '全部计费模式',
       ipAddress: 'IP',
+      requestPrompt: '提示词',
+      viewPrompt: '查看全文',
+      fullPrompt: '完整提示词',
+      noPrompt: '无提示词',
       clickToViewBalance: '点击查看充值记录',
       failedToLoadUser: '加载用户信息失败',
       userDeletedBadge: '已删除',
@@ -5072,7 +5076,9 @@ export default {
           model: '模型',
           duration: '耗时',
           status: '状态码',
+          ip: 'IP',
           requestId: '请求ID',
+          prompt: 'Prompt',
           actions: '操作'
         }
       },

@@ -94,6 +94,8 @@ WITH combined AS (
     ul.model AS model,
     ul.duration_ms AS duration_ms,
     NULL::INT AS status_code,
+    ul.ip_address AS client_ip,
+    ul.request_prompt AS request_prompt,
     NULL::BIGINT AS error_id,
     NULL::TEXT AS phase,
     NULL::TEXT AS severity,
@@ -118,6 +120,8 @@ WITH combined AS (
     o.model AS model,
     o.duration_ms AS duration_ms,
     o.status_code AS status_code,
+    CASE WHEN o.client_ip IS NULL THEN NULL ELSE o.client_ip::text END AS client_ip,
+    NULL::TEXT AS request_prompt,
     o.id AS error_id,
     o.error_phase AS phase,
     o.severity AS severity,
@@ -167,6 +171,8 @@ SELECT
   model,
   duration_ms,
   status_code,
+  client_ip,
+  request_prompt,
   error_id,
   phase,
   severity,
@@ -203,6 +209,16 @@ LIMIT $%d OFFSET $%d
 		i := v.Int64
 		return &i
 	}
+	nullableTrimmedStringPtr := func(v sql.NullString) *string {
+		if !v.Valid {
+			return nil
+		}
+		s := strings.TrimSpace(v.String)
+		if s == "" {
+			return nil
+		}
+		return &s
+	}
 
 	out := make([]*service.OpsRequestDetail, 0, pageSize)
 	for rows.Next() {
@@ -213,9 +229,11 @@ LIMIT $%d OFFSET $%d
 			platform  sql.NullString
 			model     sql.NullString
 
-			durationMs sql.NullInt64
-			statusCode sql.NullInt64
-			errorID    sql.NullInt64
+			durationMs    sql.NullInt64
+			statusCode    sql.NullInt64
+			clientIP      sql.NullString
+			requestPrompt sql.NullString
+			errorID       sql.NullInt64
 
 			phase    sql.NullString
 			severity sql.NullString
@@ -237,6 +255,8 @@ LIMIT $%d OFFSET $%d
 			&model,
 			&durationMs,
 			&statusCode,
+			&clientIP,
+			&requestPrompt,
 			&errorID,
 			&phase,
 			&severity,
@@ -257,12 +277,14 @@ LIMIT $%d OFFSET $%d
 			Platform:  strings.TrimSpace(platform.String),
 			Model:     strings.TrimSpace(model.String),
 
-			DurationMs: toIntPtr(durationMs),
-			StatusCode: toIntPtr(statusCode),
-			ErrorID:    toInt64Ptr(errorID),
-			Phase:      phase.String,
-			Severity:   severity.String,
-			Message:    message.String,
+			DurationMs:    toIntPtr(durationMs),
+			StatusCode:    toIntPtr(statusCode),
+			ClientIP:      nullableTrimmedStringPtr(clientIP),
+			RequestPrompt: nullableTrimmedStringPtr(requestPrompt),
+			ErrorID:       toInt64Ptr(errorID),
+			Phase:         phase.String,
+			Severity:      severity.String,
+			Message:       message.String,
 
 			UserID:    toInt64Ptr(userID),
 			APIKeyID:  toInt64Ptr(apiKeyID),

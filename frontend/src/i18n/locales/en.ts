@@ -4527,6 +4527,10 @@ export default {
       billingModeImage: 'Image',
       allBillingModes: 'All Billing Modes',
       ipAddress: 'IP',
+      requestPrompt: 'Prompt',
+      viewPrompt: 'View full prompt',
+      fullPrompt: 'Full prompt',
+      noPrompt: 'No prompt',
       clickToViewBalance: 'Click to view balance history',
       failedToLoadUser: 'Failed to load user info',
       userDeletedBadge: 'Deleted',
@@ -4913,7 +4917,9 @@ export default {
           model: 'Model',
           duration: 'Duration',
           status: 'Status',
+          ip: 'IP',
           requestId: 'Request ID',
+          prompt: 'Prompt',
           actions: 'Actions'
         }
       },

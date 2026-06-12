@@ -51,6 +51,20 @@ func (_c *UsageLogCreate) SetRequestID(v string) *UsageLogCreate {
 	return _c
 }
 
+// SetRequestPrompt sets the "request_prompt" field.
+func (_c *UsageLogCreate) SetRequestPrompt(v string) *UsageLogCreate {
+	_c.mutation.SetRequestPrompt(v)
+	return _c
+}
+
+// SetNillableRequestPrompt sets the "request_prompt" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableRequestPrompt(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetRequestPrompt(*v)
+	}
+	return _c
+}
+
 // SetModel sets the "model" field.
 func (_c *UsageLogCreate) SetModel(v string) *UsageLogCreate {
 	_c.mutation.SetModel(v)
@@ -863,6 +877,10 @@ func (_c *UsageLogCreate) createSpec() (*UsageLog, *sqlgraph.CreateSpec) {
 		_spec.SetField(usagelog.FieldRequestID, field.TypeString, value)
 		_node.RequestID = value
 	}
+	if value, ok := _c.mutation.RequestPrompt(); ok {
+		_spec.SetField(usagelog.FieldRequestPrompt, field.TypeString, value)
+		_node.RequestPrompt = &value
+	}
 	if value, ok := _c.mutation.Model(); ok {
 		_spec.SetField(usagelog.FieldModel, field.TypeString, value)
 		_node.Model = value
@@ -1185,6 +1203,24 @@ func (u *UsageLogUpsert) SetRequestID(v string) *UsageLogUpsert {
 // UpdateRequestID sets the "request_id" field to the value that was provided on create.
 func (u *UsageLogUpsert) UpdateRequestID() *UsageLogUpsert {
 	u.SetExcluded(usagelog.FieldRequestID)
+	return u
+}
+
+// SetRequestPrompt sets the "request_prompt" field.
+func (u *UsageLogUpsert) SetRequestPrompt(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldRequestPrompt, v)
+	return u
+}
+
+// UpdateRequestPrompt sets the "request_prompt" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateRequestPrompt() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldRequestPrompt)
+	return u
+}
+
+// ClearRequestPrompt clears the value of the "request_prompt" field.
+func (u *UsageLogUpsert) ClearRequestPrompt() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldRequestPrompt)
 	return u
 }
 
@@ -1940,6 +1976,27 @@ func (u *UsageLogUpsertOne) SetRequestID(v string) *UsageLogUpsertOne {
 func (u *UsageLogUpsertOne) UpdateRequestID() *UsageLogUpsertOne {
 	return u.Update(func(s *UsageLogUpsert) {
 		s.UpdateRequestID()
+	})
+}
+
+// SetRequestPrompt sets the "request_prompt" field.
+func (u *UsageLogUpsertOne) SetRequestPrompt(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetRequestPrompt(v)
+	})
+}
+
+// UpdateRequestPrompt sets the "request_prompt" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateRequestPrompt() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateRequestPrompt()
+	})
+}
+
+// ClearRequestPrompt clears the value of the "request_prompt" field.
+func (u *UsageLogUpsertOne) ClearRequestPrompt() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearRequestPrompt()
 	})
 }
 
@@ -2970,6 +3027,27 @@ func (u *UsageLogUpsertBulk) SetRequestID(v string) *UsageLogUpsertBulk {
 func (u *UsageLogUpsertBulk) UpdateRequestID() *UsageLogUpsertBulk {
 	return u.Update(func(s *UsageLogUpsert) {
 		s.UpdateRequestID()
+	})
+}
+
+// SetRequestPrompt sets the "request_prompt" field.
+func (u *UsageLogUpsertBulk) SetRequestPrompt(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetRequestPrompt(v)
+	})
+}
+
+// UpdateRequestPrompt sets the "request_prompt" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateRequestPrompt() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateRequestPrompt()
+	})
+}
+
+// ClearRequestPrompt clears the value of the "request_prompt" field.
+func (u *UsageLogUpsertBulk) ClearRequestPrompt() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearRequestPrompt()
 	})
 }
 

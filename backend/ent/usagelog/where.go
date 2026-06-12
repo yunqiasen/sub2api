@@ -75,6 +75,11 @@ func RequestID(v string) predicate.UsageLog {
 	return predicate.UsageLog(sql.FieldEQ(FieldRequestID, v))
 }
 
+// RequestPrompt applies equality check predicate on the "request_prompt" field. It's identical to RequestPromptEQ.
+func RequestPrompt(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldRequestPrompt, v))
+}
+
 // Model applies equality check predicate on the "model" field. It's identical to ModelEQ.
 func Model(v string) predicate.UsageLog {
 	return predicate.UsageLog(sql.FieldEQ(FieldModel, v))
@@ -378,6 +383,81 @@ func RequestIDEqualFold(v string) predicate.UsageLog {
 // RequestIDContainsFold applies the ContainsFold predicate on the "request_id" field.
 func RequestIDContainsFold(v string) predicate.UsageLog {
 	return predicate.UsageLog(sql.FieldContainsFold(FieldRequestID, v))
+}
+
+// RequestPromptEQ applies the EQ predicate on the "request_prompt" field.
+func RequestPromptEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldRequestPrompt, v))
+}
+
+// RequestPromptNEQ applies the NEQ predicate on the "request_prompt" field.
+func RequestPromptNEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldRequestPrompt, v))
+}
+
+// RequestPromptIn applies the In predicate on the "request_prompt" field.
+func RequestPromptIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldRequestPrompt, vs...))
+}
+
+// RequestPromptNotIn applies the NotIn predicate on the "request_prompt" field.
+func RequestPromptNotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldRequestPrompt, vs...))
+}
+
+// RequestPromptGT applies the GT predicate on the "request_prompt" field.
+func RequestPromptGT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldRequestPrompt, v))
+}
+
+// RequestPromptGTE applies the GTE predicate on the "request_prompt" field.
+func RequestPromptGTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldRequestPrompt, v))
+}
+
+// RequestPromptLT applies the LT predicate on the "request_prompt" field.
+func RequestPromptLT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldRequestPrompt, v))
+}
+
+// RequestPromptLTE applies the LTE predicate on the "request_prompt" field.
+func RequestPromptLTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldRequestPrompt, v))
+}
+
+// RequestPromptContains applies the Contains predicate on the "request_prompt" field.
+func RequestPromptContains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldRequestPrompt, v))
+}
+
+// RequestPromptHasPrefix applies the HasPrefix predicate on the "request_prompt" field.
+func RequestPromptHasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldRequestPrompt, v))
+}
+
+// RequestPromptHasSuffix applies the HasSuffix predicate on the "request_prompt" field.
+func RequestPromptHasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldRequestPrompt, v))
+}
+
+// RequestPromptIsNil applies the IsNil predicate on the "request_prompt" field.
+func RequestPromptIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldRequestPrompt))
+}
+
+// RequestPromptNotNil applies the NotNil predicate on the "request_prompt" field.
+func RequestPromptNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldRequestPrompt))
+}
+
+// RequestPromptEqualFold applies the EqualFold predicate on the "request_prompt" field.
+func RequestPromptEqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldRequestPrompt, v))
+}
+
+// RequestPromptContainsFold applies the ContainsFold predicate on the "request_prompt" field.
+func RequestPromptContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldRequestPrompt, v))
 }
 
 // ModelEQ applies the EQ predicate on the "model" field.

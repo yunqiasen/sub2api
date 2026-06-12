@@ -34449,6 +34449,7 @@ type UsageLogMutation struct {
 	typ                         string
 	id                          *int64
 	request_id                  *string
+	request_prompt              *string
 	model                       *string
 	requested_model             *string
 	upstream_model              *string
@@ -34759,6 +34760,55 @@ func (m *UsageLogMutation) OldRequestID(ctx context.Context) (v string, err erro
 // ResetRequestID resets all changes to the "request_id" field.
 func (m *UsageLogMutation) ResetRequestID() {
 	m.request_id = nil
+}
+
+// SetRequestPrompt sets the "request_prompt" field.
+func (m *UsageLogMutation) SetRequestPrompt(s string) {
+	m.request_prompt = &s
+}
+
+// RequestPrompt returns the value of the "request_prompt" field in the mutation.
+func (m *UsageLogMutation) RequestPrompt() (r string, exists bool) {
+	v := m.request_prompt
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRequestPrompt returns the old "request_prompt" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldRequestPrompt(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRequestPrompt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRequestPrompt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRequestPrompt: %w", err)
+	}
+	return oldValue.RequestPrompt, nil
+}
+
+// ClearRequestPrompt clears the value of the "request_prompt" field.
+func (m *UsageLogMutation) ClearRequestPrompt() {
+	m.request_prompt = nil
+	m.clearedFields[usagelog.FieldRequestPrompt] = struct{}{}
+}
+
+// RequestPromptCleared returns if the "request_prompt" field was cleared in this mutation.
+func (m *UsageLogMutation) RequestPromptCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldRequestPrompt]
+	return ok
+}
+
+// ResetRequestPrompt resets all changes to the "request_prompt" field.
+func (m *UsageLogMutation) ResetRequestPrompt() {
+	m.request_prompt = nil
+	delete(m.clearedFields, usagelog.FieldRequestPrompt)
 }
 
 // SetModel sets the "model" field.
@@ -36880,7 +36930,7 @@ func (m *UsageLogMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UsageLogMutation) Fields() []string {
-	fields := make([]string, 0, 41)
+	fields := make([]string, 0, 42)
 	if m.user != nil {
 		fields = append(fields, usagelog.FieldUserID)
 	}
@@ -36892,6 +36942,9 @@ func (m *UsageLogMutation) Fields() []string {
 	}
 	if m.request_id != nil {
 		fields = append(fields, usagelog.FieldRequestID)
+	}
+	if m.request_prompt != nil {
+		fields = append(fields, usagelog.FieldRequestPrompt)
 	}
 	if m.model != nil {
 		fields = append(fields, usagelog.FieldModel)
@@ -37020,6 +37073,8 @@ func (m *UsageLogMutation) Field(name string) (ent.Value, bool) {
 		return m.AccountID()
 	case usagelog.FieldRequestID:
 		return m.RequestID()
+	case usagelog.FieldRequestPrompt:
+		return m.RequestPrompt()
 	case usagelog.FieldModel:
 		return m.Model()
 	case usagelog.FieldRequestedModel:
@@ -37111,6 +37166,8 @@ func (m *UsageLogMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldAccountID(ctx)
 	case usagelog.FieldRequestID:
 		return m.OldRequestID(ctx)
+	case usagelog.FieldRequestPrompt:
+		return m.OldRequestPrompt(ctx)
 	case usagelog.FieldModel:
 		return m.OldModel(ctx)
 	case usagelog.FieldRequestedModel:
@@ -37221,6 +37278,13 @@ func (m *UsageLogMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRequestID(v)
+		return nil
+	case usagelog.FieldRequestPrompt:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRequestPrompt(v)
 		return nil
 	case usagelog.FieldModel:
 		v, ok := value.(string)
@@ -37742,6 +37806,9 @@ func (m *UsageLogMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *UsageLogMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(usagelog.FieldRequestPrompt) {
+		fields = append(fields, usagelog.FieldRequestPrompt)
+	}
 	if m.FieldCleared(usagelog.FieldRequestedModel) {
 		fields = append(fields, usagelog.FieldRequestedModel)
 	}
@@ -37810,6 +37877,9 @@ func (m *UsageLogMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *UsageLogMutation) ClearField(name string) error {
 	switch name {
+	case usagelog.FieldRequestPrompt:
+		m.ClearRequestPrompt()
+		return nil
 	case usagelog.FieldRequestedModel:
 		m.ClearRequestedModel()
 		return nil
@@ -37883,6 +37953,9 @@ func (m *UsageLogMutation) ResetField(name string) error {
 		return nil
 	case usagelog.FieldRequestID:
 		m.ResetRequestID()
+		return nil
+	case usagelog.FieldRequestPrompt:
+		m.ResetRequestPrompt()
 		return nil
 	case usagelog.FieldModel:
 		m.ResetModel()

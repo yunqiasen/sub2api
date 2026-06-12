@@ -207,6 +207,22 @@ func TestUsageLogFromService_PreservesHistoricalMissingImageSize(t *testing.T) {
 	require.NotContains(t, string(body), `"image_size":"2K"`)
 }
 
+func TestUsageLogFromServiceAdmin_IncludesRequestPrompt(t *testing.T) {
+	t.Parallel()
+
+	prompt := "write a haiku about caching"
+	log := &service.UsageLog{
+		RequestID:     "req_prompt_1",
+		Model:         "gpt-5.4-mini",
+		RequestPrompt: &prompt,
+	}
+
+	adminDTO := UsageLogFromServiceAdmin(log)
+	require.NotNil(t, adminDTO)
+	require.NotNil(t, adminDTO.RequestPrompt)
+	require.Equal(t, prompt, *adminDTO.RequestPrompt)
+}
+
 func f64Ptr(value float64) *float64 {
 	return &value
 }

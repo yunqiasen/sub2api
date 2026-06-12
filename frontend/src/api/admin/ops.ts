@@ -118,6 +118,8 @@ export interface OpsRequestDetail {
   model?: string
   duration_ms?: number | null
   status_code?: number | null
+  client_ip?: string | null
+  request_prompt?: string | null
 
   error_id?: number | null
   phase?: string

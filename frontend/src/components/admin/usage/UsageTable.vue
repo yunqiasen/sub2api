@@ -182,7 +182,34 @@
         </template>
 
         <template #cell-ip_address="{ row }">
-          <span v-if="row.ip_address" class="text-sm font-mono text-gray-600 dark:text-gray-400">{{ row.ip_address }}</span>
+          <span
+            v-if="row.ip_address"
+            class="inline-block max-w-[220px] truncate text-sm font-mono text-gray-600 dark:text-gray-400"
+            :title="row.ip_address"
+          >
+            {{ row.ip_address }}
+          </span>
+          <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
+        </template>
+
+        <template #cell-request_prompt="{ row }">
+          <div v-if="row.request_prompt" class="max-w-[360px] space-y-1">
+            <button
+              type="button"
+              class="block w-full text-left text-sm text-gray-700 dark:text-gray-300"
+              :title="row.request_prompt"
+              @click="openPromptDialog(row.request_prompt)"
+            >
+              <span class="block truncate">{{ summarizePrompt(row.request_prompt) }}</span>
+            </button>
+            <button
+              type="button"
+              class="text-xs font-medium text-primary-600 transition-colors hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+              @click="openPromptDialog(row.request_prompt)"
+            >
+              {{ t('admin.usage.viewPrompt') }}
+            </button>
+          </div>
           <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
         </template>
 
@@ -190,6 +217,17 @@
       </DataTable>
     </div>
   </div>
+
+  <BaseDialog
+    :show="promptDialogVisible"
+    :title="t('admin.usage.fullPrompt')"
+    width="wide"
+    @close="closePromptDialog"
+  >
+    <div class="max-h-[70vh] overflow-auto rounded-lg bg-gray-50 p-4 dark:bg-dark-700">
+      <pre class="whitespace-pre-wrap break-words text-sm leading-6 text-gray-800 dark:text-gray-100">{{ promptDialogContent || t('admin.usage.noPrompt') }}</pre>
+    </div>
+  </BaseDialog>
 
   <!-- Token Tooltip Portal -->
   <Teleport to="body">
@@ -423,6 +461,7 @@ function getDisplayBillingMode(row: Pick<AdminUsageLog, 'billing_mode' | 'image_
 
 import DataTable from '@/components/common/DataTable.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
+import BaseDialog from '@/components/common/BaseDialog.vue'
 import Icon from '@/components/icons/Icon.vue'
 import type { AdminUsageLog } from '@/types'
 import type { Column } from '@/components/common/types'
@@ -457,6 +496,8 @@ const tooltipData = ref<AdminUsageLog | null>(null)
 const tokenTooltipVisible = ref(false)
 const tokenTooltipPosition = ref({ x: 0, y: 0 })
 const tokenTooltipData = ref<AdminUsageLog | null>(null)
+const promptDialogVisible = ref(false)
+const promptDialogContent = ref('')
 
 const getRequestTypeLabel = (row: AdminUsageLog): string => {
   const requestType = resolveUsageRequestType(row)
@@ -484,6 +525,22 @@ const formatDuration = (ms: number | null | undefined): string => {
   if (ms == null) return '-'
   if (ms < 1000) return `${ms}ms`
   return `${(ms / 1000).toFixed(2)}s`
+}
+
+const summarizePrompt = (prompt: string): string => {
+  const compact = prompt.replace(/\s+/g, ' ').trim()
+  if (compact.length <= 24) return compact
+  return `${compact.slice(0, 24)}...`
+}
+
+const openPromptDialog = (prompt: string) => {
+  promptDialogContent.value = prompt
+  promptDialogVisible.value = true
+}
+
+const closePromptDialog = () => {
+  promptDialogVisible.value = false
+  promptDialogContent.value = ''
 }
 
 // Cost tooltip functions

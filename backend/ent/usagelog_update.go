@@ -88,6 +88,26 @@ func (_u *UsageLogUpdate) SetNillableRequestID(v *string) *UsageLogUpdate {
 	return _u
 }
 
+// SetRequestPrompt sets the "request_prompt" field.
+func (_u *UsageLogUpdate) SetRequestPrompt(v string) *UsageLogUpdate {
+	_u.mutation.SetRequestPrompt(v)
+	return _u
+}
+
+// SetNillableRequestPrompt sets the "request_prompt" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableRequestPrompt(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetRequestPrompt(*v)
+	}
+	return _u
+}
+
+// ClearRequestPrompt clears the value of the "request_prompt" field.
+func (_u *UsageLogUpdate) ClearRequestPrompt() *UsageLogUpdate {
+	_u.mutation.ClearRequestPrompt()
+	return _u
+}
+
 // SetModel sets the "model" field.
 func (_u *UsageLogUpdate) SetModel(v string) *UsageLogUpdate {
 	_u.mutation.SetModel(v)
@@ -1006,6 +1026,12 @@ func (_u *UsageLogUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.RequestID(); ok {
 		_spec.SetField(usagelog.FieldRequestID, field.TypeString, value)
 	}
+	if value, ok := _u.mutation.RequestPrompt(); ok {
+		_spec.SetField(usagelog.FieldRequestPrompt, field.TypeString, value)
+	}
+	if _u.mutation.RequestPromptCleared() {
+		_spec.ClearField(usagelog.FieldRequestPrompt, field.TypeString)
+	}
 	if value, ok := _u.mutation.Model(); ok {
 		_spec.SetField(usagelog.FieldModel, field.TypeString, value)
 	}
@@ -1431,6 +1457,26 @@ func (_u *UsageLogUpdateOne) SetNillableRequestID(v *string) *UsageLogUpdateOne 
 	if v != nil {
 		_u.SetRequestID(*v)
 	}
+	return _u
+}
+
+// SetRequestPrompt sets the "request_prompt" field.
+func (_u *UsageLogUpdateOne) SetRequestPrompt(v string) *UsageLogUpdateOne {
+	_u.mutation.SetRequestPrompt(v)
+	return _u
+}
+
+// SetNillableRequestPrompt sets the "request_prompt" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableRequestPrompt(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetRequestPrompt(*v)
+	}
+	return _u
+}
+
+// ClearRequestPrompt clears the value of the "request_prompt" field.
+func (_u *UsageLogUpdateOne) ClearRequestPrompt() *UsageLogUpdateOne {
+	_u.mutation.ClearRequestPrompt()
 	return _u
 }
 
@@ -2381,6 +2427,12 @@ func (_u *UsageLogUpdateOne) sqlSave(ctx context.Context) (_node *UsageLog, err 
 	}
 	if value, ok := _u.mutation.RequestID(); ok {
 		_spec.SetField(usagelog.FieldRequestID, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.RequestPrompt(); ok {
+		_spec.SetField(usagelog.FieldRequestPrompt, field.TypeString, value)
+	}
+	if _u.mutation.RequestPromptCleared() {
+		_spec.ClearField(usagelog.FieldRequestPrompt, field.TypeString)
 	}
 	if value, ok := _u.mutation.Model(); ok {
 		_spec.SetField(usagelog.FieldModel, field.TypeString, value)

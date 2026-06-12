@@ -22,6 +22,8 @@ const (
 	FieldAccountID = "account_id"
 	// FieldRequestID holds the string denoting the request_id field in the database.
 	FieldRequestID = "request_id"
+	// FieldRequestPrompt holds the string denoting the request_prompt field in the database.
+	FieldRequestPrompt = "request_prompt"
 	// FieldModel holds the string denoting the model field in the database.
 	FieldModel = "model"
 	// FieldRequestedModel holds the string denoting the requested_model field in the database.
@@ -152,6 +154,7 @@ var Columns = []string{
 	FieldAPIKeyID,
 	FieldAccountID,
 	FieldRequestID,
+	FieldRequestPrompt,
 	FieldModel,
 	FieldRequestedModel,
 	FieldUpstreamModel,
@@ -292,6 +295,11 @@ func ByAccountID(opts ...sql.OrderTermOption) OrderOption {
 // ByRequestID orders the results by the request_id field.
 func ByRequestID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRequestID, opts...).ToFunc()
+}
+
+// ByRequestPrompt orders the results by the request_prompt field.
+func ByRequestPrompt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRequestPrompt, opts...).ToFunc()
 }
 
 // ByModel orders the results by the model field.

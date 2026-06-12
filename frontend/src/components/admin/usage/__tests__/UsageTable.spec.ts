@@ -6,6 +6,11 @@ import UsageTable from '../UsageTable.vue'
 
 const messages: Record<string, string> = {
   'admin.usage.userDeletedBadge': 'Deleted',
+  'admin.usage.viewPrompt': 'View full prompt',
+  'admin.usage.fullPrompt': 'Full prompt',
+  'admin.usage.noPrompt': 'No prompt',
+  'admin.usage.copyPrompt': 'Copy prompt',
+  'admin.usage.promptCopied': 'Prompt copied',
   'usage.costDetails': 'Cost Breakdown',
   'admin.usage.inputCost': 'Input Cost',
   'admin.usage.outputCost': 'Output Cost',
@@ -339,6 +344,18 @@ const DataTableStubWithUser = {
   `,
 }
 
+const DataTableStubWithPrompt = {
+  props: ['data'],
+  template: `
+    <div>
+      <div v-for="row in data" :key="row.request_id">
+        <slot name="cell-ip_address" :row="row" />
+        <slot name="cell-request_prompt" :row="row" />
+      </div>
+    </div>
+  `,
+}
+
 describe('admin UsageTable deleted-user badge', () => {
   it('renders deleted badge for a soft-deleted user row', () => {
     const row = {
@@ -408,5 +425,45 @@ describe('admin UsageTable deleted-user badge', () => {
 
     expect(wrapper.text()).not.toContain('Deleted')
     expect(wrapper.text()).toContain('active@test.com')
+  })
+})
+
+describe('admin UsageTable prompt preview', () => {
+  it('shows prompt summary and expands to full prompt', async () => {
+    const prompt = '请根据这段产品说明，写一段适合首页 banner 的广告文案，并保留技术细节和限制条件。'
+    const wrapper = mount(UsageTable, {
+      props: {
+        data: [{
+          request_id: 'req-prompt-1',
+          model: 'gpt-5.4-mini',
+          ip_address: '203.0.113.9',
+          request_prompt: prompt,
+        }],
+        loading: false,
+        columns: [
+          { key: 'ip_address', label: 'IP' },
+          { key: 'request_prompt', label: 'Prompt' },
+        ],
+      },
+      global: {
+        stubs: {
+          DataTable: DataTableStubWithPrompt,
+          EmptyState: true,
+          Icon: true,
+          Teleport: true,
+        },
+      },
+    })
+
+    expect(wrapper.text()).toContain('203.0.113.9')
+    expect(wrapper.text()).toContain('View full prompt')
+    expect(wrapper.text()).toContain('请根据这段产品说明')
+    expect(wrapper.text()).not.toContain(prompt)
+
+    await wrapper.get('button').trigger('click')
+    await nextTick()
+
+    expect(wrapper.text()).toContain('Full prompt')
+    expect(wrapper.text()).toContain(prompt)
   })
 })

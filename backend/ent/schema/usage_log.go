@@ -38,6 +38,9 @@ func (UsageLog) Fields() []ent.Field {
 		field.String("request_id").
 			MaxLen(64).
 			NotEmpty(),
+		field.Text("request_prompt").
+			Optional().
+			Nillable(),
 		field.String("model").
 			MaxLen(100).
 			NotEmpty(),
