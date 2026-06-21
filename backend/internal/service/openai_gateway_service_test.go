@@ -1406,6 +1406,39 @@ func TestOpenAIStreamingPreambleKeepaliveUsesDownstreamIdle(t *testing.T) {
 	require.Contains(t, rec.Body.String(), "response.completed")
 }
 
+func TestOpenAIStreamingResponseCarriesAuditBody(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	svc := &OpenAIGatewayService{cfg: &config.Config{Gateway: config.GatewayConfig{MaxLineSize: defaultMaxLineSize}}}
+
+	rec := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(rec)
+	c.Request = httptest.NewRequest(http.MethodPost, "/", nil)
+
+	resp := &http.Response{
+		StatusCode: http.StatusOK,
+		Body: io.NopCloser(strings.NewReader(strings.Join([]string{
+			`data: {"type":"response.output_text.delta","delta":"hello"}`,
+			``,
+			`data: {"type":"response.output_item.done","item":{"type":"function_call","name":"exec_command","call_id":"call_1","arguments":"{\"cmd\":\"pwd\"}"}}`,
+			``,
+			`data: {"type":"response.completed","response":{"id":"resp_audit","usage":{"input_tokens":1,"output_tokens":1}}}`,
+			``,
+		}, "\n"))),
+		Header: http.Header{"X-Request-Id": []string{"rid-audit"}},
+	}
+
+	result, err := svc.handleStreamingResponse(c.Request.Context(), resp, c, &Account{ID: 1, Platform: PlatformOpenAI, Name: "acc"}, time.Now(), "model", "model")
+	require.NoError(t, err)
+	require.NotNil(t, result)
+	require.NotEmpty(t, result.responseAuditBody)
+
+	audit := UsageAuditPayload{}
+	ApplyUsageAuditResponse(&audit, result.responseAuditBody)
+	require.Equal(t, "hello", audit.OutputText)
+	require.Equal(t, []string{"exec_command"}, audit.ToolCallNames)
+	require.Len(t, audit.ToolCallsJSON, 1)
+}
+
 func TestOpenAIStreamingNormalizesTerminalOutputFromDeltas(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	cfg := &config.Config{
@@ -1807,6 +1840,32 @@ func TestOpenAINonStreamingContentTypePassThrough(t *testing.T) {
 	if !strings.Contains(rec.Header().Get("Content-Type"), "application/vnd.test+json") {
 		t.Fatalf("expected Content-Type passthrough, got %q", rec.Header().Get("Content-Type"))
 	}
+}
+
+func TestOpenAINonStreamingResponseCarriesAuditBody(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	svc := &OpenAIGatewayService{cfg: &config.Config{}}
+
+	rec := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(rec)
+	c.Request = httptest.NewRequest(http.MethodPost, "/", nil)
+
+	body := []byte(`{"id":"resp_audit","output_text":"final answer","output":[{"type":"function_call","name":"exec_command","call_id":"call_1","arguments":"{\"cmd\":\"pwd\"}"}],"usage":{"input_tokens":1,"output_tokens":2}}`)
+	resp := &http.Response{
+		StatusCode: http.StatusOK,
+		Body:       io.NopCloser(bytes.NewReader(body)),
+		Header:     http.Header{"Content-Type": []string{"application/json"}},
+	}
+
+	result, err := svc.handleNonStreamingResponse(c.Request.Context(), resp, c, &Account{}, "model", "model")
+	require.NoError(t, err)
+	require.NotNil(t, result)
+	require.JSONEq(t, string(body), string(result.responseAuditBody))
+
+	audit := UsageAuditPayload{}
+	ApplyUsageAuditResponse(&audit, result.responseAuditBody)
+	require.Equal(t, "final answer", audit.OutputText)
+	require.Equal(t, []string{"exec_command"}, audit.ToolCallNames)
 }
 
 func TestOpenAINonStreamingContentTypeDefault(t *testing.T) {

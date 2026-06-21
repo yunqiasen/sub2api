@@ -88,6 +88,87 @@ func TestApplyUsageAuditFromChatCompletionResponse(t *testing.T) {
 	require.Equal(t, "search_docs", audit.ToolCallsJSON[0].Name)
 }
 
+func TestApplyUsageAuditFromResponsesSSE(t *testing.T) {
+	audit := UsageAuditPayload{}
+	body := []byte(strings.Join([]string{
+		`event: response.output_text.delta`,
+		`data: {"type":"response.output_text.delta","delta":"hello "}`,
+		``,
+		`event: response.output_text.delta`,
+		`data: {"type":"response.output_text.delta","delta":"world"}`,
+		``,
+		`event: response.output_item.done`,
+		`data: {"type":"response.output_item.done","item":{"type":"function_call","name":"exec_command","call_id":"call_1","arguments":"{\"cmd\":\"ls\"}"}}`,
+		``,
+		`event: response.completed`,
+		`data: {"type":"response.completed","response":{"output_text":"hello world"}}`,
+		``,
+	}, "\n"))
+
+	ApplyUsageAuditResponse(&audit, body)
+
+	require.Equal(t, "hello world", audit.OutputText)
+	require.Equal(t, []string{"exec_command"}, audit.ToolCallNames)
+	require.Len(t, audit.ToolCallsJSON, 1)
+	require.Equal(t, "call_1", audit.ToolCallsJSON[0].ID)
+}
+
+func TestApplyUsageAuditFromChatCompletionSSE(t *testing.T) {
+	audit := UsageAuditPayload{}
+	body := []byte(strings.Join([]string{
+		`data: {"choices":[{"delta":{"content":"chat "}}]}`,
+		``,
+		`data: {"choices":[{"delta":{"content":"stream"}}]}`,
+		``,
+		`data: {"choices":[{"delta":{"tool_calls":[{"id":"tool_1","type":"function","function":{"name":"search_docs","arguments":"{\"q\":\"audit\"}"}}]}}]}`,
+		``,
+		`data: [DONE]`,
+		``,
+	}, "\n"))
+
+	ApplyUsageAuditResponse(&audit, body)
+
+	require.Equal(t, "chat stream", audit.OutputText)
+	require.Equal(t, []string{"search_docs"}, audit.ToolCallNames)
+	require.Len(t, audit.ToolCallsJSON, 1)
+}
+
+func TestApplyUsageAuditFromAnthropicMessageResponse(t *testing.T) {
+	audit := UsageAuditPayload{}
+	body := []byte(`{"content":[{"type":"text","text":"anthropic answer"},{"type":"tool_use","id":"toolu_1","name":"search_docs","input":{"q":"audit"}}]}`)
+
+	ApplyUsageAuditResponse(&audit, body)
+
+	require.Equal(t, "anthropic answer", audit.OutputText)
+	require.Equal(t, []string{"search_docs"}, audit.ToolCallNames)
+	require.Len(t, audit.ToolCallsJSON, 1)
+	require.Equal(t, "toolu_1", audit.ToolCallsJSON[0].ID)
+}
+
+func TestApplyUsageAuditFromAnthropicSSE(t *testing.T) {
+	audit := UsageAuditPayload{}
+	body := []byte(strings.Join([]string{
+		`event: content_block_delta`,
+		`data: {"type":"content_block_delta","delta":{"type":"text_delta","text":"anthropic "}}`,
+		``,
+		`event: content_block_delta`,
+		`data: {"type":"content_block_delta","delta":{"type":"text_delta","text":"stream"}}`,
+		``,
+		`event: content_block_start`,
+		`data: {"type":"content_block_start","content_block":{"type":"tool_use","id":"toolu_1","name":"search_docs","input":{"q":"audit"}}}`,
+		``,
+		`event: message_stop`,
+		`data: {"type":"message_stop"}`,
+		``,
+	}, "\n"))
+
+	ApplyUsageAuditResponse(&audit, body)
+
+	require.Equal(t, "anthropic stream", audit.OutputText)
+	require.Equal(t, []string{"search_docs"}, audit.ToolCallNames)
+	require.Len(t, audit.ToolCallsJSON, 1)
+}
+
 func TestUsageAuditTruncatesLargeFields(t *testing.T) {
 	bigPrompt := strings.Repeat("p", usageAuditRequestPromptLimit+16)
 	body := []byte(`{"messages":[{"role":"user","content":"` + bigPrompt + `"}]}`)

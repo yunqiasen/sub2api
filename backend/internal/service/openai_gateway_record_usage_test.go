@@ -271,6 +271,32 @@ func TestOpenAIGatewayServiceRecordUsage_PersistsRequestPrompt(t *testing.T) {
 	require.Equal(t, "hello prompt", *usageRepo.lastLog.RequestPrompt)
 }
 
+func TestOpenAIGatewayServiceRecordUsage_AppliesResponseAuditBody(t *testing.T) {
+	usageRepo := &openAIRecordUsageLogRepoStub{inserted: true}
+	billingRepo := &openAIRecordUsageBillingRepoStub{result: &UsageBillingApplyResult{Applied: true}}
+	svc := newOpenAIRecordUsageServiceWithBillingRepoForTest(usageRepo, billingRepo, &openAIRecordUsageUserRepoStub{}, &openAIRecordUsageSubRepoStub{}, nil)
+
+	err := svc.RecordUsage(context.Background(), &OpenAIRecordUsageInput{
+		Result: &OpenAIForwardResult{
+			RequestID:         "resp_audit_body",
+			Usage:             OpenAIUsage{},
+			Model:             "gpt-5.1",
+			Duration:          time.Second,
+			ResponseAuditBody: []byte(`{"output_text":"final answer","output":[{"type":"function_call","name":"exec_command","call_id":"call_1","arguments":"{\"cmd\":\"pwd\"}"}]}`),
+		},
+		APIKey:  &APIKey{ID: 1003, Quota: 100, Group: &Group{RateMultiplier: 1}},
+		User:    &User{ID: 2003},
+		Account: &Account{ID: 3003, Type: AccountTypeAPIKey},
+	})
+
+	require.NoError(t, err)
+	require.NotNil(t, usageRepo.lastLog)
+	require.NotNil(t, usageRepo.lastLog.OutputSummary)
+	require.Equal(t, "final answer", *usageRepo.lastLog.OutputSummary)
+	require.Equal(t, []string{"exec_command"}, usageRepo.lastLog.ToolCallNames)
+	require.Len(t, usageRepo.lastLog.ToolCallsJSON, 1)
+}
+
 func TestOpenAIGatewayServiceRecordUsage_MissingPricingRecordsZeroCostUsageLog(t *testing.T) {
 	usageRepo := &openAIRecordUsageLogRepoStub{inserted: true}
 	billingRepo := &openAIRecordUsageBillingRepoStub{result: &UsageBillingApplyResult{Applied: true}}

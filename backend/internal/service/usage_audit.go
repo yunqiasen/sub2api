@@ -85,12 +85,15 @@ func ApplyUsageAuditResponse(audit *UsageAuditPayload, responseBody []byte) {
 	}
 
 	text := extractAuditOutputText(responseBody)
+	calls := extractAuditToolCalls(responseBody)
+	if text == "" && len(calls) == 0 {
+		text, calls = extractAuditFromSSEBody(responseBody)
+	}
 	if text != "" {
 		audit.OutputText, audit.ResponseTextTruncated = truncateAuditText(text, usageAuditOutputTextLimit)
 		audit.OutputSummary, _ = truncateAuditText(collapseAuditWhitespace(audit.OutputText), usageAuditSummaryLimit)
 	}
 
-	calls := extractAuditToolCalls(responseBody)
 	if len(calls) > 0 {
 		audit.ToolCallsJSON = append(audit.ToolCallsJSON, calls...)
 		for _, call := range calls {
@@ -99,6 +102,136 @@ func ApplyUsageAuditResponse(audit *UsageAuditPayload, responseBody []byte) {
 			}
 		}
 	}
+}
+
+func extractAuditFromSSEBody(body []byte) (string, []ToolCallAudit) {
+	if len(body) == 0 {
+		return "", nil
+	}
+	var textParts []string
+	var completedText string
+	var calls []ToolCallAudit
+	for _, data := range extractAuditSSEDataPayloads(string(body)) {
+		if data == "" || data == "[DONE]" || !gjson.Valid(data) {
+			continue
+		}
+		root := gjson.Parse(data)
+		eventType := strings.TrimSpace(root.Get("type").String())
+		textAdded := false
+		switch eventType {
+		case "response.output_text.delta", "response.refusal.delta":
+			delta := root.Get("delta").String()
+			if strings.TrimSpace(delta) != "" {
+				textParts = append(textParts, delta)
+				textAdded = true
+			}
+		case "content_block_delta":
+			delta := root.Get("delta.text").String()
+			if strings.TrimSpace(delta) != "" {
+				textParts = append(textParts, delta)
+				textAdded = true
+			}
+		case "content_block_start":
+			if block := root.Get("content_block"); block.Exists() {
+				if call, ok := extractAuditToolCallFromResult(block); ok {
+					calls = append(calls, call)
+				}
+			}
+		case "response.completed":
+			if response := root.Get("response"); response.Exists() {
+				if text := extractAuditOutputText([]byte(response.Raw)); text != "" {
+					completedText = text
+				}
+				calls = append(calls, extractAuditToolCalls([]byte(response.Raw))...)
+			}
+		case "response.output_item.done", "response.output_item.added":
+			if item := root.Get("item"); item.Exists() {
+				if call, ok := extractAuditToolCallFromResult(item); ok {
+					calls = append(calls, call)
+				}
+			}
+		}
+		if !textAdded {
+			if choices := root.Get("choices"); choices.IsArray() {
+				choices.ForEach(func(_, choice gjson.Result) bool {
+					if content := choice.Get("delta.content"); content.Exists() {
+						if value := content.String(); strings.TrimSpace(value) != "" {
+							textParts = append(textParts, value)
+							textAdded = true
+						}
+					}
+					return true
+				})
+			}
+		}
+		if !textAdded {
+			if text := extractAuditOutputText([]byte(data)); text != "" {
+				textParts = append(textParts, text)
+			}
+		}
+		calls = append(calls, extractAuditToolCalls([]byte(data))...)
+	}
+	if completedText != "" {
+		return completedText, dedupeToolCallAudits(calls)
+	}
+	return strings.TrimSpace(strings.Join(textParts, "")), dedupeToolCallAudits(calls)
+}
+
+func extractAuditSSEDataPayloads(body string) []string {
+	var payloads []string
+	var current []string
+	flush := func() {
+		if len(current) == 0 {
+			return
+		}
+		payloads = append(payloads, strings.TrimSpace(strings.Join(current, "\n")))
+		current = nil
+	}
+	for _, line := range strings.Split(body, "\n") {
+		line = strings.TrimRight(line, "\r")
+		if strings.TrimSpace(line) == "" {
+			flush()
+			continue
+		}
+		if strings.HasPrefix(line, "data:") {
+			current = append(current, strings.TrimSpace(strings.TrimPrefix(line, "data:")))
+		}
+	}
+	flush()
+	return payloads
+}
+
+func extractAuditToolCallFromResult(item gjson.Result) (ToolCallAudit, bool) {
+	typeName := strings.TrimSpace(item.Get("type").String())
+	if !strings.Contains(typeName, "function_call") && !strings.Contains(typeName, "tool_call") && typeName != "custom_tool_call" && typeName != "tool_use" {
+		return ToolCallAudit{}, false
+	}
+	name := strings.TrimSpace(firstNonEmptyAuditString(item.Get("name").String(), item.Get("function.name").String()))
+	if name == "" {
+		return ToolCallAudit{}, false
+	}
+	arguments := item.Get("arguments").String()
+	if arguments == "" {
+		arguments = item.Get("input").Raw
+	}
+	return newToolCallAudit(firstNonEmptyAuditString(item.Get("call_id").String(), item.Get("id").String()), typeName, name, arguments), true
+}
+
+func dedupeToolCallAudits(calls []ToolCallAudit) []ToolCallAudit {
+	if len(calls) < 2 {
+		return calls
+	}
+	seen := make(map[string]struct{}, len(calls))
+	out := make([]ToolCallAudit, 0, len(calls))
+	for _, call := range calls {
+		key := strings.Join([]string{call.ID, call.Type, call.Name, call.ArgumentsSHA256}, "\x00")
+		if _, ok := seen[key]; ok {
+			continue
+		}
+		seen[key] = struct{}{}
+		out = append(out, call)
+	}
+	return out
 }
 
 func extractAuditPromptTexts(body []byte) (systemText string, developerText string) {
@@ -206,6 +339,16 @@ func extractAuditOutputText(body []byte) string {
 			return true
 		})
 	}
+	if content := root.Get("content"); content.IsArray() {
+		content.ForEach(func(_, item gjson.Result) bool {
+			if strings.TrimSpace(item.Get("type").String()) == "text" {
+				if text := strings.TrimSpace(item.Get("text").String()); text != "" {
+					parts = append(parts, text)
+				}
+			}
+			return true
+		})
+	}
 	if output := root.Get("output"); output.IsArray() {
 		output.ForEach(func(_, item gjson.Result) bool {
 			if text := strings.TrimSpace(extractTextFromGJSONContent(item.Get("content"))); text != "" {
@@ -227,7 +370,7 @@ func extractAuditToolCalls(body []byte) []ToolCallAudit {
 	if output := root.Get("output"); output.IsArray() {
 		output.ForEach(func(_, item gjson.Result) bool {
 			typeName := strings.TrimSpace(item.Get("type").String())
-			if !strings.Contains(typeName, "function_call") && !strings.Contains(typeName, "tool_call") && typeName != "custom_tool_call" {
+			if !strings.Contains(typeName, "function_call") && !strings.Contains(typeName, "tool_call") && typeName != "custom_tool_call" && typeName != "tool_use" {
 				return true
 			}
 			name := strings.TrimSpace(firstNonEmptyAuditString(item.Get("name").String(), item.Get("function.name").String()))
@@ -239,7 +382,17 @@ func extractAuditToolCalls(body []byte) []ToolCallAudit {
 		})
 	}
 
+	if content := root.Get("content"); content.IsArray() {
+		content.ForEach(func(_, item gjson.Result) bool {
+			if call, ok := extractAuditToolCallFromResult(item); ok {
+				calls = append(calls, call)
+			}
+			return true
+		})
+	}
+
 	if choices := root.Get("choices"); choices.IsArray() {
+
 		choices.ForEach(func(_, choice gjson.Result) bool {
 			collectChatToolCalls(choice.Get("message.tool_calls"), &calls)
 			collectChatToolCalls(choice.Get("delta.tool_calls"), &calls)
@@ -401,7 +554,7 @@ func ApplyUsageAuditToUsageLog(log *UsageLog, audit UsageAuditPayload) {
 		return
 	}
 	if audit.RequestPrompt != "" {
-		log.RequestPrompt = stringPtr(audit.RequestPrompt)
+		log.RequestPrompt = usageAuditStringPtr(audit.RequestPrompt)
 	}
 	log.SystemPromptSummary = stringPtrIfNotEmpty(audit.SystemPromptSummary)
 	log.SystemPromptText = stringPtrIfNotEmpty(audit.SystemPromptText)
@@ -429,7 +582,7 @@ func ApplyUsageAuditToUsageLog(log *UsageLog, audit UsageAuditPayload) {
 	}
 }
 
-func stringPtr(value string) *string {
+func usageAuditStringPtr(value string) *string {
 	return &value
 }
 

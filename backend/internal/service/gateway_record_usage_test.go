@@ -116,6 +116,31 @@ func TestGatewayServiceRecordUsage_BillingUsesDetachedContext(t *testing.T) {
 	require.NoError(t, quotaSvc.lastQuotaCtxErr)
 }
 
+func TestGatewayServiceRecordUsage_AppliesResponseAuditBody(t *testing.T) {
+	usageRepo := &openAIRecordUsageLogRepoStub{inserted: true}
+	svc := newGatewayRecordUsageServiceForTest(usageRepo, &openAIRecordUsageUserRepoStub{}, &openAIRecordUsageSubRepoStub{})
+
+	err := svc.RecordUsage(context.Background(), &RecordUsageInput{
+		Result: &ForwardResult{
+			RequestID:         "gateway_audit_body",
+			Usage:             ClaudeUsage{InputTokens: 10, OutputTokens: 6},
+			Model:             "claude-sonnet-4",
+			Duration:          time.Second,
+			ResponseAuditBody: []byte(`{"choices":[{"message":{"content":"gateway answer","tool_calls":[{"id":"tool_1","type":"function","function":{"name":"search_docs","arguments":"{\"q\":\"audit\"}"}}]}}]}`),
+		},
+		APIKey:  &APIKey{ID: 501, Quota: 100},
+		User:    &User{ID: 601},
+		Account: &Account{ID: 701},
+	})
+
+	require.NoError(t, err)
+	require.NotNil(t, usageRepo.lastLog)
+	require.NotNil(t, usageRepo.lastLog.OutputSummary)
+	require.Equal(t, "gateway answer", *usageRepo.lastLog.OutputSummary)
+	require.Equal(t, []string{"search_docs"}, usageRepo.lastLog.ToolCallNames)
+	require.Len(t, usageRepo.lastLog.ToolCallsJSON, 1)
+}
+
 func TestGatewayServiceRecordUsage_BillingFingerprintIncludesRequestPayloadHash(t *testing.T) {
 	usageRepo := &openAIRecordUsageLogRepoStub{}
 	billingRepo := &openAIRecordUsageBillingRepoStub{result: &UsageBillingApplyResult{Applied: true}}
