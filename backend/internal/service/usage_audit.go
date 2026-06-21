@@ -394,3 +394,60 @@ func sha256Hex(data []byte) string {
 	sum := sha256.Sum256(data)
 	return hex.EncodeToString(sum[:])
 }
+
+// ApplyUsageAuditToUsageLog copies non-empty audit fields into a UsageLog before persistence.
+func ApplyUsageAuditToUsageLog(log *UsageLog, audit UsageAuditPayload) {
+	if log == nil {
+		return
+	}
+	if audit.RequestPrompt != "" {
+		log.RequestPrompt = stringPtr(audit.RequestPrompt)
+	}
+	log.SystemPromptSummary = stringPtrIfNotEmpty(audit.SystemPromptSummary)
+	log.SystemPromptText = stringPtrIfNotEmpty(audit.SystemPromptText)
+	log.DeveloperPromptText = stringPtrIfNotEmpty(audit.DeveloperPromptText)
+	log.ToolNames = append([]string(nil), audit.ToolNames...)
+	log.ToolCallNames = append([]string(nil), audit.ToolCallNames...)
+	log.ToolCallsJSON = append([]ToolCallAudit(nil), audit.ToolCallsJSON...)
+	log.OutputSummary = stringPtrIfNotEmpty(audit.OutputSummary)
+	log.OutputText = stringPtrIfNotEmpty(audit.OutputText)
+	log.RequestBodySHA256 = stringPtrIfNotEmpty(audit.RequestBodySHA256)
+	if audit.RequestBodyBytes > 0 {
+		bytes := audit.RequestBodyBytes
+		log.RequestBodyBytes = &bytes
+	}
+	log.RequestBodyTruncated = audit.RequestBodyTruncated
+	log.ResponseTextTruncated = audit.ResponseTextTruncated
+	if len(audit.TurnMetadata) > 0 {
+		log.TurnMetadata = copyStringAnyMap(audit.TurnMetadata)
+	}
+	if len(audit.IPLocation) > 0 {
+		log.IPLocation = copyStringAnyMap(audit.IPLocation)
+	}
+	if audit.AuditCaptureVersion > 0 {
+		log.AuditCaptureVersion = audit.AuditCaptureVersion
+	}
+}
+
+func stringPtr(value string) *string {
+	return &value
+}
+
+func stringPtrIfNotEmpty(value string) *string {
+	value = strings.TrimSpace(value)
+	if value == "" {
+		return nil
+	}
+	return &value
+}
+
+func copyStringAnyMap(in map[string]any) map[string]any {
+	if len(in) == 0 {
+		return nil
+	}
+	out := make(map[string]any, len(in))
+	for key, value := range in {
+		out[key] = value
+	}
+	return out
+}

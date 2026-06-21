@@ -46,6 +46,21 @@ func TestUsageLogRepositoryCreateSyncRequestTypeAndLegacyFields(t *testing.T) {
 			log.AccountID,
 			log.RequestID,
 			sqlmock.AnyArg(), // request_prompt
+			sqlmock.AnyArg(), // system_prompt_summary
+			sqlmock.AnyArg(), // system_prompt_text
+			sqlmock.AnyArg(), // developer_prompt_text
+			sqlmock.AnyArg(), // tool_names
+			sqlmock.AnyArg(), // tool_call_names
+			sqlmock.AnyArg(), // tool_calls_json
+			sqlmock.AnyArg(), // output_summary
+			sqlmock.AnyArg(), // output_text
+			sqlmock.AnyArg(), // request_body_sha256
+			sqlmock.AnyArg(), // request_body_bytes
+			sqlmock.AnyArg(), // request_body_truncated
+			sqlmock.AnyArg(), // response_text_truncated
+			sqlmock.AnyArg(), // turn_metadata
+			sqlmock.AnyArg(), // ip_location
+			sqlmock.AnyArg(), // audit_capture_version
 			log.Model,
 			log.RequestedModel,
 			sqlmock.AnyArg(), // upstream_model
@@ -130,6 +145,21 @@ func TestUsageLogRepositoryCreate_PersistsServiceTier(t *testing.T) {
 			log.AccountID,
 			log.RequestID,
 			sqlmock.AnyArg(), // request_prompt
+			sqlmock.AnyArg(), // system_prompt_summary
+			sqlmock.AnyArg(), // system_prompt_text
+			sqlmock.AnyArg(), // developer_prompt_text
+			sqlmock.AnyArg(), // tool_names
+			sqlmock.AnyArg(), // tool_call_names
+			sqlmock.AnyArg(), // tool_calls_json
+			sqlmock.AnyArg(), // output_summary
+			sqlmock.AnyArg(), // output_text
+			sqlmock.AnyArg(), // request_body_sha256
+			sqlmock.AnyArg(), // request_body_bytes
+			sqlmock.AnyArg(), // request_body_truncated
+			sqlmock.AnyArg(), // response_text_truncated
+			sqlmock.AnyArg(), // turn_metadata
+			sqlmock.AnyArg(), // ip_location
+			sqlmock.AnyArg(), // audit_capture_version
 			log.Model,
 			log.RequestedModel,
 			sqlmock.AnyArg(),
@@ -200,7 +230,8 @@ func TestBuildUsageLogBestEffortInsertQuery_IncludesRequestedModelColumn(t *test
 
 	require.Contains(t, query, "INSERT INTO usage_logs (")
 	require.Contains(t, query, "\n\t\t\tmodel,\n\t\t\trequested_model,\n\t\t\tupstream_model,")
-	require.Contains(t, query, "\n\t\t\trequest_id,\n\t\t\trequest_prompt,\n\t\t\tmodel,\n\t\t\trequested_model,\n\t\t\tupstream_model,")
+	require.Contains(t, query, "\n\t\t\trequest_id,\n\t\t\trequest_prompt,\n\t\t\tsystem_prompt_summary,")
+	require.Contains(t, query, "\n\t\t\taudit_capture_version,\n\t\t\tmodel,\n\t\t\trequested_model,\n\t\t\tupstream_model,")
 	require.Len(t, args, len(prepared.args))
 	require.Equal(t, prepared.args[5], args[5])
 }
@@ -825,4 +856,59 @@ func TestScanUsageLogRequestTypeAndLegacyFallback(t *testing.T) {
 		require.Equal(t, "priority", *log.ServiceTier)
 	})
 
+}
+
+func TestPrepareUsageLogInsert_PersistsAuditFields(t *testing.T) {
+	requestPrompt := "user prompt"
+	systemSummary := "system summary"
+	systemText := "system text"
+	developerText := "developer text"
+	outputSummary := "output summary"
+	outputText := "output text"
+	bodyHash := "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+	bodyBytes := 321
+	prepared := prepareUsageLogInsert(&service.UsageLog{
+		UserID:                1,
+		APIKeyID:              2,
+		AccountID:             3,
+		RequestID:             "req-audit",
+		RequestPrompt:         &requestPrompt,
+		SystemPromptSummary:   &systemSummary,
+		SystemPromptText:      &systemText,
+		DeveloperPromptText:   &developerText,
+		ToolNames:             []string{"exec_command"},
+		ToolCallNames:         []string{"exec_command"},
+		ToolCallsJSON:         []service.ToolCallAudit{{ID: "call_1", Name: "exec_command"}},
+		OutputSummary:         &outputSummary,
+		OutputText:            &outputText,
+		RequestBodySHA256:     &bodyHash,
+		RequestBodyBytes:      &bodyBytes,
+		RequestBodyTruncated:  true,
+		ResponseTextTruncated: true,
+		TurnMetadata:          map[string]any{"session_id": "s1"},
+		IPLocation:            map[string]any{"source": "direct"},
+		AuditCaptureVersion:   1,
+		Model:                 "gpt-5",
+		RequestedModel:        "gpt-5",
+		CreatedAt:             time.Date(2025, 1, 6, 12, 0, 0, 0, time.UTC),
+	})
+
+	require.Len(t, prepared.args, len(usageLogInsertArgTypes))
+	require.Equal(t, requestPrompt, prepared.args[4].(sql.NullString).String)
+	require.Equal(t, systemSummary, prepared.args[5].(sql.NullString).String)
+	require.Equal(t, systemText, prepared.args[6].(sql.NullString).String)
+	require.Equal(t, developerText, prepared.args[7].(sql.NullString).String)
+	require.JSONEq(t, `["exec_command"]`, prepared.args[8].(string))
+	require.JSONEq(t, `["exec_command"]`, prepared.args[9].(string))
+	require.Contains(t, prepared.args[10].(string), "exec_command")
+	require.Equal(t, outputSummary, prepared.args[11].(sql.NullString).String)
+	require.Equal(t, outputText, prepared.args[12].(sql.NullString).String)
+	require.Equal(t, bodyHash, prepared.args[13].(sql.NullString).String)
+	require.Equal(t, int64(bodyBytes), prepared.args[14].(sql.NullInt64).Int64)
+	require.Equal(t, true, prepared.args[15])
+	require.Equal(t, true, prepared.args[16])
+	require.JSONEq(t, `{"session_id":"s1"}`, prepared.args[17].(string))
+	require.JSONEq(t, `{"source":"direct"}`, prepared.args[18].(string))
+	require.Equal(t, int16(1), prepared.args[19])
+	require.Equal(t, "gpt-5", prepared.args[20])
 }

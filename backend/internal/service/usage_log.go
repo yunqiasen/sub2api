@@ -99,7 +99,23 @@ type UsageLog struct {
 	RequestID string
 	// RequestPrompt stores a human-readable prompt extracted from the request body.
 	RequestPrompt *string
-	Model         string
+	// Audit fields store structured request/response context for admin troubleshooting.
+	SystemPromptSummary   *string
+	SystemPromptText      *string
+	DeveloperPromptText   *string
+	ToolNames             []string
+	ToolCallNames         []string
+	ToolCallsJSON         []ToolCallAudit
+	OutputSummary         *string
+	OutputText            *string
+	RequestBodySHA256     *string
+	RequestBodyBytes      *int
+	RequestBodyTruncated  bool
+	ResponseTextTruncated bool
+	TurnMetadata          map[string]any
+	IPLocation            map[string]any
+	AuditCaptureVersion   int16
+	Model                 string
 	// RequestedModel is the client-requested model name recorded for stable user/admin display.
 	// Empty should be treated as Model for backward compatibility with historical rows.
 	RequestedModel string

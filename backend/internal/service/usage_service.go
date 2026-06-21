@@ -18,26 +18,42 @@ var (
 
 // CreateUsageLogRequest 创建使用日志请求
 type CreateUsageLogRequest struct {
-	UserID                int64   `json:"user_id"`
-	APIKeyID              int64   `json:"api_key_id"`
-	AccountID             int64   `json:"account_id"`
-	RequestID             string  `json:"request_id"`
-	Model                 string  `json:"model"`
-	InputTokens           int     `json:"input_tokens"`
-	OutputTokens          int     `json:"output_tokens"`
-	CacheCreationTokens   int     `json:"cache_creation_tokens"`
-	CacheReadTokens       int     `json:"cache_read_tokens"`
-	CacheCreation5mTokens int     `json:"cache_creation_5m_tokens"`
-	CacheCreation1hTokens int     `json:"cache_creation_1h_tokens"`
-	InputCost             float64 `json:"input_cost"`
-	OutputCost            float64 `json:"output_cost"`
-	CacheCreationCost     float64 `json:"cache_creation_cost"`
-	CacheReadCost         float64 `json:"cache_read_cost"`
-	TotalCost             float64 `json:"total_cost"`
-	ActualCost            float64 `json:"actual_cost"`
-	RateMultiplier        float64 `json:"rate_multiplier"`
-	Stream                bool    `json:"stream"`
-	DurationMs            *int    `json:"duration_ms"`
+	UserID                int64           `json:"user_id"`
+	APIKeyID              int64           `json:"api_key_id"`
+	AccountID             int64           `json:"account_id"`
+	RequestID             string          `json:"request_id"`
+	RequestPrompt         *string         `json:"request_prompt"`
+	SystemPromptSummary   *string         `json:"system_prompt_summary"`
+	SystemPromptText      *string         `json:"system_prompt_text"`
+	DeveloperPromptText   *string         `json:"developer_prompt_text"`
+	ToolNames             []string        `json:"tool_names"`
+	ToolCallNames         []string        `json:"tool_call_names"`
+	ToolCallsJSON         []ToolCallAudit `json:"tool_calls_json"`
+	OutputSummary         *string         `json:"output_summary"`
+	OutputText            *string         `json:"output_text"`
+	RequestBodySHA256     *string         `json:"request_body_sha256"`
+	RequestBodyBytes      *int            `json:"request_body_bytes"`
+	RequestBodyTruncated  bool            `json:"request_body_truncated"`
+	ResponseTextTruncated bool            `json:"response_text_truncated"`
+	TurnMetadata          map[string]any  `json:"turn_metadata"`
+	IPLocation            map[string]any  `json:"ip_location"`
+	AuditCaptureVersion   int16           `json:"audit_capture_version"`
+	Model                 string          `json:"model"`
+	InputTokens           int             `json:"input_tokens"`
+	OutputTokens          int             `json:"output_tokens"`
+	CacheCreationTokens   int             `json:"cache_creation_tokens"`
+	CacheReadTokens       int             `json:"cache_read_tokens"`
+	CacheCreation5mTokens int             `json:"cache_creation_5m_tokens"`
+	CacheCreation1hTokens int             `json:"cache_creation_1h_tokens"`
+	InputCost             float64         `json:"input_cost"`
+	OutputCost            float64         `json:"output_cost"`
+	CacheCreationCost     float64         `json:"cache_creation_cost"`
+	CacheReadCost         float64         `json:"cache_read_cost"`
+	TotalCost             float64         `json:"total_cost"`
+	ActualCost            float64         `json:"actual_cost"`
+	RateMultiplier        float64         `json:"rate_multiplier"`
+	Stream                bool            `json:"stream"`
+	DurationMs            *int            `json:"duration_ms"`
 }
 
 // UsageStats 使用统计
@@ -98,6 +114,22 @@ func (s *UsageService) Create(ctx context.Context, req CreateUsageLogRequest) (*
 		APIKeyID:              req.APIKeyID,
 		AccountID:             req.AccountID,
 		RequestID:             req.RequestID,
+		RequestPrompt:         req.RequestPrompt,
+		SystemPromptSummary:   req.SystemPromptSummary,
+		SystemPromptText:      req.SystemPromptText,
+		DeveloperPromptText:   req.DeveloperPromptText,
+		ToolNames:             req.ToolNames,
+		ToolCallNames:         req.ToolCallNames,
+		ToolCallsJSON:         req.ToolCallsJSON,
+		OutputSummary:         req.OutputSummary,
+		OutputText:            req.OutputText,
+		RequestBodySHA256:     req.RequestBodySHA256,
+		RequestBodyBytes:      req.RequestBodyBytes,
+		RequestBodyTruncated:  req.RequestBodyTruncated,
+		ResponseTextTruncated: req.ResponseTextTruncated,
+		TurnMetadata:          req.TurnMetadata,
+		IPLocation:            req.IPLocation,
+		AuditCaptureVersion:   req.AuditCaptureVersion,
 		Model:                 req.Model,
 		InputTokens:           req.InputTokens,
 		OutputTokens:          req.OutputTokens,

@@ -104,3 +104,37 @@ func TestUsageAuditTruncatesLargeFields(t *testing.T) {
 	require.True(t, audit.ResponseTextTruncated)
 	require.Len(t, audit.OutputText, usageAuditOutputTextLimit)
 }
+
+func TestApplyUsageAuditToUsageLogCopiesStructuredFields(t *testing.T) {
+	log := &UsageLog{}
+	audit := UsageAuditPayload{
+		RequestPrompt:         "user prompt",
+		SystemPromptSummary:   "system summary",
+		SystemPromptText:      "system text",
+		DeveloperPromptText:   "developer text",
+		ToolNames:             []string{"exec_command"},
+		ToolCallNames:         []string{"exec_command"},
+		ToolCallsJSON:         []ToolCallAudit{{ID: "call_1", Name: "exec_command"}},
+		OutputSummary:         "output summary",
+		OutputText:            "output text",
+		RequestBodySHA256:     strings.Repeat("a", 64),
+		RequestBodyBytes:      123,
+		RequestBodyTruncated:  true,
+		ResponseTextTruncated: true,
+		TurnMetadata:          map[string]any{"session_id": "s1"},
+		IPLocation:            map[string]any{"source": "direct"},
+		AuditCaptureVersion:   1,
+	}
+
+	ApplyUsageAuditToUsageLog(log, audit)
+
+	require.Equal(t, "user prompt", *log.RequestPrompt)
+	require.Equal(t, "system summary", *log.SystemPromptSummary)
+	require.Equal(t, []string{"exec_command"}, log.ToolNames)
+	require.Len(t, log.ToolCallsJSON, 1)
+	require.Equal(t, strings.Repeat("a", 64), *log.RequestBodySHA256)
+	require.Equal(t, 123, *log.RequestBodyBytes)
+	require.True(t, log.RequestBodyTruncated)
+	require.True(t, log.ResponseTextTruncated)
+	require.Equal(t, "s1", log.TurnMetadata["session_id"])
+}

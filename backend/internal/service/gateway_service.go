@@ -8333,6 +8333,7 @@ type RecordUsageInput struct {
 	IPAddress          string             // 请求的客户端 IP 地址
 	RequestPayloadHash string             // 请求体语义哈希，用于降低 request_id 误复用时的静默误去重风险
 	RequestPrompt      string             // 用户可见 prompt 摘要（用于后台审计）
+	UsageAudit         UsageAuditPayload  // 结构化请求审计字段
 	ForceCacheBilling  bool               // 强制缓存计费：将 input_tokens 转为 cache_read 计费（用于粘性会话切换）
 	APIKeyService      APIKeyQuotaUpdater // 可选：用于更新API Key配额
 	QuotaPlatform      string             // user×platform 配额计量平台：handler 在请求 ctx 内经 QuotaPlatform() 算定后传入（后扣运行在 worker 池 background ctx 上，取不到 ForcePlatform）
@@ -8822,6 +8823,7 @@ func (s *GatewayService) RecordUsage(ctx context.Context, input *RecordUsageInpu
 		IPAddress:          input.IPAddress,
 		RequestPayloadHash: input.RequestPayloadHash,
 		RequestPrompt:      input.RequestPrompt,
+		UsageAudit:         input.UsageAudit,
 		ForceCacheBilling:  input.ForceCacheBilling,
 		APIKeyService:      input.APIKeyService,
 		QuotaPlatform:      input.QuotaPlatform,
@@ -8841,6 +8843,8 @@ type RecordUsageLongContextInput struct {
 	UserAgent             string             // 请求的 User-Agent
 	IPAddress             string             // 请求的客户端 IP 地址
 	RequestPayloadHash    string             // 请求体语义哈希，用于降低 request_id 误复用时的静默误去重风险
+	RequestPrompt         string             // 用户可见 prompt 摘要（用于后台审计）
+	UsageAudit            UsageAuditPayload  // 结构化请求审计字段
 	LongContextThreshold  int                // 长上下文阈值（如 200000）
 	LongContextMultiplier float64            // 超出阈值部分的倍率（如 2.0）
 	ForceCacheBilling     bool               // 强制缓存计费：将 input_tokens 转为 cache_read 计费（用于粘性会话切换）
@@ -8863,6 +8867,8 @@ func (s *GatewayService) RecordUsageWithLongContext(ctx context.Context, input *
 		UserAgent:          input.UserAgent,
 		IPAddress:          input.IPAddress,
 		RequestPayloadHash: input.RequestPayloadHash,
+		RequestPrompt:      input.RequestPrompt,
+		UsageAudit:         input.UsageAudit,
 		ForceCacheBilling:  input.ForceCacheBilling,
 		APIKeyService:      input.APIKeyService,
 		QuotaPlatform:      input.QuotaPlatform,
@@ -8886,6 +8892,7 @@ type recordUsageCoreInput struct {
 	IPAddress          string
 	RequestPayloadHash string
 	RequestPrompt      string
+	UsageAudit         UsageAuditPayload
 	ForceCacheBilling  bool
 	APIKeyService      APIKeyQuotaUpdater
 	QuotaPlatform      string
@@ -9206,6 +9213,7 @@ func (s *GatewayService) buildRecordUsageLog(
 		SubscriptionID:        optionalSubscriptionID(subscription),
 		CreatedAt:             time.Now(),
 	}
+	ApplyUsageAuditToUsageLog(usageLog, input.UsageAudit)
 	if result.ImageCount > 0 && (cost == nil || cost.BillingMode != string(BillingModeToken)) {
 		usageLog.RateMultiplier = imageMultiplier
 	}

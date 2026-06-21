@@ -30,7 +30,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-const usageLogSelectColumns = "id, user_id, api_key_id, account_id, request_id, request_prompt, model, requested_model, upstream_model, group_id, subscription_id, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, cache_creation_5m_tokens, cache_creation_1h_tokens, image_output_tokens, image_output_cost, input_cost, output_cost, cache_creation_cost, cache_read_cost, total_cost, actual_cost, rate_multiplier, account_rate_multiplier, billing_type, request_type, stream, openai_ws_mode, duration_ms, first_token_ms, user_agent, ip_address, image_count, image_size, image_input_size, image_output_size, image_size_source, image_size_breakdown, service_tier, reasoning_effort, inbound_endpoint, upstream_endpoint, cache_ttl_overridden, channel_id, model_mapping_chain, billing_tier, billing_mode, account_stats_cost, created_at"
+const usageLogSelectColumns = "id, user_id, api_key_id, account_id, request_id, request_prompt, system_prompt_summary, system_prompt_text, developer_prompt_text, tool_names, tool_call_names, tool_calls_json, output_summary, output_text, request_body_sha256, request_body_bytes, request_body_truncated, response_text_truncated, turn_metadata, ip_location, audit_capture_version, model, requested_model, upstream_model, group_id, subscription_id, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, cache_creation_5m_tokens, cache_creation_1h_tokens, image_output_tokens, image_output_cost, input_cost, output_cost, cache_creation_cost, cache_read_cost, total_cost, actual_cost, rate_multiplier, account_rate_multiplier, billing_type, request_type, stream, openai_ws_mode, duration_ms, first_token_ms, user_agent, ip_address, image_count, image_size, image_input_size, image_output_size, image_size_source, image_size_breakdown, service_tier, reasoning_effort, inbound_endpoint, upstream_endpoint, cache_ttl_overridden, channel_id, model_mapping_chain, billing_tier, billing_mode, account_stats_cost, created_at"
 
 // usageLogInsertArgTypes must stay in the same order as:
 //  1. prepareUsageLogInsert().args
@@ -45,6 +45,21 @@ var usageLogInsertArgTypes = [...]string{
 	"bigint",      // account_id
 	"text",        // request_id
 	"text",        // request_prompt
+	"text",        // system_prompt_summary
+	"text",        // system_prompt_text
+	"text",        // developer_prompt_text
+	"jsonb",       // tool_names
+	"jsonb",       // tool_call_names
+	"jsonb",       // tool_calls_json
+	"text",        // output_summary
+	"text",        // output_text
+	"text",        // request_body_sha256
+	"integer",     // request_body_bytes
+	"boolean",     // request_body_truncated
+	"boolean",     // response_text_truncated
+	"jsonb",       // turn_metadata
+	"jsonb",       // ip_location
+	"smallint",    // audit_capture_version
 	"text",        // model
 	"text",        // requested_model
 	"text",        // upstream_model
@@ -363,6 +378,21 @@ func (r *usageLogRepository) createSingle(ctx context.Context, sqlq sqlExecutor,
 			account_id,
 			request_id,
 			request_prompt,
+			system_prompt_summary,
+			system_prompt_text,
+			developer_prompt_text,
+			tool_names,
+			tool_call_names,
+			tool_calls_json,
+			output_summary,
+			output_text,
+			request_body_sha256,
+			request_body_bytes,
+			request_body_truncated,
+			response_text_truncated,
+			turn_metadata,
+			ip_location,
+			audit_capture_version,
 			model,
 			requested_model,
 			upstream_model,
@@ -411,11 +441,14 @@ func (r *usageLogRepository) createSingle(ctx context.Context, sqlq sqlExecutor,
 			created_at
 		) VALUES (
 			$1, $2, $3, $4, $5, $6, $7, $8,
-			$9, $10,
-			$11, $12, $13, $14,
-			$15, $16, $17, $18,
-			$19, $20, $21, $22, $23, $24,
-			$25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51
+			$9, $10, $11, $12, $13, $14, $15, $16,
+			$17, $18, $19, $20, $21, $22, $23, $24,
+			$25, $26, $27, $28, $29, $30, $31, $32,
+			$33, $34, $35, $36, $37, $38, $39, $40,
+			$41, $42, $43, $44, $45, $46, $47, $48,
+			$49, $50, $51, $52, $53, $54, $55, $56,
+			$57, $58, $59, $60, $61, $62, $63, $64,
+			$65, $66
 		)
 		ON CONFLICT (request_id, api_key_id) DO NOTHING
 		RETURNING id, created_at
@@ -806,6 +839,21 @@ func buildUsageLogBatchInsertQuery(keys []string, preparedByKey map[string]usage
 			account_id,
 			request_id,
 			request_prompt,
+			system_prompt_summary,
+			system_prompt_text,
+			developer_prompt_text,
+			tool_names,
+			tool_call_names,
+			tool_calls_json,
+			output_summary,
+			output_text,
+			request_body_sha256,
+			request_body_bytes,
+			request_body_truncated,
+			response_text_truncated,
+			turn_metadata,
+			ip_location,
+			audit_capture_version,
 			model,
 			requested_model,
 			upstream_model,
@@ -854,7 +902,7 @@ func buildUsageLogBatchInsertQuery(keys []string, preparedByKey map[string]usage
 			created_at
 		) AS (VALUES `)
 
-	args := make([]any, 0, len(keys)*51)
+	args := make([]any, 0, len(keys)*66)
 	argPos := 1
 	for idx, key := range keys {
 		if idx > 0 {
@@ -888,6 +936,21 @@ func buildUsageLogBatchInsertQuery(keys []string, preparedByKey map[string]usage
 				account_id,
 				request_id,
 				request_prompt,
+				system_prompt_summary,
+				system_prompt_text,
+				developer_prompt_text,
+				tool_names,
+				tool_call_names,
+				tool_calls_json,
+				output_summary,
+				output_text,
+				request_body_sha256,
+				request_body_bytes,
+				request_body_truncated,
+				response_text_truncated,
+				turn_metadata,
+				ip_location,
+				audit_capture_version,
 				model,
 				requested_model,
 				upstream_model,
@@ -941,6 +1004,21 @@ func buildUsageLogBatchInsertQuery(keys []string, preparedByKey map[string]usage
 				account_id,
 				request_id,
 				request_prompt,
+				system_prompt_summary,
+				system_prompt_text,
+				developer_prompt_text,
+				tool_names,
+				tool_call_names,
+				tool_calls_json,
+				output_summary,
+				output_text,
+				request_body_sha256,
+				request_body_bytes,
+				request_body_truncated,
+				response_text_truncated,
+				turn_metadata,
+				ip_location,
+				audit_capture_version,
 				model,
 				requested_model,
 				upstream_model,
@@ -1034,6 +1112,21 @@ func buildUsageLogBestEffortInsertQuery(preparedList []usageLogInsertPrepared) (
 			account_id,
 			request_id,
 			request_prompt,
+			system_prompt_summary,
+			system_prompt_text,
+			developer_prompt_text,
+			tool_names,
+			tool_call_names,
+			tool_calls_json,
+			output_summary,
+			output_text,
+			request_body_sha256,
+			request_body_bytes,
+			request_body_truncated,
+			response_text_truncated,
+			turn_metadata,
+			ip_location,
+			audit_capture_version,
 			model,
 			requested_model,
 			upstream_model,
@@ -1082,7 +1175,7 @@ func buildUsageLogBestEffortInsertQuery(preparedList []usageLogInsertPrepared) (
 			created_at
 		) AS (VALUES `)
 
-	args := make([]any, 0, len(preparedList)*51)
+	args := make([]any, 0, len(preparedList)*66)
 	argPos := 1
 	for idx, prepared := range preparedList {
 		if idx > 0 {
@@ -1113,6 +1206,21 @@ func buildUsageLogBestEffortInsertQuery(preparedList []usageLogInsertPrepared) (
 			account_id,
 			request_id,
 			request_prompt,
+			system_prompt_summary,
+			system_prompt_text,
+			developer_prompt_text,
+			tool_names,
+			tool_call_names,
+			tool_calls_json,
+			output_summary,
+			output_text,
+			request_body_sha256,
+			request_body_bytes,
+			request_body_truncated,
+			response_text_truncated,
+			turn_metadata,
+			ip_location,
+			audit_capture_version,
 			model,
 			requested_model,
 			upstream_model,
@@ -1166,6 +1274,21 @@ func buildUsageLogBestEffortInsertQuery(preparedList []usageLogInsertPrepared) (
 			account_id,
 			request_id,
 			request_prompt,
+			system_prompt_summary,
+			system_prompt_text,
+			developer_prompt_text,
+			tool_names,
+			tool_call_names,
+			tool_calls_json,
+			output_summary,
+			output_text,
+			request_body_sha256,
+			request_body_bytes,
+			request_body_truncated,
+			response_text_truncated,
+			turn_metadata,
+			ip_location,
+			audit_capture_version,
 			model,
 			requested_model,
 			upstream_model,
@@ -1227,6 +1350,21 @@ func execUsageLogInsertNoResult(ctx context.Context, sqlq sqlExecutor, prepared 
 			account_id,
 			request_id,
 			request_prompt,
+			system_prompt_summary,
+			system_prompt_text,
+			developer_prompt_text,
+			tool_names,
+			tool_call_names,
+			tool_calls_json,
+			output_summary,
+			output_text,
+			request_body_sha256,
+			request_body_bytes,
+			request_body_truncated,
+			response_text_truncated,
+			turn_metadata,
+			ip_location,
+			audit_capture_version,
 			model,
 			requested_model,
 			upstream_model,
@@ -1275,11 +1413,14 @@ func execUsageLogInsertNoResult(ctx context.Context, sqlq sqlExecutor, prepared 
 			created_at
 		) VALUES (
 			$1, $2, $3, $4, $5, $6, $7, $8,
-			$9, $10,
-			$11, $12, $13, $14,
-			$15, $16, $17, $18,
-			$19, $20, $21, $22, $23, $24,
-			$25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51
+			$9, $10, $11, $12, $13, $14, $15, $16,
+			$17, $18, $19, $20, $21, $22, $23, $24,
+			$25, $26, $27, $28, $29, $30, $31, $32,
+			$33, $34, $35, $36, $37, $38, $39, $40,
+			$41, $42, $43, $44, $45, $46, $47, $48,
+			$49, $50, $51, $52, $53, $54, $55, $56,
+			$57, $58, $59, $60, $61, $62, $63, $64,
+			$65, $66
 		)
 		ON CONFLICT (request_id, api_key_id) DO NOTHING
 	`, prepared.args...)
@@ -1300,6 +1441,22 @@ func prepareUsageLogInsert(log *service.UsageLog) usageLogInsertPrepared {
 	requestType := int16(log.RequestType)
 
 	requestPrompt := nullString(log.RequestPrompt)
+	systemPromptSummary := nullString(log.SystemPromptSummary)
+	systemPromptText := nullString(log.SystemPromptText)
+	developerPromptText := nullString(log.DeveloperPromptText)
+	toolNames := nullStringSliceJSON(log.ToolNames)
+	toolCallNames := nullStringSliceJSON(log.ToolCallNames)
+	toolCallsJSON := nullToolCallAuditSliceJSON(log.ToolCallsJSON)
+	outputSummary := nullString(log.OutputSummary)
+	outputText := nullString(log.OutputText)
+	requestBodySHA256 := nullString(log.RequestBodySHA256)
+	requestBodyBytes := nullInt(log.RequestBodyBytes)
+	turnMetadata := nullStringAnyMapJSON(log.TurnMetadata)
+	ipLocation := nullStringAnyMapJSON(log.IPLocation)
+	auditCaptureVersion := log.AuditCaptureVersion
+	if auditCaptureVersion == 0 {
+		auditCaptureVersion = 1
+	}
 	groupID := nullInt64(log.GroupID)
 	subscriptionID := nullInt64(log.SubscriptionID)
 	duration := nullInt(log.DurationMs)
@@ -1341,6 +1498,21 @@ func prepareUsageLogInsert(log *service.UsageLog) usageLogInsertPrepared {
 			log.AccountID,
 			requestIDArg,
 			requestPrompt,
+			systemPromptSummary,
+			systemPromptText,
+			developerPromptText,
+			toolNames,
+			toolCallNames,
+			toolCallsJSON,
+			outputSummary,
+			outputText,
+			requestBodySHA256,
+			requestBodyBytes,
+			log.RequestBodyTruncated,
+			log.ResponseTextTruncated,
+			turnMetadata,
+			ipLocation,
+			auditCaptureVersion,
 			log.Model,
 			nullString(&requestedModel),
 			upstreamModel,
@@ -4266,6 +4438,21 @@ func scanUsageLog(scanner interface{ Scan(...any) error }) (*service.UsageLog, e
 		accountID             int64
 		requestID             sql.NullString
 		requestPrompt         sql.NullString
+		systemPromptSummary   sql.NullString
+		systemPromptText      sql.NullString
+		developerPromptText   sql.NullString
+		toolNames             sql.NullString
+		toolCallNames         sql.NullString
+		toolCallsJSON         sql.NullString
+		outputSummary         sql.NullString
+		outputText            sql.NullString
+		requestBodySHA256     sql.NullString
+		requestBodyBytes      sql.NullInt64
+		requestBodyTruncated  bool
+		responseTextTruncated bool
+		turnMetadata          sql.NullString
+		ipLocation            sql.NullString
+		auditCaptureVersion   int16
 		model                 string
 		requestedModel        sql.NullString
 		upstreamModel         sql.NullString
@@ -4321,6 +4508,21 @@ func scanUsageLog(scanner interface{ Scan(...any) error }) (*service.UsageLog, e
 		&accountID,
 		&requestID,
 		&requestPrompt,
+		&systemPromptSummary,
+		&systemPromptText,
+		&developerPromptText,
+		&toolNames,
+		&toolCallNames,
+		&toolCallsJSON,
+		&outputSummary,
+		&outputText,
+		&requestBodySHA256,
+		&requestBodyBytes,
+		&requestBodyTruncated,
+		&responseTextTruncated,
+		&turnMetadata,
+		&ipLocation,
+		&auditCaptureVersion,
 		&model,
 		&requestedModel,
 		&upstreamModel,
@@ -4412,6 +4614,36 @@ func scanUsageLog(scanner interface{ Scan(...any) error }) (*service.UsageLog, e
 	if requestPrompt.Valid {
 		log.RequestPrompt = &requestPrompt.String
 	}
+	if systemPromptSummary.Valid {
+		log.SystemPromptSummary = &systemPromptSummary.String
+	}
+	if systemPromptText.Valid {
+		log.SystemPromptText = &systemPromptText.String
+	}
+	if developerPromptText.Valid {
+		log.DeveloperPromptText = &developerPromptText.String
+	}
+	log.ToolNames = stringSliceFromNullJSON(toolNames)
+	log.ToolCallNames = stringSliceFromNullJSON(toolCallNames)
+	log.ToolCallsJSON = toolCallAuditSliceFromNullJSON(toolCallsJSON)
+	if outputSummary.Valid {
+		log.OutputSummary = &outputSummary.String
+	}
+	if outputText.Valid {
+		log.OutputText = &outputText.String
+	}
+	if requestBodySHA256.Valid {
+		log.RequestBodySHA256 = &requestBodySHA256.String
+	}
+	if requestBodyBytes.Valid {
+		value := int(requestBodyBytes.Int64)
+		log.RequestBodyBytes = &value
+	}
+	log.RequestBodyTruncated = requestBodyTruncated
+	log.ResponseTextTruncated = responseTextTruncated
+	log.TurnMetadata = stringAnyMapFromNullJSON(turnMetadata)
+	log.IPLocation = stringAnyMapFromNullJSON(ipLocation)
+	log.AuditCaptureVersion = auditCaptureVersion
 	if groupID.Valid {
 		value := groupID.Int64
 		log.GroupID = &value
@@ -4629,6 +4861,81 @@ func stringIntMapFromNullJSON(v sql.NullString) map[string]int {
 		return nil
 	}
 	var out map[string]int
+	if err := json.Unmarshal([]byte(v.String), &out); err != nil {
+		return nil
+	}
+	if len(out) == 0 {
+		return nil
+	}
+	return out
+}
+
+func nullStringSliceJSON(v []string) any {
+	if len(v) == 0 {
+		return nil
+	}
+	payload, err := json.Marshal(v)
+	if err != nil {
+		return nil
+	}
+	return string(payload)
+}
+
+func stringSliceFromNullJSON(v sql.NullString) []string {
+	if !v.Valid || strings.TrimSpace(v.String) == "" {
+		return nil
+	}
+	var out []string
+	if err := json.Unmarshal([]byte(v.String), &out); err != nil {
+		return nil
+	}
+	if len(out) == 0 {
+		return nil
+	}
+	return out
+}
+
+func nullToolCallAuditSliceJSON(v []service.ToolCallAudit) any {
+	if len(v) == 0 {
+		return nil
+	}
+	payload, err := json.Marshal(v)
+	if err != nil {
+		return nil
+	}
+	return string(payload)
+}
+
+func toolCallAuditSliceFromNullJSON(v sql.NullString) []service.ToolCallAudit {
+	if !v.Valid || strings.TrimSpace(v.String) == "" {
+		return nil
+	}
+	var out []service.ToolCallAudit
+	if err := json.Unmarshal([]byte(v.String), &out); err != nil {
+		return nil
+	}
+	if len(out) == 0 {
+		return nil
+	}
+	return out
+}
+
+func nullStringAnyMapJSON(v map[string]any) any {
+	if len(v) == 0 {
+		return nil
+	}
+	payload, err := json.Marshal(v)
+	if err != nil {
+		return nil
+	}
+	return string(payload)
+}
+
+func stringAnyMapFromNullJSON(v sql.NullString) map[string]any {
+	if !v.Valid || strings.TrimSpace(v.String) == "" {
+		return nil
+	}
+	var out map[string]any
 	if err := json.Unmarshal([]byte(v.String), &out); err != nil {
 		return nil
 	}

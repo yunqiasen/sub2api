@@ -484,6 +484,7 @@ func (h *OpenAIGatewayHandler) Responses(c *gin.Context) {
 		userAgent := c.GetHeader("User-Agent")
 		clientIP := ip.GetClientIP(c)
 		requestPayloadHash := service.HashUsageRequestPayload(body)
+		usageAudit := extractUsageAuditForRequest(c, body, nil)
 		inboundEndpoint := GetInboundEndpoint(c)
 		upstreamEndpoint := GetUpstreamEndpoint(c, account.Platform)
 
@@ -500,7 +501,8 @@ func (h *OpenAIGatewayHandler) Responses(c *gin.Context) {
 				UserAgent:          userAgent,
 				IPAddress:          clientIP,
 				RequestPayloadHash: requestPayloadHash,
-				RequestPrompt:      service.ExtractRequestPrompt(body, nil),
+				RequestPrompt:      usageAudit.RequestPrompt,
+				UsageAudit:         usageAudit,
 				APIKeyService:      h.apiKeyService,
 				ChannelUsageFields: channelMapping.ToUsageFields(reqModel, result.UpstreamModel),
 			}); err != nil {
@@ -881,6 +883,7 @@ func (h *OpenAIGatewayHandler) Messages(c *gin.Context) {
 		userAgent := c.GetHeader("User-Agent")
 		clientIP := ip.GetClientIP(c)
 		requestPayloadHash := service.HashUsageRequestPayload(body)
+		usageAudit := extractUsageAuditForRequest(c, body, nil)
 		inboundEndpoint := GetInboundEndpoint(c)
 		upstreamEndpoint := GetUpstreamEndpoint(c, account.Platform)
 
@@ -896,7 +899,8 @@ func (h *OpenAIGatewayHandler) Messages(c *gin.Context) {
 				UserAgent:          userAgent,
 				IPAddress:          clientIP,
 				RequestPayloadHash: requestPayloadHash,
-				RequestPrompt:      service.ExtractRequestPrompt(body, nil),
+				RequestPrompt:      usageAudit.RequestPrompt,
+				UsageAudit:         usageAudit,
 				APIKeyService:      h.apiKeyService,
 				ChannelUsageFields: channelMappingMsg.ToUsageFields(reqModel, result.UpstreamModel),
 			}); err != nil {
@@ -1409,6 +1413,7 @@ func (h *OpenAIGatewayHandler) ResponsesWebSocket(c *gin.Context) {
 		)
 
 		var requestPayloadHash string
+		var usageAudit service.UsageAuditPayload
 		hooks := &service.OpenAIWSIngressHooks{
 			InitialRequestModel: reqModel,
 			BeforeRequest: func(turn int, payload []byte, originalModel string) error {
@@ -1495,7 +1500,8 @@ func (h *OpenAIGatewayHandler) ResponsesWebSocket(c *gin.Context) {
 						UserAgent:          userAgent,
 						IPAddress:          clientIP,
 						RequestPayloadHash: requestPayloadHash,
-						RequestPrompt:      service.ExtractRequestPrompt(firstMessage, nil),
+						RequestPrompt:      usageAudit.RequestPrompt,
+						UsageAudit:         usageAudit,
 						APIKeyService:      h.apiKeyService,
 						ChannelUsageFields: channelMappingWS.ToUsageFields(reqModel, result.UpstreamModel),
 					}); err != nil {
@@ -1529,6 +1535,7 @@ func (h *OpenAIGatewayHandler) ResponsesWebSocket(c *gin.Context) {
 
 		// WebSocket 首包可能很大，hash 必须在 hooks 外算成字符串，避免 AfterTurn 闭包保活请求体。
 		requestPayloadHash = service.HashUsageRequestPayload(wsFirstMessage)
+		usageAudit = extractUsageAuditForRequest(c, wsFirstMessage, nil)
 
 		if err := h.gatewayService.ProxyResponsesWebSocketFromClient(ctx, c, wsConn, account, token, wsFirstMessage, hooks); err != nil {
 			var failoverErr *service.UpstreamFailoverError
