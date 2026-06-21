@@ -219,6 +219,50 @@
           <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
         </template>
 
+        <template #cell-system_prompt_summary="{ row }">
+          <span
+            v-if="row.system_prompt_summary"
+            class="block max-w-[300px] truncate text-sm text-gray-700 dark:text-gray-300"
+            :title="row.system_prompt_summary"
+          >
+            {{ summarizePrompt(row.system_prompt_summary) }}
+          </span>
+          <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
+        </template>
+
+        <template #cell-tool_call_names="{ row }">
+          <span
+            v-if="row.tool_call_names?.length"
+            class="block max-w-[260px] truncate text-sm text-gray-700 dark:text-gray-300"
+            :title="formatAuditList(row.tool_call_names)"
+          >
+            {{ formatAuditList(row.tool_call_names) }}
+          </span>
+          <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
+        </template>
+
+        <template #cell-output_summary="{ row }">
+          <span
+            v-if="row.output_summary"
+            class="block max-w-[320px] truncate text-sm text-gray-700 dark:text-gray-300"
+            :title="row.output_summary"
+          >
+            {{ summarizePrompt(row.output_summary) }}
+          </span>
+          <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
+        </template>
+
+        <template #cell-audit_preview="{ row }">
+          <button
+            type="button"
+            class="whitespace-nowrap rounded border border-primary-200 px-2 py-1 text-xs font-medium text-primary-600 transition-colors hover:bg-primary-50 dark:border-primary-800 dark:text-primary-400 dark:hover:bg-primary-950/40"
+            :class="{ 'opacity-60': !hasUsageAudit(row) }"
+            @click="openAuditDialog(row)"
+          >
+            {{ t('admin.usage.preview') }}
+          </button>
+        </template>
+
         <template #empty><EmptyState :message="t('usage.noRecords')" /></template>
       </DataTable>
     </div>
@@ -232,6 +276,95 @@
   >
     <div class="max-h-[70vh] overflow-auto rounded-lg bg-gray-50 p-4 dark:bg-dark-700">
       <pre class="whitespace-pre-wrap break-words text-sm leading-6 text-gray-800 dark:text-gray-100">{{ promptDialogContent || t('admin.usage.noPrompt') }}</pre>
+    </div>
+  </BaseDialog>
+
+  <BaseDialog
+    :show="auditDialogVisible"
+    :title="t('admin.usage.auditPreview')"
+    width="wide"
+    @close="closeAuditDialog"
+  >
+    <div v-if="auditDialogRow" class="max-h-[74vh] space-y-4 overflow-auto text-sm">
+      <section class="rounded-lg border border-gray-200 bg-white p-4 dark:border-dark-600 dark:bg-dark-800">
+        <h3 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{{ t('admin.usage.basicInfo') }}</h3>
+        <dl class="grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div>
+            <dt class="text-xs text-gray-500 dark:text-gray-400">{{ t('admin.usage.requestId') }}</dt>
+            <dd class="break-all font-mono text-gray-900 dark:text-gray-100">{{ auditDialogRow.request_id || '-' }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs text-gray-500 dark:text-gray-400">{{ t('admin.usage.ipAddress') }}</dt>
+            <dd class="break-all font-mono text-gray-900 dark:text-gray-100">{{ auditDialogRow.ip_address || '-' }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs text-gray-500 dark:text-gray-400">{{ t('admin.usage.requestBodyHash') }}</dt>
+            <dd class="break-all font-mono text-gray-900 dark:text-gray-100">{{ auditDialogRow.request_body_sha256 || '-' }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs text-gray-500 dark:text-gray-400">{{ t('admin.usage.requestBodyBytes') }}</dt>
+            <dd class="text-gray-900 dark:text-gray-100">{{ formatAuditBytes(auditDialogRow.request_body_bytes) }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs text-gray-500 dark:text-gray-400">{{ t('admin.usage.truncated') }}</dt>
+            <dd class="text-gray-900 dark:text-gray-100">
+              {{ t('admin.usage.requestBodyTruncated') }}: {{ formatAuditBool(auditDialogRow.request_body_truncated) }} ·
+              {{ t('admin.usage.responseTextTruncated') }}: {{ formatAuditBool(auditDialogRow.response_text_truncated) }}
+            </dd>
+          </div>
+          <div>
+            <dt class="text-xs text-gray-500 dark:text-gray-400">{{ t('admin.usage.ipLocation') }}</dt>
+            <dd class="break-words text-gray-900 dark:text-gray-100">{{ formatAuditLocation(auditDialogRow.ip_location) || '-' }}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="rounded-lg border border-gray-200 bg-white p-4 dark:border-dark-600 dark:bg-dark-800">
+        <h3 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{{ t('admin.usage.requestPrompt') }}</h3>
+        <pre class="whitespace-pre-wrap break-words rounded bg-gray-50 p-3 text-gray-800 dark:bg-dark-700 dark:text-gray-100">{{ auditDialogRow.request_prompt || t('admin.usage.noPrompt') }}</pre>
+      </section>
+
+      <section class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-dark-600 dark:bg-dark-800">
+          <h3 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{{ t('admin.usage.systemPrompt') }}</h3>
+          <pre class="whitespace-pre-wrap break-words rounded bg-gray-50 p-3 text-gray-800 dark:bg-dark-700 dark:text-gray-100">{{ auditDialogRow.system_prompt_text || auditDialogRow.system_prompt_summary || '-' }}</pre>
+        </div>
+        <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-dark-600 dark:bg-dark-800">
+          <h3 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{{ t('admin.usage.developerPrompt') }}</h3>
+          <pre class="whitespace-pre-wrap break-words rounded bg-gray-50 p-3 text-gray-800 dark:bg-dark-700 dark:text-gray-100">{{ auditDialogRow.developer_prompt_text || '-' }}</pre>
+        </div>
+      </section>
+
+      <section class="rounded-lg border border-gray-200 bg-white p-4 dark:border-dark-600 dark:bg-dark-800">
+        <h3 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{{ t('admin.usage.tools') }}</h3>
+        <div class="mb-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div>
+            <div class="text-xs text-gray-500 dark:text-gray-400">{{ t('admin.usage.availableTools') }}</div>
+            <div class="break-words text-gray-900 dark:text-gray-100">{{ formatAuditList(auditDialogRow.tool_names) || '-' }}</div>
+          </div>
+          <div>
+            <div class="text-xs text-gray-500 dark:text-gray-400">{{ t('admin.usage.actualCalls') }}</div>
+            <div class="break-words text-gray-900 dark:text-gray-100">{{ formatAuditList(auditDialogRow.tool_call_names) || '-' }}</div>
+          </div>
+        </div>
+        <pre class="whitespace-pre-wrap break-words rounded bg-gray-50 p-3 text-xs text-gray-800 dark:bg-dark-700 dark:text-gray-100">{{ formatAuditJSON(auditDialogRow.tool_calls_json) || '-' }}</pre>
+      </section>
+
+      <section class="rounded-lg border border-gray-200 bg-white p-4 dark:border-dark-600 dark:bg-dark-800">
+        <h3 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{{ t('admin.usage.outputSummary') }}</h3>
+        <pre class="whitespace-pre-wrap break-words rounded bg-gray-50 p-3 text-gray-800 dark:bg-dark-700 dark:text-gray-100">{{ auditDialogRow.output_text || auditDialogRow.output_summary || '-' }}</pre>
+      </section>
+
+      <section class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-dark-600 dark:bg-dark-800">
+          <h3 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{{ t('admin.usage.turnMetadata') }}</h3>
+          <pre class="whitespace-pre-wrap break-words rounded bg-gray-50 p-3 text-xs text-gray-800 dark:bg-dark-700 dark:text-gray-100">{{ formatAuditJSON(auditDialogRow.turn_metadata) || '-' }}</pre>
+        </div>
+        <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-dark-600 dark:bg-dark-800">
+          <h3 class="mb-3 font-semibold text-gray-900 dark:text-gray-100">{{ t('admin.usage.ipLocation') }}</h3>
+          <pre class="whitespace-pre-wrap break-words rounded bg-gray-50 p-3 text-xs text-gray-800 dark:bg-dark-700 dark:text-gray-100">{{ formatAuditJSON(auditDialogRow.ip_location) || '-' }}</pre>
+        </div>
+      </section>
     </div>
   </BaseDialog>
 
@@ -513,6 +646,8 @@ const tokenTooltipPosition = ref({ x: 0, y: 0 })
 const tokenTooltipData = ref<AdminUsageLog | null>(null)
 const promptDialogVisible = ref(false)
 const promptDialogContent = ref('')
+const auditDialogVisible = ref(false)
+const auditDialogRow = ref<AdminUsageLog | null>(null)
 
 const getRequestTypeLabel = (row: AdminUsageLog): string => {
   const requestType = resolveUsageRequestType(row)
@@ -556,6 +691,58 @@ const openPromptDialog = (prompt: string) => {
 const closePromptDialog = () => {
   promptDialogVisible.value = false
   promptDialogContent.value = ''
+}
+
+const hasUsageAudit = (row: AdminUsageLog): boolean => Boolean(
+  row.request_prompt ||
+  row.system_prompt_summary ||
+  row.system_prompt_text ||
+  row.developer_prompt_text ||
+  row.tool_names?.length ||
+  row.tool_call_names?.length ||
+  row.tool_calls_json?.length ||
+  row.output_summary ||
+  row.output_text ||
+  row.request_body_sha256 ||
+  row.ip_location ||
+  row.turn_metadata
+)
+
+const openAuditDialog = (row: AdminUsageLog) => {
+  auditDialogRow.value = row
+  auditDialogVisible.value = true
+}
+
+const closeAuditDialog = () => {
+  auditDialogVisible.value = false
+  auditDialogRow.value = null
+}
+
+const formatAuditList = (items?: string[] | null): string => Array.isArray(items) ? items.filter(Boolean).join(', ') : ''
+
+const formatAuditBool = (value?: boolean): string => value ? t('common.yes') : t('common.no')
+
+const formatAuditBytes = (value?: number | null): string => {
+  if (value == null) return '-'
+  return `${value.toLocaleString()} B`
+}
+
+const formatAuditJSON = (value: unknown): string => {
+  if (value == null) return ''
+  try {
+    return JSON.stringify(value, null, 2)
+  } catch {
+    return String(value)
+  }
+}
+
+const formatAuditLocation = (value?: Record<string, unknown> | null): string => {
+  if (!value) return ''
+  const parts = ['country', 'region', 'city', 'timezone']
+    .map((key) => value[key])
+    .filter((item): item is string | number => typeof item === 'string' || typeof item === 'number')
+    .map(String)
+  return parts.length ? parts.join(' / ') : ''
 }
 
 // Cost tooltip functions

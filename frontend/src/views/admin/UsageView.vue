@@ -496,6 +496,25 @@ const getRequestTypeLabel = (log: AdminUsageLog): string => {
   return t('usage.unknown')
 }
 
+const formatExportList = (value?: string[] | null) => Array.isArray(value) ? value.join(', ') : ''
+const formatExportJSON = (value: unknown) => {
+  if (value == null) return ''
+  try {
+    return JSON.stringify(value)
+  } catch {
+    return String(value)
+  }
+}
+const formatExportBool = (value?: boolean) => value ? 'true' : 'false'
+const formatExportLocation = (value?: Record<string, unknown> | null) => {
+  if (!value) return ''
+  const parts = ['country', 'region', 'city', 'timezone']
+    .map((key) => value[key])
+    .filter((item): item is string | number => typeof item === 'string' || typeof item === 'number')
+    .map(String)
+  return parts.length ? parts.join(' / ') : formatExportJSON(value)
+}
+
 const exportToExcel = async () => {
   if (exporting.value) return; exporting.value = true; exportProgress.show = true
   const c = new AbortController(); exportAbortController = c
@@ -513,7 +532,11 @@ const exportToExcel = async () => {
       t('admin.usage.cacheReadCost'), t('admin.usage.cacheCreationCost'),
       t('usage.rate'), t('usage.accountMultiplier'), t('usage.original'), t('usage.userBilled'), t('usage.accountBilled'),
       t('usage.firstToken'), t('usage.duration'),
-      t('admin.usage.requestId'), t('usage.userAgent'), t('admin.usage.ipAddress'), t('admin.usage.requestPrompt')
+      t('admin.usage.requestId'), t('usage.userAgent'), t('admin.usage.ipAddress'), t('admin.usage.requestPrompt'),
+      t('admin.usage.systemPromptSummary'), t('admin.usage.toolNames'), t('admin.usage.actualCalls'),
+      t('admin.usage.outputSummary'), t('admin.usage.requestBodyHash'), t('admin.usage.requestBodyBytes'),
+      t('admin.usage.requestBodyTruncated'), t('admin.usage.responseTextTruncated'), t('admin.usage.ipLocation'),
+      t('admin.usage.turnMetadata')
     ]
     const ws = XLSX.utils.aoa_to_sheet([headers])
     while (true) {
@@ -532,7 +555,11 @@ const exportToExcel = async () => {
         log.rate_multiplier?.toPrecision(4) || '1.00', (log.account_rate_multiplier ?? 1).toPrecision(4),
         log.total_cost?.toFixed(6) || '0.000000', log.actual_cost?.toFixed(6) || '0.000000',
         ((log.account_stats_cost ?? log.total_cost) * (log.account_rate_multiplier ?? 1)).toFixed(6), log.first_token_ms ?? '', log.duration_ms,
-        log.request_id || '', log.user_agent || '', log.ip_address || '', log.request_prompt || ''
+        log.request_id || '', log.user_agent || '', log.ip_address || '', log.request_prompt || '',
+        log.system_prompt_summary || '', formatExportList(log.tool_names), formatExportList(log.tool_call_names),
+        log.output_summary || '', log.request_body_sha256 || '', log.request_body_bytes ?? '',
+        formatExportBool(log.request_body_truncated), formatExportBool(log.response_text_truncated),
+        formatExportLocation(log.ip_location), formatExportJSON(log.turn_metadata)
       ])
       if (rows.length) {
         XLSX.utils.sheet_add_aoa(ws, rows, { origin: -1 })
@@ -554,7 +581,7 @@ const exportToExcel = async () => {
 
 // Column visibility
 const ALWAYS_VISIBLE = ['user', 'created_at']
-const DEFAULT_HIDDEN_COLUMNS = ['reasoning_effort', 'user_agent']
+const DEFAULT_HIDDEN_COLUMNS = ['reasoning_effort', 'user_agent', 'system_prompt_summary', 'tool_call_names', 'output_summary']
 const HIDDEN_COLUMNS_KEY = 'usage-hidden-columns'
 
 const allColumns = computed(() => [
@@ -574,7 +601,11 @@ const allColumns = computed(() => [
   { key: 'created_at', label: t('usage.time'), sortable: true },
   { key: 'user_agent', label: t('usage.userAgent'), sortable: false },
   { key: 'ip_address', label: t('admin.usage.ipAddress'), sortable: false },
-  { key: 'request_prompt', label: t('admin.usage.requestPrompt'), sortable: false }
+  { key: 'request_prompt', label: t('admin.usage.requestPrompt'), sortable: false },
+  { key: 'system_prompt_summary', label: t('admin.usage.systemPromptSummary'), sortable: false },
+  { key: 'tool_call_names', label: t('admin.usage.actualCalls'), sortable: false },
+  { key: 'output_summary', label: t('admin.usage.outputSummary'), sortable: false },
+  { key: 'audit_preview', label: t('admin.usage.auditPreview'), sortable: false }
 ])
 
 const hiddenColumns = reactive<Set<string>>(new Set())

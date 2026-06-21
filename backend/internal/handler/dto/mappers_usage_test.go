@@ -223,6 +223,56 @@ func TestUsageLogFromServiceAdmin_IncludesRequestPrompt(t *testing.T) {
 	require.Equal(t, prompt, *adminDTO.RequestPrompt)
 }
 
+func TestUsageLogFromServiceAdmin_IncludesUsageAuditFields(t *testing.T) {
+	t.Parallel()
+
+	summary := "system summary"
+	systemText := "system full text"
+	developerText := "developer full text"
+	outputSummary := "output summary"
+	outputText := "output full text"
+	bodyHash := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+	bodyBytes := 512
+	log := &service.UsageLog{
+		RequestID:             "req_audit_1",
+		Model:                 "gpt-5.4-mini",
+		SystemPromptSummary:   &summary,
+		SystemPromptText:      &systemText,
+		DeveloperPromptText:   &developerText,
+		ToolNames:             []string{"search_docs", "exec_command"},
+		ToolCallNames:         []string{"exec_command"},
+		ToolCallsJSON:         []service.ToolCallAudit{{ID: "call_1", Name: "exec_command"}},
+		OutputSummary:         &outputSummary,
+		OutputText:            &outputText,
+		RequestBodySHA256:     &bodyHash,
+		RequestBodyBytes:      &bodyBytes,
+		RequestBodyTruncated:  true,
+		ResponseTextTruncated: true,
+		TurnMetadata:          map[string]any{"protocol": "responses"},
+		IPLocation:            map[string]any{"country": "US"},
+		AuditCaptureVersion:   1,
+	}
+
+	adminDTO := UsageLogFromServiceAdmin(log)
+	require.NotNil(t, adminDTO)
+	require.Equal(t, summary, *adminDTO.SystemPromptSummary)
+	require.Equal(t, systemText, *adminDTO.SystemPromptText)
+	require.Equal(t, developerText, *adminDTO.DeveloperPromptText)
+	require.Equal(t, []string{"search_docs", "exec_command"}, adminDTO.ToolNames)
+	require.Equal(t, []string{"exec_command"}, adminDTO.ToolCallNames)
+	require.Len(t, adminDTO.ToolCallsJSON, 1)
+	require.Equal(t, "call_1", adminDTO.ToolCallsJSON[0].ID)
+	require.Equal(t, outputSummary, *adminDTO.OutputSummary)
+	require.Equal(t, outputText, *adminDTO.OutputText)
+	require.Equal(t, bodyHash, *adminDTO.RequestBodySHA256)
+	require.Equal(t, bodyBytes, *adminDTO.RequestBodyBytes)
+	require.True(t, adminDTO.RequestBodyTruncated)
+	require.True(t, adminDTO.ResponseTextTruncated)
+	require.Equal(t, "responses", adminDTO.TurnMetadata["protocol"])
+	require.Equal(t, "US", adminDTO.IPLocation["country"])
+	require.Equal(t, int16(1), adminDTO.AuditCaptureVersion)
+}
+
 func f64Ptr(value float64) *float64 {
 	return &value
 }

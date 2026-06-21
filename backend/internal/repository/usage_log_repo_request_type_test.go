@@ -292,11 +292,11 @@ func TestPrepareUsageLogInsert_PersistsImageSizeMetadata(t *testing.T) {
 		CreatedAt:          time.Date(2025, 1, 6, 12, 0, 0, 0, time.UTC),
 	})
 
-	require.Equal(t, sql.NullString{String: imageSize, Valid: true}, prepared.args[35])
-	require.Equal(t, sql.NullString{String: inputSize, Valid: true}, prepared.args[36])
-	require.Equal(t, sql.NullString{String: outputSize, Valid: true}, prepared.args[37])
-	require.Equal(t, sql.NullString{String: source, Valid: true}, prepared.args[38])
-	breakdownJSON, ok := prepared.args[39].(string)
+	require.Equal(t, sql.NullString{String: imageSize, Valid: true}, prepared.args[50])
+	require.Equal(t, sql.NullString{String: inputSize, Valid: true}, prepared.args[51])
+	require.Equal(t, sql.NullString{String: outputSize, Valid: true}, prepared.args[52])
+	require.Equal(t, sql.NullString{String: source, Valid: true}, prepared.args[53])
+	breakdownJSON, ok := prepared.args[54].(string)
 	require.True(t, ok)
 	require.JSONEq(t, `{"1K":1,"4K":1}`, breakdownJSON)
 }
@@ -640,6 +640,22 @@ func TestScanUsageLogRequestTypeAndLegacyFallback(t *testing.T) {
 			int64(33),
 			sql.NullString{Valid: true, String: "req-image-metadata"},
 			sql.NullString{},
+			// audit fields
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullInt64{},
+			false,
+			false,
+			sql.NullString{},
+			sql.NullString{},
+			int16(0),
 			"gpt-image-2",
 			sql.NullString{Valid: true, String: "gpt-image-2"},
 			sql.NullString{},
@@ -698,6 +714,22 @@ func TestScanUsageLogRequestTypeAndLegacyFallback(t *testing.T) {
 			int64(30), // account_id
 			sql.NullString{Valid: true, String: "req-1"},
 			sql.NullString{},
+			// audit fields
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullInt64{},
+			false,
+			false,
+			sql.NullString{},
+			sql.NullString{},
+			int16(0),
 			"gpt-5", // model
 			sql.NullString{Valid: true, String: "gpt-5"}, // requested_model
 			sql.NullString{},  // upstream_model
@@ -762,6 +794,22 @@ func TestScanUsageLogRequestTypeAndLegacyFallback(t *testing.T) {
 			int64(31),
 			sql.NullString{Valid: true, String: "req-2"},
 			sql.NullString{},
+			// audit fields
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullInt64{},
+			false,
+			false,
+			sql.NullString{},
+			sql.NullString{},
+			int16(0),
 			"gpt-5",
 			sql.NullString{Valid: true, String: "gpt-5"},
 			sql.NullString{},
@@ -815,6 +863,22 @@ func TestScanUsageLogRequestTypeAndLegacyFallback(t *testing.T) {
 			int64(32),
 			sql.NullString{Valid: true, String: "req-3"},
 			sql.NullString{},
+			// audit fields
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullString{},
+			sql.NullInt64{},
+			false,
+			false,
+			sql.NullString{},
+			sql.NullString{},
+			int16(0),
 			"gpt-5.4",
 			sql.NullString{Valid: true, String: "gpt-5.4"},
 			sql.NullString{},

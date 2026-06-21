@@ -1276,6 +1276,16 @@ export interface UsageLogAccountSummary {
   name: string
 }
 
+export interface UsageToolCallAudit {
+  id?: string
+  type?: string
+  name?: string
+  arguments_summary?: string
+  arguments_sha256?: string
+  arguments_bytes?: number
+  arguments_truncated?: boolean
+}
+
 export interface AdminUsageLog extends UsageLog {
   upstream_model?: string | null
   model_mapping_chain?: string | null
@@ -1294,6 +1304,23 @@ export interface AdminUsageLog extends UsageLog {
 
   // 用户请求提示词（仅管理员可见）
   request_prompt?: string | null
+
+  // 请求审计字段（仅管理员可见）
+  system_prompt_summary?: string | null
+  system_prompt_text?: string | null
+  developer_prompt_text?: string | null
+  tool_names?: string[] | null
+  tool_call_names?: string[] | null
+  tool_calls_json?: UsageToolCallAudit[] | null
+  output_summary?: string | null
+  output_text?: string | null
+  request_body_sha256?: string | null
+  request_body_bytes?: number | null
+  request_body_truncated?: boolean
+  response_text_truncated?: boolean
+  turn_metadata?: Record<string, unknown> | null
+  ip_location?: Record<string, unknown> | null
+  audit_capture_version?: number
 
   // 最小账号信息（仅管理员接口返回）
   account?: UsageLogAccountSummary

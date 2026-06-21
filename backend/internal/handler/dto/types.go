@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Wei-Shaw/sub2api/internal/domain"
+	"github.com/Wei-Shaw/sub2api/internal/service"
 )
 
 type User struct {
@@ -520,6 +521,24 @@ type AdminUsageLog struct {
 
 	// RequestPrompt 用户请求提示词（仅管理员可见）
 	RequestPrompt *string `json:"request_prompt,omitempty"`
+
+	// 请求审计字段（仅管理员可见）。这些字段来自 usage_logs 的二开扩展，
+	// 用于使用记录页的请求详情预览和导出，不包含 Authorization/Cookie 等敏感头。
+	SystemPromptSummary   *string                 `json:"system_prompt_summary,omitempty"`
+	SystemPromptText      *string                 `json:"system_prompt_text,omitempty"`
+	DeveloperPromptText   *string                 `json:"developer_prompt_text,omitempty"`
+	ToolNames             []string                `json:"tool_names,omitempty"`
+	ToolCallNames         []string                `json:"tool_call_names,omitempty"`
+	ToolCallsJSON         []service.ToolCallAudit `json:"tool_calls_json,omitempty"`
+	OutputSummary         *string                 `json:"output_summary,omitempty"`
+	OutputText            *string                 `json:"output_text,omitempty"`
+	RequestBodySHA256     *string                 `json:"request_body_sha256,omitempty"`
+	RequestBodyBytes      *int                    `json:"request_body_bytes,omitempty"`
+	RequestBodyTruncated  bool                    `json:"request_body_truncated,omitempty"`
+	ResponseTextTruncated bool                    `json:"response_text_truncated,omitempty"`
+	TurnMetadata          map[string]any          `json:"turn_metadata,omitempty"`
+	IPLocation            map[string]any          `json:"ip_location,omitempty"`
+	AuditCaptureVersion   int16                   `json:"audit_capture_version,omitempty"`
 
 	// Account 最小账号信息（避免泄露敏感字段）
 	Account *AccountSummary `json:"account,omitempty"`

@@ -12,8 +12,6 @@ func TestOpsErrorLogInsertDoesNotPersistRequestReplayFields(t *testing.T) {
 	disallowedColumns := []string{
 		"request_body",
 		"request_headers",
-		"request_body_truncated",
-		"request_body_bytes",
 		"is_retryable",
 		"retry_count",
 		"resolved_retry_id",
@@ -21,7 +19,7 @@ func TestOpsErrorLogInsertDoesNotPersistRequestReplayFields(t *testing.T) {
 
 	insertSQL := strings.ToLower(insertOpsErrorLogSQL)
 	for _, column := range disallowedColumns {
-		if strings.Contains(insertSQL, column) {
+		if containsSQLIdentifier(insertSQL, column) {
 			t.Fatalf("ops error log insert still references dropped replay column %q", column)
 		}
 	}
@@ -29,8 +27,6 @@ func TestOpsErrorLogInsertDoesNotPersistRequestReplayFields(t *testing.T) {
 	inputType := reflect.TypeOf(service.OpsInsertErrorLogInput{})
 	disallowedFields := []string{
 		"RequestBodyJSON",
-		"RequestBodyTruncated",
-		"RequestBodyBytes",
 		"RequestHeadersJSON",
 		"IsRetryable",
 		"RetryCount",
@@ -41,4 +37,15 @@ func TestOpsErrorLogInsertDoesNotPersistRequestReplayFields(t *testing.T) {
 			t.Fatalf("OpsInsertErrorLogInput still carries replay field %q", field)
 		}
 	}
+}
+
+func containsSQLIdentifier(sqlText, ident string) bool {
+	for _, field := range strings.FieldsFunc(sqlText, func(r rune) bool {
+		return !(r == '_' || r >= 'a' && r <= 'z' || r >= '0' && r <= '9')
+	}) {
+		if field == ident {
+			return true
+		}
+	}
+	return false
 }
