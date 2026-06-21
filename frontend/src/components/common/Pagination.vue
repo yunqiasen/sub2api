@@ -164,7 +164,7 @@ const toItem = computed(() => {
 const pageSizeSelectOptions = computed(() => {
   const options = Array.from(
     new Set([
-      ...getConfiguredTablePageSizeOptions(),
+      ...props.pageSizeOptions,
       normalizeTablePageSize(props.pageSize)
     ])
   ).sort((a, b) => a - b)
@@ -222,9 +222,20 @@ const goToPage = (newPage: number) => {
   }
 }
 
+const normalizePageSizeToOptions = (value: unknown): number => {
+  const size = Number(value)
+  if (!Number.isInteger(size) || size <= 0) return normalizeTablePageSize(value)
+  const options = [...props.pageSizeOptions].sort((a, b) => a - b)
+  if (options.length === 0) return normalizeTablePageSize(size)
+  for (const option of options) {
+    if (option >= size) return option
+  }
+  return options[options.length - 1]
+}
+
 const handlePageSizeChange = (value: string | number | boolean | null) => {
   if (value === null || typeof value === 'boolean') return
-  const newPageSize = normalizeTablePageSize(typeof value === 'string' ? parseInt(value, 10) : value)
+  const newPageSize = normalizePageSizeToOptions(typeof value === 'string' ? parseInt(value, 10) : value)
   setPersistedPageSize(newPageSize)
   emit('update:pageSize', newPageSize)
 }

@@ -8,19 +8,29 @@
         {{ t('admin.accounts.bulkEdit.title') }}
       </span>
       <template v-if="selectedIds.length > 0">
-      <button
-        @click="$emit('select-page')"
-        class="text-xs font-medium text-primary-700 hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200"
-      >
-        {{ t('admin.accounts.bulkActions.selectCurrentPage') }}
-      </button>
-      <span class="text-gray-300 dark:text-primary-800">•</span>
-      <button
-        @click="$emit('clear')"
-        class="text-xs font-medium text-primary-700 hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200"
-      >
-        {{ t('admin.accounts.bulkActions.clear') }}
-      </button>
+        <button
+          @click="$emit('select-page')"
+          class="text-xs font-medium text-primary-700 hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200"
+        >
+          {{ t('admin.accounts.bulkActions.selectCurrentPage') }}
+        </button>
+        <span class="text-gray-300 dark:text-primary-800">•</span>
+        <button
+          @click="$emit('clear')"
+          class="text-xs font-medium text-primary-700 hover:text-primary-800 dark:text-primary-300 dark:hover:text-primary-200"
+        >
+          {{ t('admin.accounts.bulkActions.clear') }}
+        </button>
+      </template>
+      <template v-if="canDeleteGroup">
+        <span class="text-gray-300 dark:text-primary-800">•</span>
+        <button
+          @click="$emit('delete-group')"
+          class="text-xs font-semibold text-red-600 hover:text-red-700 dark:text-red-300 dark:hover:text-red-200"
+          :title="groupName || undefined"
+        >
+          {{ t('admin.accounts.bulkActions.deleteCurrentGroup') }}
+        </button>
       </template>
     </div>
     <div class="flex gap-2">
@@ -41,5 +51,27 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-defineProps(['selectedIds']); defineEmits(['delete', 'edit-selected', 'edit-filtered', 'clear', 'select-page', 'toggle-schedulable', 'reset-status', 'refresh-token']); const { t } = useI18n()
+
+withDefaults(defineProps<{
+  selectedIds: number[]
+  canDeleteGroup?: boolean
+  groupName?: string
+}>(), {
+  canDeleteGroup: false,
+  groupName: ''
+})
+
+defineEmits<{
+  delete: []
+  'delete-group': []
+  'edit-selected': []
+  'edit-filtered': []
+  clear: []
+  'select-page': []
+  'toggle-schedulable': [schedulable: boolean]
+  'reset-status': []
+  'refresh-token': []
+}>()
+
+const { t } = useI18n()
 </script>

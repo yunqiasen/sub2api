@@ -132,6 +132,10 @@ type UpdateAccountRequest struct {
 	ConfirmMixedChannelRisk *bool          `json:"confirm_mixed_channel_risk"` // 用户确认混合渠道风险
 }
 
+type DeleteGroupAccountsRequest struct {
+	GroupID int64 `json:"group_id" binding:"required"`
+}
+
 // BulkUpdateAccountsRequest represents the payload for bulk editing accounts
 type BulkUpdateAccountsRequest struct {
 	AccountIDs              []int64                   `json:"account_ids"`
@@ -694,6 +698,28 @@ func (h *AccountHandler) Delete(c *gin.Context) {
 	}
 
 	response.Success(c, gin.H{"message": "Account deleted successfully"})
+}
+
+// DeleteGroupAccounts handles deleting every account bound to one concrete group.
+// POST /api/v1/admin/accounts/bulk-delete-group
+func (h *AccountHandler) DeleteGroupAccounts(c *gin.Context) {
+	var req DeleteGroupAccountsRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, err.Error())
+		return
+	}
+	if req.GroupID <= 0 {
+		response.BadRequest(c, "group_id is required")
+		return
+	}
+
+	result, err := h.adminService.DeleteAccountsByGroup(c.Request.Context(), req.GroupID)
+	if err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+
+	response.Success(c, result)
 }
 
 // TestAccountRequest represents the request body for testing an account

@@ -652,9 +652,12 @@ export async function refreshOpenAIToken(
  * Batch operation result type
  */
 export interface BatchOperationResult {
-  total: number
+  total?: number
   success: number
   failed: number
+  success_ids?: number[]
+  failed_ids?: number[]
+  results?: Array<{ account_id: number; success: boolean; error?: string }>
   errors?: Array<{ account_id: number; error: string }>
   warnings?: Array<{ account_id: number; warning: string }>
 }
@@ -666,6 +669,20 @@ export interface BatchOperationResult {
  */
 export async function revertProxyFallback(id: number): Promise<{ message: string }> {
   const { data } = await apiClient.post<{ message: string }>(`/admin/accounts/${id}/revert-proxy-fallback`)
+  return data
+}
+
+/**
+ * Delete all accounts bound to one concrete group.
+ * @param groupId - Group ID
+ * @returns Batch operation result
+ */
+export async function bulkDeleteGroup(groupId: number): Promise<BatchOperationResult> {
+  const { data } = await apiClient.post<BatchOperationResult>('/admin/accounts/bulk-delete-group', {
+    group_id: groupId
+  }, {
+    timeout: 300000
+  })
   return data
 }
 
@@ -737,6 +754,7 @@ export const accountsAPI = {
   batchCreate,
   batchUpdateCredentials,
   bulkUpdate,
+  bulkDeleteGroup,
   previewFromCrs,
   syncFromCrs,
   exportData,

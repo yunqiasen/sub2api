@@ -372,6 +372,10 @@ func (s *stubAdminService) DeleteAccount(ctx context.Context, id int64) error {
 	return nil
 }
 
+func (s *stubAdminService) DeleteAccountsByGroup(ctx context.Context, groupID int64) (*service.BulkUpdateAccountsResult, error) {
+	return &service.BulkUpdateAccountsResult{}, nil
+}
+
 func (s *stubAdminService) RefreshAccountCredentials(ctx context.Context, id int64) (*service.Account, error) {
 	account := service.Account{ID: id, Name: "account", Status: service.StatusActive}
 	return &account, nil

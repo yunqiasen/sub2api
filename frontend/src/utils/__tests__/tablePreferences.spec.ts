@@ -43,7 +43,7 @@ describe('tablePreferences', () => {
   it('normalizes invalid options without rewriting the configured default itself', () => {
     window.__APP_CONFIG__ = {
       table_default_page_size: 35,
-      table_page_size_options: [1001, 50, 10, 10, 2, 0]
+      table_page_size_options: [2001, 50, 10, 10, 2, 0]
     } as any
 
     expect(getConfiguredTableDefaultPageSize()).toBe(35)

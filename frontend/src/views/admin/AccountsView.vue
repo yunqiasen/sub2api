@@ -174,7 +174,10 @@
       <template #table>
         <AccountBulkActionsBar
           :selected-ids="selIds"
+          :can-delete-group="canBulkDeleteCurrentGroup"
+          :group-name="bulkDeleteGroupName"
           @delete="handleBulkDelete"
+          @delete-group="handleBulkDeleteCurrentGroup"
           @reset-status="handleBulkResetStatus"
           @refresh-token="handleBulkRefreshToken"
           @edit-selected="openBulkEditSelected"
@@ -360,7 +363,7 @@
         </DataTable>
         </div>
       </template>
-      <template #pagination><Pagination v-if="pagination.total > 0" :page="pagination.page" :total="pagination.total" :page-size="pagination.page_size" @update:page="handlePageChange" @update:pageSize="handlePageSizeChange" /></template>
+      <template #pagination><Pagination v-if="pagination.total > 0" :page="pagination.page" :total="pagination.total" :page-size="pagination.page_size" :page-size-options="ACCOUNT_PAGE_SIZE_OPTIONS" @update:page="handlePageChange" @update:pageSize="handlePageSizeChange" /></template>
     </TablePageLayout>
     <CreateAccountModal :show="showCreate" :proxies="proxies" :groups="groups" @close="showCreate = false" @created="reload" />
     <EditAccountModal :show="showEdit" :account="edAcc" :proxies="proxies" :groups="groups" @close="showEdit = false" @updated="handleAccountUpdated" />
@@ -520,6 +523,8 @@ const HIDDEN_COLUMNS_KEY = 'account-hidden-columns'
 
 // Sorting settings
 const ACCOUNT_SORT_STORAGE_KEY = 'account-table-sort'
+const ACCOUNT_PAGE_SIZE_STORAGE_KEY = 'account-table-page-size'
+const ACCOUNT_PAGE_SIZE_OPTIONS = [20, 50, 100, 200, 500, 1000, 2000]
 type AccountSortOrder = 'asc' | 'desc'
 type AccountSortState = {
   sort_by: string
@@ -551,6 +556,33 @@ const loadInitialAccountSortState = (): AccountSortState => {
     return fallback
   }
 }
+const normalizeAccountPageSize = (value: unknown): number => {
+  const size = Number(value)
+  if (!Number.isInteger(size) || size <= 0) return 20
+  for (const option of ACCOUNT_PAGE_SIZE_OPTIONS) {
+    if (option >= size) return option
+  }
+  return ACCOUNT_PAGE_SIZE_OPTIONS[ACCOUNT_PAGE_SIZE_OPTIONS.length - 1]
+}
+
+const loadInitialAccountPageSize = (): number => {
+  try {
+    const raw = localStorage.getItem(ACCOUNT_PAGE_SIZE_STORAGE_KEY)
+    if (!raw) return 20
+    return normalizeAccountPageSize(raw)
+  } catch {
+    return 20
+  }
+}
+
+const persistAccountPageSize = (size: number) => {
+  try {
+    localStorage.setItem(ACCOUNT_PAGE_SIZE_STORAGE_KEY, String(size))
+  } catch {
+    // ignore storage write failures
+  }
+}
+
 const sortState = reactive<AccountSortState>(loadInitialAccountSortState())
 
 // Auto refresh settings
@@ -754,7 +786,8 @@ const {
     search: '',
     sort_by: sortState.sort_by,
     sort_order: sortState.sort_order
-  }
+  },
+  pageSize: loadInitialAccountPageSize()
 })
 
 const {
@@ -833,10 +866,12 @@ const handlePageChange = (page: number) => {
 }
 
 const handlePageSizeChange = (size: number) => {
+  const normalizedSize = normalizeAccountPageSize(size)
+  persistAccountPageSize(normalizedSize)
   hasPendingListSync.value = false
   resetAutoRefreshCache()
   pendingTodayStatsRefresh.value = true
-  baseHandlePageSizeChange(size)
+  baseHandlePageSizeChange(normalizedSize)
 }
 
 const handleSort = (key: string, order: AccountSortOrder) => {
@@ -1227,7 +1262,66 @@ const toggleSelectAllVisible = (event: Event) => {
   const target = event.target as HTMLInputElement
   toggleVisible(target.checked)
 }
-const handleBulkDelete = async () => { if(!confirm(t('common.confirm'))) return; try { await Promise.all(selIds.value.map(id => adminAPI.accounts.delete(id))); clearSelection(); reload() } catch (error) { console.error('Failed to bulk delete accounts:', error) } }
+
+const currentGroupIDForBulkDelete = computed<number | null>(() => {
+  const raw = String(params.group || '').trim()
+  if (!raw || raw === ACCOUNT_UNGROUPED_GROUP_QUERY_VALUE) return null
+  const id = Number(raw)
+  return Number.isInteger(id) && id > 0 ? id : null
+})
+
+const bulkDeleteGroupName = computed(() => {
+  const groupID = currentGroupIDForBulkDelete.value
+  if (!groupID) return ''
+  return groups.value.find(group => group.id === groupID)?.name || `#${groupID}`
+})
+
+const canBulkDeleteCurrentGroup = computed(() => currentGroupIDForBulkDelete.value !== null)
+
+const handleBulkDelete = async () => {
+  if (!confirm(t('admin.accounts.bulkDeleteConfirm', { count: selIds.value.length }))) return
+  try {
+    await Promise.all(selIds.value.map(id => adminAPI.accounts.delete(id)))
+    const count = selIds.value.length
+    clearSelection()
+    appStore.showSuccess(t('admin.accounts.bulkDeleteSuccess', { count }))
+    reload()
+  } catch (error: any) {
+    console.error('Failed to bulk delete accounts:', error)
+    appStore.showError(error?.message || t('admin.accounts.bulkDeleteFailed'))
+  }
+}
+
+const handleBulkDeleteCurrentGroup = async () => {
+  const groupID = currentGroupIDForBulkDelete.value
+  if (!groupID) {
+    appStore.showError(t('admin.accounts.bulkDeleteGroupSelectRequired'))
+    return
+  }
+  const groupName = bulkDeleteGroupName.value
+  try {
+    const preview = await adminAPI.accounts.list(1, 1, { group: String(groupID) })
+    const count = preview.total || 0
+    if (count <= 0) {
+      appStore.showSuccess(t('admin.accounts.bulkDeleteGroupNoAccounts', { name: groupName }))
+      return
+    }
+    const typed = window.prompt(t('admin.accounts.bulkDeleteGroupPrompt', { name: groupName, count }))
+    if (typed !== groupName) return
+
+    const result = await adminAPI.accounts.bulkDeleteGroup(groupID)
+    clearSelection()
+    if (result.failed > 0) {
+      appStore.showError(t('admin.accounts.bulkDeleteGroupPartial', { name: groupName, success: result.success, failed: result.failed }))
+    } else {
+      appStore.showSuccess(t('admin.accounts.bulkDeleteGroupSuccess', { name: groupName, count: result.success }))
+    }
+    reload()
+  } catch (error: any) {
+    console.error('Failed to delete accounts by group:', error)
+    appStore.showError(error?.message || t('admin.accounts.bulkDeleteGroupFailed'))
+  }
+}
 const handleBulkResetStatus = async () => {
   if (!confirm(t('common.confirm'))) return
   try {

@@ -85,6 +85,7 @@ type AdminService interface {
 	// 用于刷新流程持久化 account_uuid / org_uuid 等少量键，避免被全量快照覆盖。
 	UpdateAccountExtra(ctx context.Context, id int64, updates map[string]any) error
 	DeleteAccount(ctx context.Context, id int64) error
+	DeleteAccountsByGroup(ctx context.Context, groupID int64) (*BulkUpdateAccountsResult, error)
 	RefreshAccountCredentials(ctx context.Context, id int64) (*Account, error)
 	ClearAccountError(ctx context.Context, id int64) (*Account, error)
 	SetAccountError(ctx context.Context, id int64, errorMsg string) error
@@ -2992,6 +2993,48 @@ func (s *adminServiceImpl) DeleteAccount(ctx context.Context, id int64) error {
 		return err
 	}
 	return nil
+}
+
+// DeleteAccountsByGroup deletes every account currently bound to a concrete group.
+// The group id is mandatory so callers cannot accidentally delete all accounts.
+func (s *adminServiceImpl) DeleteAccountsByGroup(ctx context.Context, groupID int64) (*BulkUpdateAccountsResult, error) {
+	if groupID <= 0 {
+		return nil, infraerrors.BadRequest("GROUP_REQUIRED", "group_id is required")
+	}
+	if s.groupRepo == nil {
+		return nil, errors.New("group repository is required")
+	}
+	if _, err := s.groupRepo.GetByID(ctx, groupID); err != nil {
+		return nil, err
+	}
+
+	accountIDs, err := s.resolveBulkUpdateTargetIDs(ctx, &BulkUpdateAccountFilters{
+		Group: strconv.FormatInt(groupID, 10),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	result := &BulkUpdateAccountsResult{
+		SuccessIDs: make([]int64, 0, len(accountIDs)),
+		FailedIDs:  make([]int64, 0, len(accountIDs)),
+		Results:    make([]BulkUpdateAccountResult, 0, len(accountIDs)),
+	}
+	for _, accountID := range accountIDs {
+		entry := BulkUpdateAccountResult{AccountID: accountID}
+		if err := s.DeleteAccount(ctx, accountID); err != nil {
+			entry.Success = false
+			entry.Error = err.Error()
+			result.Failed++
+			result.FailedIDs = append(result.FailedIDs, accountID)
+		} else {
+			entry.Success = true
+			result.Success++
+			result.SuccessIDs = append(result.SuccessIDs, accountID)
+		}
+		result.Results = append(result.Results, entry)
+	}
+	return result, nil
 }
 
 func (s *adminServiceImpl) RefreshAccountCredentials(ctx context.Context, id int64) (*Account, error) {
