@@ -96,6 +96,20 @@ type OpsInsertErrorLogInput struct {
 	RequestType *int16
 	UserAgent   string
 
+	RequestPrompt        string
+	SystemPromptSummary  *string
+	SystemPromptText     *string
+	DeveloperPromptText  *string
+	ToolNames            []string
+	ToolCallNames        []string
+	OutputSummary        *string
+	RequestBodySHA256    *string
+	RequestBodyBytes     *int
+	RequestBodyTruncated bool
+	TurnMetadata         map[string]any
+	IPLocation           map[string]any
+	AuditCaptureVersion  int16
+
 	ErrorPhase        string
 	ErrorType         string
 	Severity          string

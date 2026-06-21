@@ -451,3 +451,34 @@ func copyStringAnyMap(in map[string]any) map[string]any {
 	}
 	return out
 }
+
+// ApplyUsageAuditToOpsErrorLogInput copies non-empty audit fields into an ops error input.
+func ApplyUsageAuditToOpsErrorLogInput(input *OpsInsertErrorLogInput, audit UsageAuditPayload) {
+	if input == nil {
+		return
+	}
+	if audit.RequestPrompt != "" {
+		input.RequestPrompt = audit.RequestPrompt
+	}
+	input.SystemPromptSummary = stringPtrIfNotEmpty(audit.SystemPromptSummary)
+	input.SystemPromptText = stringPtrIfNotEmpty(audit.SystemPromptText)
+	input.DeveloperPromptText = stringPtrIfNotEmpty(audit.DeveloperPromptText)
+	input.ToolNames = append([]string(nil), audit.ToolNames...)
+	input.ToolCallNames = append([]string(nil), audit.ToolCallNames...)
+	input.OutputSummary = stringPtrIfNotEmpty(audit.OutputSummary)
+	input.RequestBodySHA256 = stringPtrIfNotEmpty(audit.RequestBodySHA256)
+	if audit.RequestBodyBytes > 0 {
+		bytes := audit.RequestBodyBytes
+		input.RequestBodyBytes = &bytes
+	}
+	input.RequestBodyTruncated = audit.RequestBodyTruncated
+	if len(audit.TurnMetadata) > 0 {
+		input.TurnMetadata = copyStringAnyMap(audit.TurnMetadata)
+	}
+	if len(audit.IPLocation) > 0 {
+		input.IPLocation = copyStringAnyMap(audit.IPLocation)
+	}
+	if audit.AuditCaptureVersion > 0 {
+		input.AuditCaptureVersion = audit.AuditCaptureVersion
+	}
+}

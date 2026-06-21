@@ -36,6 +36,19 @@ INSERT INTO ops_error_logs (
   upstream_model,
   request_type,
   user_agent,
+  request_prompt,
+  system_prompt_summary,
+  system_prompt_text,
+  developer_prompt_text,
+  tool_names,
+  tool_call_names,
+  output_summary,
+  request_body_sha256,
+  request_body_bytes,
+  request_body_truncated,
+  turn_metadata,
+  ip_location,
+  audit_capture_version,
   error_phase,
   error_type,
   severity,
@@ -61,7 +74,10 @@ INSERT INTO ops_error_logs (
   deleted_key_name,
   api_key_prefix
 ) VALUES (
-  $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35,$36,$37,$38,$39,$40,$41
+  $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,
+  $19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,
+  $35,$36,$37,$38,$39,$40,$41,$42,$43,$44,$45,$46,$47,$48,$49,$50,
+  $51,$52,$53,$54
 )`
 
 func NewOpsRepository(db *sql.DB) service.OpsRepository {
@@ -150,6 +166,19 @@ func opsInsertErrorLogArgs(input *service.OpsInsertErrorLogInput) []any {
 		opsNullString(input.UpstreamModel),
 		opsNullInt16(input.RequestType),
 		opsNullString(input.UserAgent),
+		opsNullString(input.RequestPrompt),
+		opsNullString(input.SystemPromptSummary),
+		opsNullString(input.SystemPromptText),
+		opsNullString(input.DeveloperPromptText),
+		opsNullStringSliceJSON(input.ToolNames),
+		opsNullStringSliceJSON(input.ToolCallNames),
+		opsNullString(input.OutputSummary),
+		opsNullString(input.RequestBodySHA256),
+		opsNullInt(input.RequestBodyBytes),
+		input.RequestBodyTruncated,
+		opsNullStringAnyMapJSON(input.TurnMetadata),
+		opsNullStringAnyMapJSON(input.IPLocation),
+		opsAuditCaptureVersion(input.AuditCaptureVersion),
 		input.ErrorPhase,
 		input.ErrorType,
 		opsNullString(input.Severity),
@@ -1161,6 +1190,28 @@ func opsNullString(v any) any {
 	}
 }
 
+func opsNullStringSliceJSON(v []string) any {
+	if len(v) == 0 {
+		return nil
+	}
+	payload, err := json.Marshal(v)
+	if err != nil {
+		return nil
+	}
+	return string(payload)
+}
+
+func opsNullStringAnyMapJSON(v map[string]any) any {
+	if len(v) == 0 {
+		return nil
+	}
+	payload, err := json.Marshal(v)
+	if err != nil {
+		return nil
+	}
+	return string(payload)
+}
+
 func opsNullInt64(v *int64) any {
 	if v == nil || *v == 0 {
 		return sql.NullInt64{}
@@ -1197,4 +1248,11 @@ func opsNullInt16(v *int16) any {
 		return sql.NullInt64{}
 	}
 	return sql.NullInt64{Int64: int64(*v), Valid: true}
+}
+
+func opsAuditCaptureVersion(v int16) int16 {
+	if v <= 0 {
+		return 1
+	}
+	return v
 }

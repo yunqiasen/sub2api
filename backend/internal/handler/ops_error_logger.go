@@ -760,6 +760,9 @@ func OpsErrorLoggerMiddleware(ops *service.OpsService) gin.HandlerFunc {
 
 				CreatedAt: time.Now(),
 			}
+			if audit, ok := getOpsUsageAuditContext(c); ok {
+				service.ApplyUsageAuditToOpsErrorLogInput(entry, audit)
+			}
 			applyOpsLatencyFieldsFromContext(c, entry)
 
 			if apiKey != nil {
@@ -896,6 +899,9 @@ func OpsErrorLoggerMiddleware(ops *service.OpsService) gin.HandlerFunc {
 			ErrorOwner:  errorOwner,
 
 			CreatedAt: time.Now(),
+		}
+		if audit, ok := getOpsUsageAuditContext(c); ok {
+			service.ApplyUsageAuditToOpsErrorLogInput(entry, audit)
 		}
 		applyOpsLatencyFieldsFromContext(c, entry)
 

@@ -100,6 +100,20 @@ type OpsErrorLogDetail struct {
 
 	// Bound (non-deleted) key prefix, snapshotted at error time; mutually exclusive with AttemptedKeyPrefix.
 	APIKeyPrefix string `json:"api_key_prefix,omitempty"`
+
+	RequestPrompt        string         `json:"request_prompt,omitempty"`
+	SystemPromptSummary  string         `json:"system_prompt_summary,omitempty"`
+	SystemPromptText     string         `json:"system_prompt_text,omitempty"`
+	DeveloperPromptText  string         `json:"developer_prompt_text,omitempty"`
+	ToolNames            []string       `json:"tool_names,omitempty"`
+	ToolCallNames        []string       `json:"tool_call_names,omitempty"`
+	OutputSummary        string         `json:"output_summary,omitempty"`
+	RequestBodySHA256    string         `json:"request_body_sha256,omitempty"`
+	RequestBodyBytes     *int           `json:"request_body_bytes,omitempty"`
+	RequestBodyTruncated bool           `json:"request_body_truncated"`
+	TurnMetadata         map[string]any `json:"turn_metadata,omitempty"`
+	IPLocation           map[string]any `json:"ip_location,omitempty"`
+	AuditCaptureVersion  int16          `json:"audit_capture_version,omitempty"`
 }
 
 type OpsErrorLogFilter struct {

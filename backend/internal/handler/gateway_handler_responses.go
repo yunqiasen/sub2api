@@ -84,6 +84,7 @@ func (h *GatewayHandler) Responses(c *gin.Context) {
 
 	setOpsRequestContext(c, reqModel, reqStream)
 	setOpsEndpointContext(c, "", int16(service.RequestTypeFromLegacy(reqStream, false)))
+	_ = extractUsageAuditForRequest(c, body, nil)
 	requestCtx := c.Request.Context()
 	if service.IsImageGenerationIntent("/v1/responses", reqModel, body) {
 		requestCtx = service.WithOpenAIImageGenerationIntent(requestCtx)
