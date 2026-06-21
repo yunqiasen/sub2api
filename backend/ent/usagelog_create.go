@@ -65,6 +65,176 @@ func (_c *UsageLogCreate) SetNillableRequestPrompt(v *string) *UsageLogCreate {
 	return _c
 }
 
+// SetSystemPromptSummary sets the "system_prompt_summary" field.
+func (_c *UsageLogCreate) SetSystemPromptSummary(v string) *UsageLogCreate {
+	_c.mutation.SetSystemPromptSummary(v)
+	return _c
+}
+
+// SetNillableSystemPromptSummary sets the "system_prompt_summary" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableSystemPromptSummary(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetSystemPromptSummary(*v)
+	}
+	return _c
+}
+
+// SetSystemPromptText sets the "system_prompt_text" field.
+func (_c *UsageLogCreate) SetSystemPromptText(v string) *UsageLogCreate {
+	_c.mutation.SetSystemPromptText(v)
+	return _c
+}
+
+// SetNillableSystemPromptText sets the "system_prompt_text" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableSystemPromptText(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetSystemPromptText(*v)
+	}
+	return _c
+}
+
+// SetDeveloperPromptText sets the "developer_prompt_text" field.
+func (_c *UsageLogCreate) SetDeveloperPromptText(v string) *UsageLogCreate {
+	_c.mutation.SetDeveloperPromptText(v)
+	return _c
+}
+
+// SetNillableDeveloperPromptText sets the "developer_prompt_text" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableDeveloperPromptText(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetDeveloperPromptText(*v)
+	}
+	return _c
+}
+
+// SetToolNames sets the "tool_names" field.
+func (_c *UsageLogCreate) SetToolNames(v []string) *UsageLogCreate {
+	_c.mutation.SetToolNames(v)
+	return _c
+}
+
+// SetToolCallNames sets the "tool_call_names" field.
+func (_c *UsageLogCreate) SetToolCallNames(v []string) *UsageLogCreate {
+	_c.mutation.SetToolCallNames(v)
+	return _c
+}
+
+// SetToolCallsJSON sets the "tool_calls_json" field.
+func (_c *UsageLogCreate) SetToolCallsJSON(v []map[string]interface{}) *UsageLogCreate {
+	_c.mutation.SetToolCallsJSON(v)
+	return _c
+}
+
+// SetOutputSummary sets the "output_summary" field.
+func (_c *UsageLogCreate) SetOutputSummary(v string) *UsageLogCreate {
+	_c.mutation.SetOutputSummary(v)
+	return _c
+}
+
+// SetNillableOutputSummary sets the "output_summary" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableOutputSummary(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetOutputSummary(*v)
+	}
+	return _c
+}
+
+// SetOutputText sets the "output_text" field.
+func (_c *UsageLogCreate) SetOutputText(v string) *UsageLogCreate {
+	_c.mutation.SetOutputText(v)
+	return _c
+}
+
+// SetNillableOutputText sets the "output_text" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableOutputText(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetOutputText(*v)
+	}
+	return _c
+}
+
+// SetRequestBodySha256 sets the "request_body_sha256" field.
+func (_c *UsageLogCreate) SetRequestBodySha256(v string) *UsageLogCreate {
+	_c.mutation.SetRequestBodySha256(v)
+	return _c
+}
+
+// SetNillableRequestBodySha256 sets the "request_body_sha256" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableRequestBodySha256(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetRequestBodySha256(*v)
+	}
+	return _c
+}
+
+// SetRequestBodyBytes sets the "request_body_bytes" field.
+func (_c *UsageLogCreate) SetRequestBodyBytes(v int) *UsageLogCreate {
+	_c.mutation.SetRequestBodyBytes(v)
+	return _c
+}
+
+// SetNillableRequestBodyBytes sets the "request_body_bytes" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableRequestBodyBytes(v *int) *UsageLogCreate {
+	if v != nil {
+		_c.SetRequestBodyBytes(*v)
+	}
+	return _c
+}
+
+// SetRequestBodyTruncated sets the "request_body_truncated" field.
+func (_c *UsageLogCreate) SetRequestBodyTruncated(v bool) *UsageLogCreate {
+	_c.mutation.SetRequestBodyTruncated(v)
+	return _c
+}
+
+// SetNillableRequestBodyTruncated sets the "request_body_truncated" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableRequestBodyTruncated(v *bool) *UsageLogCreate {
+	if v != nil {
+		_c.SetRequestBodyTruncated(*v)
+	}
+	return _c
+}
+
+// SetResponseTextTruncated sets the "response_text_truncated" field.
+func (_c *UsageLogCreate) SetResponseTextTruncated(v bool) *UsageLogCreate {
+	_c.mutation.SetResponseTextTruncated(v)
+	return _c
+}
+
+// SetNillableResponseTextTruncated sets the "response_text_truncated" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableResponseTextTruncated(v *bool) *UsageLogCreate {
+	if v != nil {
+		_c.SetResponseTextTruncated(*v)
+	}
+	return _c
+}
+
+// SetTurnMetadata sets the "turn_metadata" field.
+func (_c *UsageLogCreate) SetTurnMetadata(v map[string]interface{}) *UsageLogCreate {
+	_c.mutation.SetTurnMetadata(v)
+	return _c
+}
+
+// SetIPLocation sets the "ip_location" field.
+func (_c *UsageLogCreate) SetIPLocation(v map[string]interface{}) *UsageLogCreate {
+	_c.mutation.SetIPLocation(v)
+	return _c
+}
+
+// SetAuditCaptureVersion sets the "audit_capture_version" field.
+func (_c *UsageLogCreate) SetAuditCaptureVersion(v int16) *UsageLogCreate {
+	_c.mutation.SetAuditCaptureVersion(v)
+	return _c
+}
+
+// SetNillableAuditCaptureVersion sets the "audit_capture_version" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableAuditCaptureVersion(v *int16) *UsageLogCreate {
+	if v != nil {
+		_c.SetAuditCaptureVersion(*v)
+	}
+	return _c
+}
+
 // SetModel sets the "model" field.
 func (_c *UsageLogCreate) SetModel(v string) *UsageLogCreate {
 	_c.mutation.SetModel(v)
@@ -627,6 +797,18 @@ func (_c *UsageLogCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *UsageLogCreate) defaults() {
+	if _, ok := _c.mutation.RequestBodyTruncated(); !ok {
+		v := usagelog.DefaultRequestBodyTruncated
+		_c.mutation.SetRequestBodyTruncated(v)
+	}
+	if _, ok := _c.mutation.ResponseTextTruncated(); !ok {
+		v := usagelog.DefaultResponseTextTruncated
+		_c.mutation.SetResponseTextTruncated(v)
+	}
+	if _, ok := _c.mutation.AuditCaptureVersion(); !ok {
+		v := usagelog.DefaultAuditCaptureVersion
+		_c.mutation.SetAuditCaptureVersion(v)
+	}
 	if _, ok := _c.mutation.InputTokens(); !ok {
 		v := usagelog.DefaultInputTokens
 		_c.mutation.SetInputTokens(v)
@@ -719,6 +901,20 @@ func (_c *UsageLogCreate) check() error {
 		if err := usagelog.RequestIDValidator(v); err != nil {
 			return &ValidationError{Name: "request_id", err: fmt.Errorf(`ent: validator failed for field "UsageLog.request_id": %w`, err)}
 		}
+	}
+	if v, ok := _c.mutation.RequestBodySha256(); ok {
+		if err := usagelog.RequestBodySha256Validator(v); err != nil {
+			return &ValidationError{Name: "request_body_sha256", err: fmt.Errorf(`ent: validator failed for field "UsageLog.request_body_sha256": %w`, err)}
+		}
+	}
+	if _, ok := _c.mutation.RequestBodyTruncated(); !ok {
+		return &ValidationError{Name: "request_body_truncated", err: errors.New(`ent: missing required field "UsageLog.request_body_truncated"`)}
+	}
+	if _, ok := _c.mutation.ResponseTextTruncated(); !ok {
+		return &ValidationError{Name: "response_text_truncated", err: errors.New(`ent: missing required field "UsageLog.response_text_truncated"`)}
+	}
+	if _, ok := _c.mutation.AuditCaptureVersion(); !ok {
+		return &ValidationError{Name: "audit_capture_version", err: errors.New(`ent: missing required field "UsageLog.audit_capture_version"`)}
 	}
 	if _, ok := _c.mutation.Model(); !ok {
 		return &ValidationError{Name: "model", err: errors.New(`ent: missing required field "UsageLog.model"`)}
@@ -880,6 +1076,66 @@ func (_c *UsageLogCreate) createSpec() (*UsageLog, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.RequestPrompt(); ok {
 		_spec.SetField(usagelog.FieldRequestPrompt, field.TypeString, value)
 		_node.RequestPrompt = &value
+	}
+	if value, ok := _c.mutation.SystemPromptSummary(); ok {
+		_spec.SetField(usagelog.FieldSystemPromptSummary, field.TypeString, value)
+		_node.SystemPromptSummary = &value
+	}
+	if value, ok := _c.mutation.SystemPromptText(); ok {
+		_spec.SetField(usagelog.FieldSystemPromptText, field.TypeString, value)
+		_node.SystemPromptText = &value
+	}
+	if value, ok := _c.mutation.DeveloperPromptText(); ok {
+		_spec.SetField(usagelog.FieldDeveloperPromptText, field.TypeString, value)
+		_node.DeveloperPromptText = &value
+	}
+	if value, ok := _c.mutation.ToolNames(); ok {
+		_spec.SetField(usagelog.FieldToolNames, field.TypeJSON, value)
+		_node.ToolNames = value
+	}
+	if value, ok := _c.mutation.ToolCallNames(); ok {
+		_spec.SetField(usagelog.FieldToolCallNames, field.TypeJSON, value)
+		_node.ToolCallNames = value
+	}
+	if value, ok := _c.mutation.ToolCallsJSON(); ok {
+		_spec.SetField(usagelog.FieldToolCallsJSON, field.TypeJSON, value)
+		_node.ToolCallsJSON = value
+	}
+	if value, ok := _c.mutation.OutputSummary(); ok {
+		_spec.SetField(usagelog.FieldOutputSummary, field.TypeString, value)
+		_node.OutputSummary = &value
+	}
+	if value, ok := _c.mutation.OutputText(); ok {
+		_spec.SetField(usagelog.FieldOutputText, field.TypeString, value)
+		_node.OutputText = &value
+	}
+	if value, ok := _c.mutation.RequestBodySha256(); ok {
+		_spec.SetField(usagelog.FieldRequestBodySha256, field.TypeString, value)
+		_node.RequestBodySha256 = &value
+	}
+	if value, ok := _c.mutation.RequestBodyBytes(); ok {
+		_spec.SetField(usagelog.FieldRequestBodyBytes, field.TypeInt, value)
+		_node.RequestBodyBytes = &value
+	}
+	if value, ok := _c.mutation.RequestBodyTruncated(); ok {
+		_spec.SetField(usagelog.FieldRequestBodyTruncated, field.TypeBool, value)
+		_node.RequestBodyTruncated = value
+	}
+	if value, ok := _c.mutation.ResponseTextTruncated(); ok {
+		_spec.SetField(usagelog.FieldResponseTextTruncated, field.TypeBool, value)
+		_node.ResponseTextTruncated = value
+	}
+	if value, ok := _c.mutation.TurnMetadata(); ok {
+		_spec.SetField(usagelog.FieldTurnMetadata, field.TypeJSON, value)
+		_node.TurnMetadata = value
+	}
+	if value, ok := _c.mutation.IPLocation(); ok {
+		_spec.SetField(usagelog.FieldIPLocation, field.TypeJSON, value)
+		_node.IPLocation = value
+	}
+	if value, ok := _c.mutation.AuditCaptureVersion(); ok {
+		_spec.SetField(usagelog.FieldAuditCaptureVersion, field.TypeInt16, value)
+		_node.AuditCaptureVersion = value
 	}
 	if value, ok := _c.mutation.Model(); ok {
 		_spec.SetField(usagelog.FieldModel, field.TypeString, value)
@@ -1221,6 +1477,270 @@ func (u *UsageLogUpsert) UpdateRequestPrompt() *UsageLogUpsert {
 // ClearRequestPrompt clears the value of the "request_prompt" field.
 func (u *UsageLogUpsert) ClearRequestPrompt() *UsageLogUpsert {
 	u.SetNull(usagelog.FieldRequestPrompt)
+	return u
+}
+
+// SetSystemPromptSummary sets the "system_prompt_summary" field.
+func (u *UsageLogUpsert) SetSystemPromptSummary(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldSystemPromptSummary, v)
+	return u
+}
+
+// UpdateSystemPromptSummary sets the "system_prompt_summary" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateSystemPromptSummary() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldSystemPromptSummary)
+	return u
+}
+
+// ClearSystemPromptSummary clears the value of the "system_prompt_summary" field.
+func (u *UsageLogUpsert) ClearSystemPromptSummary() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldSystemPromptSummary)
+	return u
+}
+
+// SetSystemPromptText sets the "system_prompt_text" field.
+func (u *UsageLogUpsert) SetSystemPromptText(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldSystemPromptText, v)
+	return u
+}
+
+// UpdateSystemPromptText sets the "system_prompt_text" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateSystemPromptText() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldSystemPromptText)
+	return u
+}
+
+// ClearSystemPromptText clears the value of the "system_prompt_text" field.
+func (u *UsageLogUpsert) ClearSystemPromptText() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldSystemPromptText)
+	return u
+}
+
+// SetDeveloperPromptText sets the "developer_prompt_text" field.
+func (u *UsageLogUpsert) SetDeveloperPromptText(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldDeveloperPromptText, v)
+	return u
+}
+
+// UpdateDeveloperPromptText sets the "developer_prompt_text" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateDeveloperPromptText() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldDeveloperPromptText)
+	return u
+}
+
+// ClearDeveloperPromptText clears the value of the "developer_prompt_text" field.
+func (u *UsageLogUpsert) ClearDeveloperPromptText() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldDeveloperPromptText)
+	return u
+}
+
+// SetToolNames sets the "tool_names" field.
+func (u *UsageLogUpsert) SetToolNames(v []string) *UsageLogUpsert {
+	u.Set(usagelog.FieldToolNames, v)
+	return u
+}
+
+// UpdateToolNames sets the "tool_names" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateToolNames() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldToolNames)
+	return u
+}
+
+// ClearToolNames clears the value of the "tool_names" field.
+func (u *UsageLogUpsert) ClearToolNames() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldToolNames)
+	return u
+}
+
+// SetToolCallNames sets the "tool_call_names" field.
+func (u *UsageLogUpsert) SetToolCallNames(v []string) *UsageLogUpsert {
+	u.Set(usagelog.FieldToolCallNames, v)
+	return u
+}
+
+// UpdateToolCallNames sets the "tool_call_names" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateToolCallNames() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldToolCallNames)
+	return u
+}
+
+// ClearToolCallNames clears the value of the "tool_call_names" field.
+func (u *UsageLogUpsert) ClearToolCallNames() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldToolCallNames)
+	return u
+}
+
+// SetToolCallsJSON sets the "tool_calls_json" field.
+func (u *UsageLogUpsert) SetToolCallsJSON(v []map[string]interface{}) *UsageLogUpsert {
+	u.Set(usagelog.FieldToolCallsJSON, v)
+	return u
+}
+
+// UpdateToolCallsJSON sets the "tool_calls_json" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateToolCallsJSON() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldToolCallsJSON)
+	return u
+}
+
+// ClearToolCallsJSON clears the value of the "tool_calls_json" field.
+func (u *UsageLogUpsert) ClearToolCallsJSON() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldToolCallsJSON)
+	return u
+}
+
+// SetOutputSummary sets the "output_summary" field.
+func (u *UsageLogUpsert) SetOutputSummary(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldOutputSummary, v)
+	return u
+}
+
+// UpdateOutputSummary sets the "output_summary" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateOutputSummary() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldOutputSummary)
+	return u
+}
+
+// ClearOutputSummary clears the value of the "output_summary" field.
+func (u *UsageLogUpsert) ClearOutputSummary() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldOutputSummary)
+	return u
+}
+
+// SetOutputText sets the "output_text" field.
+func (u *UsageLogUpsert) SetOutputText(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldOutputText, v)
+	return u
+}
+
+// UpdateOutputText sets the "output_text" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateOutputText() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldOutputText)
+	return u
+}
+
+// ClearOutputText clears the value of the "output_text" field.
+func (u *UsageLogUpsert) ClearOutputText() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldOutputText)
+	return u
+}
+
+// SetRequestBodySha256 sets the "request_body_sha256" field.
+func (u *UsageLogUpsert) SetRequestBodySha256(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldRequestBodySha256, v)
+	return u
+}
+
+// UpdateRequestBodySha256 sets the "request_body_sha256" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateRequestBodySha256() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldRequestBodySha256)
+	return u
+}
+
+// ClearRequestBodySha256 clears the value of the "request_body_sha256" field.
+func (u *UsageLogUpsert) ClearRequestBodySha256() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldRequestBodySha256)
+	return u
+}
+
+// SetRequestBodyBytes sets the "request_body_bytes" field.
+func (u *UsageLogUpsert) SetRequestBodyBytes(v int) *UsageLogUpsert {
+	u.Set(usagelog.FieldRequestBodyBytes, v)
+	return u
+}
+
+// UpdateRequestBodyBytes sets the "request_body_bytes" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateRequestBodyBytes() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldRequestBodyBytes)
+	return u
+}
+
+// AddRequestBodyBytes adds v to the "request_body_bytes" field.
+func (u *UsageLogUpsert) AddRequestBodyBytes(v int) *UsageLogUpsert {
+	u.Add(usagelog.FieldRequestBodyBytes, v)
+	return u
+}
+
+// ClearRequestBodyBytes clears the value of the "request_body_bytes" field.
+func (u *UsageLogUpsert) ClearRequestBodyBytes() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldRequestBodyBytes)
+	return u
+}
+
+// SetRequestBodyTruncated sets the "request_body_truncated" field.
+func (u *UsageLogUpsert) SetRequestBodyTruncated(v bool) *UsageLogUpsert {
+	u.Set(usagelog.FieldRequestBodyTruncated, v)
+	return u
+}
+
+// UpdateRequestBodyTruncated sets the "request_body_truncated" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateRequestBodyTruncated() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldRequestBodyTruncated)
+	return u
+}
+
+// SetResponseTextTruncated sets the "response_text_truncated" field.
+func (u *UsageLogUpsert) SetResponseTextTruncated(v bool) *UsageLogUpsert {
+	u.Set(usagelog.FieldResponseTextTruncated, v)
+	return u
+}
+
+// UpdateResponseTextTruncated sets the "response_text_truncated" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateResponseTextTruncated() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldResponseTextTruncated)
+	return u
+}
+
+// SetTurnMetadata sets the "turn_metadata" field.
+func (u *UsageLogUpsert) SetTurnMetadata(v map[string]interface{}) *UsageLogUpsert {
+	u.Set(usagelog.FieldTurnMetadata, v)
+	return u
+}
+
+// UpdateTurnMetadata sets the "turn_metadata" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateTurnMetadata() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldTurnMetadata)
+	return u
+}
+
+// ClearTurnMetadata clears the value of the "turn_metadata" field.
+func (u *UsageLogUpsert) ClearTurnMetadata() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldTurnMetadata)
+	return u
+}
+
+// SetIPLocation sets the "ip_location" field.
+func (u *UsageLogUpsert) SetIPLocation(v map[string]interface{}) *UsageLogUpsert {
+	u.Set(usagelog.FieldIPLocation, v)
+	return u
+}
+
+// UpdateIPLocation sets the "ip_location" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateIPLocation() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldIPLocation)
+	return u
+}
+
+// ClearIPLocation clears the value of the "ip_location" field.
+func (u *UsageLogUpsert) ClearIPLocation() *UsageLogUpsert {
+	u.SetNull(usagelog.FieldIPLocation)
+	return u
+}
+
+// SetAuditCaptureVersion sets the "audit_capture_version" field.
+func (u *UsageLogUpsert) SetAuditCaptureVersion(v int16) *UsageLogUpsert {
+	u.Set(usagelog.FieldAuditCaptureVersion, v)
+	return u
+}
+
+// UpdateAuditCaptureVersion sets the "audit_capture_version" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateAuditCaptureVersion() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldAuditCaptureVersion)
+	return u
+}
+
+// AddAuditCaptureVersion adds v to the "audit_capture_version" field.
+func (u *UsageLogUpsert) AddAuditCaptureVersion(v int16) *UsageLogUpsert {
+	u.Add(usagelog.FieldAuditCaptureVersion, v)
 	return u
 }
 
@@ -1997,6 +2517,314 @@ func (u *UsageLogUpsertOne) UpdateRequestPrompt() *UsageLogUpsertOne {
 func (u *UsageLogUpsertOne) ClearRequestPrompt() *UsageLogUpsertOne {
 	return u.Update(func(s *UsageLogUpsert) {
 		s.ClearRequestPrompt()
+	})
+}
+
+// SetSystemPromptSummary sets the "system_prompt_summary" field.
+func (u *UsageLogUpsertOne) SetSystemPromptSummary(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetSystemPromptSummary(v)
+	})
+}
+
+// UpdateSystemPromptSummary sets the "system_prompt_summary" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateSystemPromptSummary() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateSystemPromptSummary()
+	})
+}
+
+// ClearSystemPromptSummary clears the value of the "system_prompt_summary" field.
+func (u *UsageLogUpsertOne) ClearSystemPromptSummary() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearSystemPromptSummary()
+	})
+}
+
+// SetSystemPromptText sets the "system_prompt_text" field.
+func (u *UsageLogUpsertOne) SetSystemPromptText(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetSystemPromptText(v)
+	})
+}
+
+// UpdateSystemPromptText sets the "system_prompt_text" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateSystemPromptText() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateSystemPromptText()
+	})
+}
+
+// ClearSystemPromptText clears the value of the "system_prompt_text" field.
+func (u *UsageLogUpsertOne) ClearSystemPromptText() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearSystemPromptText()
+	})
+}
+
+// SetDeveloperPromptText sets the "developer_prompt_text" field.
+func (u *UsageLogUpsertOne) SetDeveloperPromptText(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetDeveloperPromptText(v)
+	})
+}
+
+// UpdateDeveloperPromptText sets the "developer_prompt_text" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateDeveloperPromptText() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateDeveloperPromptText()
+	})
+}
+
+// ClearDeveloperPromptText clears the value of the "developer_prompt_text" field.
+func (u *UsageLogUpsertOne) ClearDeveloperPromptText() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearDeveloperPromptText()
+	})
+}
+
+// SetToolNames sets the "tool_names" field.
+func (u *UsageLogUpsertOne) SetToolNames(v []string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetToolNames(v)
+	})
+}
+
+// UpdateToolNames sets the "tool_names" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateToolNames() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateToolNames()
+	})
+}
+
+// ClearToolNames clears the value of the "tool_names" field.
+func (u *UsageLogUpsertOne) ClearToolNames() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearToolNames()
+	})
+}
+
+// SetToolCallNames sets the "tool_call_names" field.
+func (u *UsageLogUpsertOne) SetToolCallNames(v []string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetToolCallNames(v)
+	})
+}
+
+// UpdateToolCallNames sets the "tool_call_names" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateToolCallNames() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateToolCallNames()
+	})
+}
+
+// ClearToolCallNames clears the value of the "tool_call_names" field.
+func (u *UsageLogUpsertOne) ClearToolCallNames() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearToolCallNames()
+	})
+}
+
+// SetToolCallsJSON sets the "tool_calls_json" field.
+func (u *UsageLogUpsertOne) SetToolCallsJSON(v []map[string]interface{}) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetToolCallsJSON(v)
+	})
+}
+
+// UpdateToolCallsJSON sets the "tool_calls_json" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateToolCallsJSON() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateToolCallsJSON()
+	})
+}
+
+// ClearToolCallsJSON clears the value of the "tool_calls_json" field.
+func (u *UsageLogUpsertOne) ClearToolCallsJSON() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearToolCallsJSON()
+	})
+}
+
+// SetOutputSummary sets the "output_summary" field.
+func (u *UsageLogUpsertOne) SetOutputSummary(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetOutputSummary(v)
+	})
+}
+
+// UpdateOutputSummary sets the "output_summary" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateOutputSummary() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateOutputSummary()
+	})
+}
+
+// ClearOutputSummary clears the value of the "output_summary" field.
+func (u *UsageLogUpsertOne) ClearOutputSummary() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearOutputSummary()
+	})
+}
+
+// SetOutputText sets the "output_text" field.
+func (u *UsageLogUpsertOne) SetOutputText(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetOutputText(v)
+	})
+}
+
+// UpdateOutputText sets the "output_text" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateOutputText() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateOutputText()
+	})
+}
+
+// ClearOutputText clears the value of the "output_text" field.
+func (u *UsageLogUpsertOne) ClearOutputText() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearOutputText()
+	})
+}
+
+// SetRequestBodySha256 sets the "request_body_sha256" field.
+func (u *UsageLogUpsertOne) SetRequestBodySha256(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetRequestBodySha256(v)
+	})
+}
+
+// UpdateRequestBodySha256 sets the "request_body_sha256" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateRequestBodySha256() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateRequestBodySha256()
+	})
+}
+
+// ClearRequestBodySha256 clears the value of the "request_body_sha256" field.
+func (u *UsageLogUpsertOne) ClearRequestBodySha256() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearRequestBodySha256()
+	})
+}
+
+// SetRequestBodyBytes sets the "request_body_bytes" field.
+func (u *UsageLogUpsertOne) SetRequestBodyBytes(v int) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetRequestBodyBytes(v)
+	})
+}
+
+// AddRequestBodyBytes adds v to the "request_body_bytes" field.
+func (u *UsageLogUpsertOne) AddRequestBodyBytes(v int) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.AddRequestBodyBytes(v)
+	})
+}
+
+// UpdateRequestBodyBytes sets the "request_body_bytes" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateRequestBodyBytes() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateRequestBodyBytes()
+	})
+}
+
+// ClearRequestBodyBytes clears the value of the "request_body_bytes" field.
+func (u *UsageLogUpsertOne) ClearRequestBodyBytes() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearRequestBodyBytes()
+	})
+}
+
+// SetRequestBodyTruncated sets the "request_body_truncated" field.
+func (u *UsageLogUpsertOne) SetRequestBodyTruncated(v bool) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetRequestBodyTruncated(v)
+	})
+}
+
+// UpdateRequestBodyTruncated sets the "request_body_truncated" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateRequestBodyTruncated() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateRequestBodyTruncated()
+	})
+}
+
+// SetResponseTextTruncated sets the "response_text_truncated" field.
+func (u *UsageLogUpsertOne) SetResponseTextTruncated(v bool) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetResponseTextTruncated(v)
+	})
+}
+
+// UpdateResponseTextTruncated sets the "response_text_truncated" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateResponseTextTruncated() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateResponseTextTruncated()
+	})
+}
+
+// SetTurnMetadata sets the "turn_metadata" field.
+func (u *UsageLogUpsertOne) SetTurnMetadata(v map[string]interface{}) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetTurnMetadata(v)
+	})
+}
+
+// UpdateTurnMetadata sets the "turn_metadata" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateTurnMetadata() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateTurnMetadata()
+	})
+}
+
+// ClearTurnMetadata clears the value of the "turn_metadata" field.
+func (u *UsageLogUpsertOne) ClearTurnMetadata() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearTurnMetadata()
+	})
+}
+
+// SetIPLocation sets the "ip_location" field.
+func (u *UsageLogUpsertOne) SetIPLocation(v map[string]interface{}) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetIPLocation(v)
+	})
+}
+
+// UpdateIPLocation sets the "ip_location" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateIPLocation() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateIPLocation()
+	})
+}
+
+// ClearIPLocation clears the value of the "ip_location" field.
+func (u *UsageLogUpsertOne) ClearIPLocation() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearIPLocation()
+	})
+}
+
+// SetAuditCaptureVersion sets the "audit_capture_version" field.
+func (u *UsageLogUpsertOne) SetAuditCaptureVersion(v int16) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetAuditCaptureVersion(v)
+	})
+}
+
+// AddAuditCaptureVersion adds v to the "audit_capture_version" field.
+func (u *UsageLogUpsertOne) AddAuditCaptureVersion(v int16) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.AddAuditCaptureVersion(v)
+	})
+}
+
+// UpdateAuditCaptureVersion sets the "audit_capture_version" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateAuditCaptureVersion() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateAuditCaptureVersion()
 	})
 }
 
@@ -3048,6 +3876,314 @@ func (u *UsageLogUpsertBulk) UpdateRequestPrompt() *UsageLogUpsertBulk {
 func (u *UsageLogUpsertBulk) ClearRequestPrompt() *UsageLogUpsertBulk {
 	return u.Update(func(s *UsageLogUpsert) {
 		s.ClearRequestPrompt()
+	})
+}
+
+// SetSystemPromptSummary sets the "system_prompt_summary" field.
+func (u *UsageLogUpsertBulk) SetSystemPromptSummary(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetSystemPromptSummary(v)
+	})
+}
+
+// UpdateSystemPromptSummary sets the "system_prompt_summary" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateSystemPromptSummary() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateSystemPromptSummary()
+	})
+}
+
+// ClearSystemPromptSummary clears the value of the "system_prompt_summary" field.
+func (u *UsageLogUpsertBulk) ClearSystemPromptSummary() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearSystemPromptSummary()
+	})
+}
+
+// SetSystemPromptText sets the "system_prompt_text" field.
+func (u *UsageLogUpsertBulk) SetSystemPromptText(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetSystemPromptText(v)
+	})
+}
+
+// UpdateSystemPromptText sets the "system_prompt_text" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateSystemPromptText() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateSystemPromptText()
+	})
+}
+
+// ClearSystemPromptText clears the value of the "system_prompt_text" field.
+func (u *UsageLogUpsertBulk) ClearSystemPromptText() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearSystemPromptText()
+	})
+}
+
+// SetDeveloperPromptText sets the "developer_prompt_text" field.
+func (u *UsageLogUpsertBulk) SetDeveloperPromptText(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetDeveloperPromptText(v)
+	})
+}
+
+// UpdateDeveloperPromptText sets the "developer_prompt_text" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateDeveloperPromptText() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateDeveloperPromptText()
+	})
+}
+
+// ClearDeveloperPromptText clears the value of the "developer_prompt_text" field.
+func (u *UsageLogUpsertBulk) ClearDeveloperPromptText() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearDeveloperPromptText()
+	})
+}
+
+// SetToolNames sets the "tool_names" field.
+func (u *UsageLogUpsertBulk) SetToolNames(v []string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetToolNames(v)
+	})
+}
+
+// UpdateToolNames sets the "tool_names" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateToolNames() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateToolNames()
+	})
+}
+
+// ClearToolNames clears the value of the "tool_names" field.
+func (u *UsageLogUpsertBulk) ClearToolNames() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearToolNames()
+	})
+}
+
+// SetToolCallNames sets the "tool_call_names" field.
+func (u *UsageLogUpsertBulk) SetToolCallNames(v []string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetToolCallNames(v)
+	})
+}
+
+// UpdateToolCallNames sets the "tool_call_names" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateToolCallNames() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateToolCallNames()
+	})
+}
+
+// ClearToolCallNames clears the value of the "tool_call_names" field.
+func (u *UsageLogUpsertBulk) ClearToolCallNames() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearToolCallNames()
+	})
+}
+
+// SetToolCallsJSON sets the "tool_calls_json" field.
+func (u *UsageLogUpsertBulk) SetToolCallsJSON(v []map[string]interface{}) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetToolCallsJSON(v)
+	})
+}
+
+// UpdateToolCallsJSON sets the "tool_calls_json" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateToolCallsJSON() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateToolCallsJSON()
+	})
+}
+
+// ClearToolCallsJSON clears the value of the "tool_calls_json" field.
+func (u *UsageLogUpsertBulk) ClearToolCallsJSON() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearToolCallsJSON()
+	})
+}
+
+// SetOutputSummary sets the "output_summary" field.
+func (u *UsageLogUpsertBulk) SetOutputSummary(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetOutputSummary(v)
+	})
+}
+
+// UpdateOutputSummary sets the "output_summary" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateOutputSummary() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateOutputSummary()
+	})
+}
+
+// ClearOutputSummary clears the value of the "output_summary" field.
+func (u *UsageLogUpsertBulk) ClearOutputSummary() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearOutputSummary()
+	})
+}
+
+// SetOutputText sets the "output_text" field.
+func (u *UsageLogUpsertBulk) SetOutputText(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetOutputText(v)
+	})
+}
+
+// UpdateOutputText sets the "output_text" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateOutputText() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateOutputText()
+	})
+}
+
+// ClearOutputText clears the value of the "output_text" field.
+func (u *UsageLogUpsertBulk) ClearOutputText() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearOutputText()
+	})
+}
+
+// SetRequestBodySha256 sets the "request_body_sha256" field.
+func (u *UsageLogUpsertBulk) SetRequestBodySha256(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetRequestBodySha256(v)
+	})
+}
+
+// UpdateRequestBodySha256 sets the "request_body_sha256" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateRequestBodySha256() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateRequestBodySha256()
+	})
+}
+
+// ClearRequestBodySha256 clears the value of the "request_body_sha256" field.
+func (u *UsageLogUpsertBulk) ClearRequestBodySha256() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearRequestBodySha256()
+	})
+}
+
+// SetRequestBodyBytes sets the "request_body_bytes" field.
+func (u *UsageLogUpsertBulk) SetRequestBodyBytes(v int) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetRequestBodyBytes(v)
+	})
+}
+
+// AddRequestBodyBytes adds v to the "request_body_bytes" field.
+func (u *UsageLogUpsertBulk) AddRequestBodyBytes(v int) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.AddRequestBodyBytes(v)
+	})
+}
+
+// UpdateRequestBodyBytes sets the "request_body_bytes" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateRequestBodyBytes() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateRequestBodyBytes()
+	})
+}
+
+// ClearRequestBodyBytes clears the value of the "request_body_bytes" field.
+func (u *UsageLogUpsertBulk) ClearRequestBodyBytes() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearRequestBodyBytes()
+	})
+}
+
+// SetRequestBodyTruncated sets the "request_body_truncated" field.
+func (u *UsageLogUpsertBulk) SetRequestBodyTruncated(v bool) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetRequestBodyTruncated(v)
+	})
+}
+
+// UpdateRequestBodyTruncated sets the "request_body_truncated" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateRequestBodyTruncated() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateRequestBodyTruncated()
+	})
+}
+
+// SetResponseTextTruncated sets the "response_text_truncated" field.
+func (u *UsageLogUpsertBulk) SetResponseTextTruncated(v bool) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetResponseTextTruncated(v)
+	})
+}
+
+// UpdateResponseTextTruncated sets the "response_text_truncated" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateResponseTextTruncated() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateResponseTextTruncated()
+	})
+}
+
+// SetTurnMetadata sets the "turn_metadata" field.
+func (u *UsageLogUpsertBulk) SetTurnMetadata(v map[string]interface{}) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetTurnMetadata(v)
+	})
+}
+
+// UpdateTurnMetadata sets the "turn_metadata" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateTurnMetadata() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateTurnMetadata()
+	})
+}
+
+// ClearTurnMetadata clears the value of the "turn_metadata" field.
+func (u *UsageLogUpsertBulk) ClearTurnMetadata() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearTurnMetadata()
+	})
+}
+
+// SetIPLocation sets the "ip_location" field.
+func (u *UsageLogUpsertBulk) SetIPLocation(v map[string]interface{}) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetIPLocation(v)
+	})
+}
+
+// UpdateIPLocation sets the "ip_location" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateIPLocation() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateIPLocation()
+	})
+}
+
+// ClearIPLocation clears the value of the "ip_location" field.
+func (u *UsageLogUpsertBulk) ClearIPLocation() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.ClearIPLocation()
+	})
+}
+
+// SetAuditCaptureVersion sets the "audit_capture_version" field.
+func (u *UsageLogUpsertBulk) SetAuditCaptureVersion(v int16) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetAuditCaptureVersion(v)
+	})
+}
+
+// AddAuditCaptureVersion adds v to the "audit_capture_version" field.
+func (u *UsageLogUpsertBulk) AddAuditCaptureVersion(v int16) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.AddAuditCaptureVersion(v)
+	})
+}
+
+// UpdateAuditCaptureVersion sets the "audit_capture_version" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateAuditCaptureVersion() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateAuditCaptureVersion()
 	})
 }
 

@@ -80,6 +80,56 @@ func RequestPrompt(v string) predicate.UsageLog {
 	return predicate.UsageLog(sql.FieldEQ(FieldRequestPrompt, v))
 }
 
+// SystemPromptSummary applies equality check predicate on the "system_prompt_summary" field. It's identical to SystemPromptSummaryEQ.
+func SystemPromptSummary(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldSystemPromptSummary, v))
+}
+
+// SystemPromptText applies equality check predicate on the "system_prompt_text" field. It's identical to SystemPromptTextEQ.
+func SystemPromptText(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldSystemPromptText, v))
+}
+
+// DeveloperPromptText applies equality check predicate on the "developer_prompt_text" field. It's identical to DeveloperPromptTextEQ.
+func DeveloperPromptText(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldDeveloperPromptText, v))
+}
+
+// OutputSummary applies equality check predicate on the "output_summary" field. It's identical to OutputSummaryEQ.
+func OutputSummary(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldOutputSummary, v))
+}
+
+// OutputText applies equality check predicate on the "output_text" field. It's identical to OutputTextEQ.
+func OutputText(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldOutputText, v))
+}
+
+// RequestBodySha256 applies equality check predicate on the "request_body_sha256" field. It's identical to RequestBodySha256EQ.
+func RequestBodySha256(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldRequestBodySha256, v))
+}
+
+// RequestBodyBytes applies equality check predicate on the "request_body_bytes" field. It's identical to RequestBodyBytesEQ.
+func RequestBodyBytes(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldRequestBodyBytes, v))
+}
+
+// RequestBodyTruncated applies equality check predicate on the "request_body_truncated" field. It's identical to RequestBodyTruncatedEQ.
+func RequestBodyTruncated(v bool) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldRequestBodyTruncated, v))
+}
+
+// ResponseTextTruncated applies equality check predicate on the "response_text_truncated" field. It's identical to ResponseTextTruncatedEQ.
+func ResponseTextTruncated(v bool) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldResponseTextTruncated, v))
+}
+
+// AuditCaptureVersion applies equality check predicate on the "audit_capture_version" field. It's identical to AuditCaptureVersionEQ.
+func AuditCaptureVersion(v int16) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldAuditCaptureVersion, v))
+}
+
 // Model applies equality check predicate on the "model" field. It's identical to ModelEQ.
 func Model(v string) predicate.UsageLog {
 	return predicate.UsageLog(sql.FieldEQ(FieldModel, v))
@@ -458,6 +508,616 @@ func RequestPromptEqualFold(v string) predicate.UsageLog {
 // RequestPromptContainsFold applies the ContainsFold predicate on the "request_prompt" field.
 func RequestPromptContainsFold(v string) predicate.UsageLog {
 	return predicate.UsageLog(sql.FieldContainsFold(FieldRequestPrompt, v))
+}
+
+// SystemPromptSummaryEQ applies the EQ predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldSystemPromptSummary, v))
+}
+
+// SystemPromptSummaryNEQ applies the NEQ predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryNEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldSystemPromptSummary, v))
+}
+
+// SystemPromptSummaryIn applies the In predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldSystemPromptSummary, vs...))
+}
+
+// SystemPromptSummaryNotIn applies the NotIn predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryNotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldSystemPromptSummary, vs...))
+}
+
+// SystemPromptSummaryGT applies the GT predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryGT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldSystemPromptSummary, v))
+}
+
+// SystemPromptSummaryGTE applies the GTE predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryGTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldSystemPromptSummary, v))
+}
+
+// SystemPromptSummaryLT applies the LT predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryLT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldSystemPromptSummary, v))
+}
+
+// SystemPromptSummaryLTE applies the LTE predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryLTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldSystemPromptSummary, v))
+}
+
+// SystemPromptSummaryContains applies the Contains predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryContains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldSystemPromptSummary, v))
+}
+
+// SystemPromptSummaryHasPrefix applies the HasPrefix predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryHasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldSystemPromptSummary, v))
+}
+
+// SystemPromptSummaryHasSuffix applies the HasSuffix predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryHasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldSystemPromptSummary, v))
+}
+
+// SystemPromptSummaryIsNil applies the IsNil predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldSystemPromptSummary))
+}
+
+// SystemPromptSummaryNotNil applies the NotNil predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldSystemPromptSummary))
+}
+
+// SystemPromptSummaryEqualFold applies the EqualFold predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryEqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldSystemPromptSummary, v))
+}
+
+// SystemPromptSummaryContainsFold applies the ContainsFold predicate on the "system_prompt_summary" field.
+func SystemPromptSummaryContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldSystemPromptSummary, v))
+}
+
+// SystemPromptTextEQ applies the EQ predicate on the "system_prompt_text" field.
+func SystemPromptTextEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldSystemPromptText, v))
+}
+
+// SystemPromptTextNEQ applies the NEQ predicate on the "system_prompt_text" field.
+func SystemPromptTextNEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldSystemPromptText, v))
+}
+
+// SystemPromptTextIn applies the In predicate on the "system_prompt_text" field.
+func SystemPromptTextIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldSystemPromptText, vs...))
+}
+
+// SystemPromptTextNotIn applies the NotIn predicate on the "system_prompt_text" field.
+func SystemPromptTextNotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldSystemPromptText, vs...))
+}
+
+// SystemPromptTextGT applies the GT predicate on the "system_prompt_text" field.
+func SystemPromptTextGT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldSystemPromptText, v))
+}
+
+// SystemPromptTextGTE applies the GTE predicate on the "system_prompt_text" field.
+func SystemPromptTextGTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldSystemPromptText, v))
+}
+
+// SystemPromptTextLT applies the LT predicate on the "system_prompt_text" field.
+func SystemPromptTextLT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldSystemPromptText, v))
+}
+
+// SystemPromptTextLTE applies the LTE predicate on the "system_prompt_text" field.
+func SystemPromptTextLTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldSystemPromptText, v))
+}
+
+// SystemPromptTextContains applies the Contains predicate on the "system_prompt_text" field.
+func SystemPromptTextContains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldSystemPromptText, v))
+}
+
+// SystemPromptTextHasPrefix applies the HasPrefix predicate on the "system_prompt_text" field.
+func SystemPromptTextHasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldSystemPromptText, v))
+}
+
+// SystemPromptTextHasSuffix applies the HasSuffix predicate on the "system_prompt_text" field.
+func SystemPromptTextHasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldSystemPromptText, v))
+}
+
+// SystemPromptTextIsNil applies the IsNil predicate on the "system_prompt_text" field.
+func SystemPromptTextIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldSystemPromptText))
+}
+
+// SystemPromptTextNotNil applies the NotNil predicate on the "system_prompt_text" field.
+func SystemPromptTextNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldSystemPromptText))
+}
+
+// SystemPromptTextEqualFold applies the EqualFold predicate on the "system_prompt_text" field.
+func SystemPromptTextEqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldSystemPromptText, v))
+}
+
+// SystemPromptTextContainsFold applies the ContainsFold predicate on the "system_prompt_text" field.
+func SystemPromptTextContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldSystemPromptText, v))
+}
+
+// DeveloperPromptTextEQ applies the EQ predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldDeveloperPromptText, v))
+}
+
+// DeveloperPromptTextNEQ applies the NEQ predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextNEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldDeveloperPromptText, v))
+}
+
+// DeveloperPromptTextIn applies the In predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldDeveloperPromptText, vs...))
+}
+
+// DeveloperPromptTextNotIn applies the NotIn predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextNotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldDeveloperPromptText, vs...))
+}
+
+// DeveloperPromptTextGT applies the GT predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextGT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldDeveloperPromptText, v))
+}
+
+// DeveloperPromptTextGTE applies the GTE predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextGTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldDeveloperPromptText, v))
+}
+
+// DeveloperPromptTextLT applies the LT predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextLT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldDeveloperPromptText, v))
+}
+
+// DeveloperPromptTextLTE applies the LTE predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextLTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldDeveloperPromptText, v))
+}
+
+// DeveloperPromptTextContains applies the Contains predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextContains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldDeveloperPromptText, v))
+}
+
+// DeveloperPromptTextHasPrefix applies the HasPrefix predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextHasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldDeveloperPromptText, v))
+}
+
+// DeveloperPromptTextHasSuffix applies the HasSuffix predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextHasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldDeveloperPromptText, v))
+}
+
+// DeveloperPromptTextIsNil applies the IsNil predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldDeveloperPromptText))
+}
+
+// DeveloperPromptTextNotNil applies the NotNil predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldDeveloperPromptText))
+}
+
+// DeveloperPromptTextEqualFold applies the EqualFold predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextEqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldDeveloperPromptText, v))
+}
+
+// DeveloperPromptTextContainsFold applies the ContainsFold predicate on the "developer_prompt_text" field.
+func DeveloperPromptTextContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldDeveloperPromptText, v))
+}
+
+// ToolNamesIsNil applies the IsNil predicate on the "tool_names" field.
+func ToolNamesIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldToolNames))
+}
+
+// ToolNamesNotNil applies the NotNil predicate on the "tool_names" field.
+func ToolNamesNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldToolNames))
+}
+
+// ToolCallNamesIsNil applies the IsNil predicate on the "tool_call_names" field.
+func ToolCallNamesIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldToolCallNames))
+}
+
+// ToolCallNamesNotNil applies the NotNil predicate on the "tool_call_names" field.
+func ToolCallNamesNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldToolCallNames))
+}
+
+// ToolCallsJSONIsNil applies the IsNil predicate on the "tool_calls_json" field.
+func ToolCallsJSONIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldToolCallsJSON))
+}
+
+// ToolCallsJSONNotNil applies the NotNil predicate on the "tool_calls_json" field.
+func ToolCallsJSONNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldToolCallsJSON))
+}
+
+// OutputSummaryEQ applies the EQ predicate on the "output_summary" field.
+func OutputSummaryEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldOutputSummary, v))
+}
+
+// OutputSummaryNEQ applies the NEQ predicate on the "output_summary" field.
+func OutputSummaryNEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldOutputSummary, v))
+}
+
+// OutputSummaryIn applies the In predicate on the "output_summary" field.
+func OutputSummaryIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldOutputSummary, vs...))
+}
+
+// OutputSummaryNotIn applies the NotIn predicate on the "output_summary" field.
+func OutputSummaryNotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldOutputSummary, vs...))
+}
+
+// OutputSummaryGT applies the GT predicate on the "output_summary" field.
+func OutputSummaryGT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldOutputSummary, v))
+}
+
+// OutputSummaryGTE applies the GTE predicate on the "output_summary" field.
+func OutputSummaryGTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldOutputSummary, v))
+}
+
+// OutputSummaryLT applies the LT predicate on the "output_summary" field.
+func OutputSummaryLT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldOutputSummary, v))
+}
+
+// OutputSummaryLTE applies the LTE predicate on the "output_summary" field.
+func OutputSummaryLTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldOutputSummary, v))
+}
+
+// OutputSummaryContains applies the Contains predicate on the "output_summary" field.
+func OutputSummaryContains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldOutputSummary, v))
+}
+
+// OutputSummaryHasPrefix applies the HasPrefix predicate on the "output_summary" field.
+func OutputSummaryHasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldOutputSummary, v))
+}
+
+// OutputSummaryHasSuffix applies the HasSuffix predicate on the "output_summary" field.
+func OutputSummaryHasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldOutputSummary, v))
+}
+
+// OutputSummaryIsNil applies the IsNil predicate on the "output_summary" field.
+func OutputSummaryIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldOutputSummary))
+}
+
+// OutputSummaryNotNil applies the NotNil predicate on the "output_summary" field.
+func OutputSummaryNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldOutputSummary))
+}
+
+// OutputSummaryEqualFold applies the EqualFold predicate on the "output_summary" field.
+func OutputSummaryEqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldOutputSummary, v))
+}
+
+// OutputSummaryContainsFold applies the ContainsFold predicate on the "output_summary" field.
+func OutputSummaryContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldOutputSummary, v))
+}
+
+// OutputTextEQ applies the EQ predicate on the "output_text" field.
+func OutputTextEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldOutputText, v))
+}
+
+// OutputTextNEQ applies the NEQ predicate on the "output_text" field.
+func OutputTextNEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldOutputText, v))
+}
+
+// OutputTextIn applies the In predicate on the "output_text" field.
+func OutputTextIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldOutputText, vs...))
+}
+
+// OutputTextNotIn applies the NotIn predicate on the "output_text" field.
+func OutputTextNotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldOutputText, vs...))
+}
+
+// OutputTextGT applies the GT predicate on the "output_text" field.
+func OutputTextGT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldOutputText, v))
+}
+
+// OutputTextGTE applies the GTE predicate on the "output_text" field.
+func OutputTextGTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldOutputText, v))
+}
+
+// OutputTextLT applies the LT predicate on the "output_text" field.
+func OutputTextLT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldOutputText, v))
+}
+
+// OutputTextLTE applies the LTE predicate on the "output_text" field.
+func OutputTextLTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldOutputText, v))
+}
+
+// OutputTextContains applies the Contains predicate on the "output_text" field.
+func OutputTextContains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldOutputText, v))
+}
+
+// OutputTextHasPrefix applies the HasPrefix predicate on the "output_text" field.
+func OutputTextHasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldOutputText, v))
+}
+
+// OutputTextHasSuffix applies the HasSuffix predicate on the "output_text" field.
+func OutputTextHasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldOutputText, v))
+}
+
+// OutputTextIsNil applies the IsNil predicate on the "output_text" field.
+func OutputTextIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldOutputText))
+}
+
+// OutputTextNotNil applies the NotNil predicate on the "output_text" field.
+func OutputTextNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldOutputText))
+}
+
+// OutputTextEqualFold applies the EqualFold predicate on the "output_text" field.
+func OutputTextEqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldOutputText, v))
+}
+
+// OutputTextContainsFold applies the ContainsFold predicate on the "output_text" field.
+func OutputTextContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldOutputText, v))
+}
+
+// RequestBodySha256EQ applies the EQ predicate on the "request_body_sha256" field.
+func RequestBodySha256EQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldRequestBodySha256, v))
+}
+
+// RequestBodySha256NEQ applies the NEQ predicate on the "request_body_sha256" field.
+func RequestBodySha256NEQ(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldRequestBodySha256, v))
+}
+
+// RequestBodySha256In applies the In predicate on the "request_body_sha256" field.
+func RequestBodySha256In(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldRequestBodySha256, vs...))
+}
+
+// RequestBodySha256NotIn applies the NotIn predicate on the "request_body_sha256" field.
+func RequestBodySha256NotIn(vs ...string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldRequestBodySha256, vs...))
+}
+
+// RequestBodySha256GT applies the GT predicate on the "request_body_sha256" field.
+func RequestBodySha256GT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldRequestBodySha256, v))
+}
+
+// RequestBodySha256GTE applies the GTE predicate on the "request_body_sha256" field.
+func RequestBodySha256GTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldRequestBodySha256, v))
+}
+
+// RequestBodySha256LT applies the LT predicate on the "request_body_sha256" field.
+func RequestBodySha256LT(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldRequestBodySha256, v))
+}
+
+// RequestBodySha256LTE applies the LTE predicate on the "request_body_sha256" field.
+func RequestBodySha256LTE(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldRequestBodySha256, v))
+}
+
+// RequestBodySha256Contains applies the Contains predicate on the "request_body_sha256" field.
+func RequestBodySha256Contains(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContains(FieldRequestBodySha256, v))
+}
+
+// RequestBodySha256HasPrefix applies the HasPrefix predicate on the "request_body_sha256" field.
+func RequestBodySha256HasPrefix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasPrefix(FieldRequestBodySha256, v))
+}
+
+// RequestBodySha256HasSuffix applies the HasSuffix predicate on the "request_body_sha256" field.
+func RequestBodySha256HasSuffix(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldHasSuffix(FieldRequestBodySha256, v))
+}
+
+// RequestBodySha256IsNil applies the IsNil predicate on the "request_body_sha256" field.
+func RequestBodySha256IsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldRequestBodySha256))
+}
+
+// RequestBodySha256NotNil applies the NotNil predicate on the "request_body_sha256" field.
+func RequestBodySha256NotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldRequestBodySha256))
+}
+
+// RequestBodySha256EqualFold applies the EqualFold predicate on the "request_body_sha256" field.
+func RequestBodySha256EqualFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEqualFold(FieldRequestBodySha256, v))
+}
+
+// RequestBodySha256ContainsFold applies the ContainsFold predicate on the "request_body_sha256" field.
+func RequestBodySha256ContainsFold(v string) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldContainsFold(FieldRequestBodySha256, v))
+}
+
+// RequestBodyBytesEQ applies the EQ predicate on the "request_body_bytes" field.
+func RequestBodyBytesEQ(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldRequestBodyBytes, v))
+}
+
+// RequestBodyBytesNEQ applies the NEQ predicate on the "request_body_bytes" field.
+func RequestBodyBytesNEQ(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldRequestBodyBytes, v))
+}
+
+// RequestBodyBytesIn applies the In predicate on the "request_body_bytes" field.
+func RequestBodyBytesIn(vs ...int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldRequestBodyBytes, vs...))
+}
+
+// RequestBodyBytesNotIn applies the NotIn predicate on the "request_body_bytes" field.
+func RequestBodyBytesNotIn(vs ...int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldRequestBodyBytes, vs...))
+}
+
+// RequestBodyBytesGT applies the GT predicate on the "request_body_bytes" field.
+func RequestBodyBytesGT(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldRequestBodyBytes, v))
+}
+
+// RequestBodyBytesGTE applies the GTE predicate on the "request_body_bytes" field.
+func RequestBodyBytesGTE(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldRequestBodyBytes, v))
+}
+
+// RequestBodyBytesLT applies the LT predicate on the "request_body_bytes" field.
+func RequestBodyBytesLT(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldRequestBodyBytes, v))
+}
+
+// RequestBodyBytesLTE applies the LTE predicate on the "request_body_bytes" field.
+func RequestBodyBytesLTE(v int) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldRequestBodyBytes, v))
+}
+
+// RequestBodyBytesIsNil applies the IsNil predicate on the "request_body_bytes" field.
+func RequestBodyBytesIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldRequestBodyBytes))
+}
+
+// RequestBodyBytesNotNil applies the NotNil predicate on the "request_body_bytes" field.
+func RequestBodyBytesNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldRequestBodyBytes))
+}
+
+// RequestBodyTruncatedEQ applies the EQ predicate on the "request_body_truncated" field.
+func RequestBodyTruncatedEQ(v bool) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldRequestBodyTruncated, v))
+}
+
+// RequestBodyTruncatedNEQ applies the NEQ predicate on the "request_body_truncated" field.
+func RequestBodyTruncatedNEQ(v bool) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldRequestBodyTruncated, v))
+}
+
+// ResponseTextTruncatedEQ applies the EQ predicate on the "response_text_truncated" field.
+func ResponseTextTruncatedEQ(v bool) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldResponseTextTruncated, v))
+}
+
+// ResponseTextTruncatedNEQ applies the NEQ predicate on the "response_text_truncated" field.
+func ResponseTextTruncatedNEQ(v bool) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldResponseTextTruncated, v))
+}
+
+// TurnMetadataIsNil applies the IsNil predicate on the "turn_metadata" field.
+func TurnMetadataIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldTurnMetadata))
+}
+
+// TurnMetadataNotNil applies the NotNil predicate on the "turn_metadata" field.
+func TurnMetadataNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldTurnMetadata))
+}
+
+// IPLocationIsNil applies the IsNil predicate on the "ip_location" field.
+func IPLocationIsNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIsNull(FieldIPLocation))
+}
+
+// IPLocationNotNil applies the NotNil predicate on the "ip_location" field.
+func IPLocationNotNil() predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotNull(FieldIPLocation))
+}
+
+// AuditCaptureVersionEQ applies the EQ predicate on the "audit_capture_version" field.
+func AuditCaptureVersionEQ(v int16) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldEQ(FieldAuditCaptureVersion, v))
+}
+
+// AuditCaptureVersionNEQ applies the NEQ predicate on the "audit_capture_version" field.
+func AuditCaptureVersionNEQ(v int16) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNEQ(FieldAuditCaptureVersion, v))
+}
+
+// AuditCaptureVersionIn applies the In predicate on the "audit_capture_version" field.
+func AuditCaptureVersionIn(vs ...int16) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldIn(FieldAuditCaptureVersion, vs...))
+}
+
+// AuditCaptureVersionNotIn applies the NotIn predicate on the "audit_capture_version" field.
+func AuditCaptureVersionNotIn(vs ...int16) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldNotIn(FieldAuditCaptureVersion, vs...))
+}
+
+// AuditCaptureVersionGT applies the GT predicate on the "audit_capture_version" field.
+func AuditCaptureVersionGT(v int16) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGT(FieldAuditCaptureVersion, v))
+}
+
+// AuditCaptureVersionGTE applies the GTE predicate on the "audit_capture_version" field.
+func AuditCaptureVersionGTE(v int16) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldGTE(FieldAuditCaptureVersion, v))
+}
+
+// AuditCaptureVersionLT applies the LT predicate on the "audit_capture_version" field.
+func AuditCaptureVersionLT(v int16) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLT(FieldAuditCaptureVersion, v))
+}
+
+// AuditCaptureVersionLTE applies the LTE predicate on the "audit_capture_version" field.
+func AuditCaptureVersionLTE(v int16) predicate.UsageLog {
+	return predicate.UsageLog(sql.FieldLTE(FieldAuditCaptureVersion, v))
 }
 
 // ModelEQ applies the EQ predicate on the "model" field.

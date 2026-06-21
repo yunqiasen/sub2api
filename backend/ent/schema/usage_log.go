@@ -41,6 +41,49 @@ func (UsageLog) Fields() []ent.Field {
 		field.Text("request_prompt").
 			Optional().
 			Nillable(),
+		field.Text("system_prompt_summary").
+			Optional().
+			Nillable(),
+		field.Text("system_prompt_text").
+			Optional().
+			Nillable(),
+		field.Text("developer_prompt_text").
+			Optional().
+			Nillable(),
+		field.JSON("tool_names", []string{}).
+			Optional().
+			SchemaType(map[string]string{dialect.Postgres: "jsonb"}),
+		field.JSON("tool_call_names", []string{}).
+			Optional().
+			SchemaType(map[string]string{dialect.Postgres: "jsonb"}),
+		field.JSON("tool_calls_json", []map[string]any{}).
+			Optional().
+			SchemaType(map[string]string{dialect.Postgres: "jsonb"}),
+		field.Text("output_summary").
+			Optional().
+			Nillable(),
+		field.Text("output_text").
+			Optional().
+			Nillable(),
+		field.String("request_body_sha256").
+			MaxLen(64).
+			Optional().
+			Nillable(),
+		field.Int("request_body_bytes").
+			Optional().
+			Nillable(),
+		field.Bool("request_body_truncated").
+			Default(false),
+		field.Bool("response_text_truncated").
+			Default(false),
+		field.JSON("turn_metadata", map[string]any{}).
+			Optional().
+			SchemaType(map[string]string{dialect.Postgres: "jsonb"}),
+		field.JSON("ip_location", map[string]any{}).
+			Optional().
+			SchemaType(map[string]string{dialect.Postgres: "jsonb"}),
+		field.Int16("audit_capture_version").
+			Default(1),
 		field.String("model").
 			MaxLen(100).
 			NotEmpty(),
@@ -205,6 +248,7 @@ func (UsageLog) Indexes() []ent.Index {
 		index.Fields("model"),
 		index.Fields("requested_model"),
 		index.Fields("request_id"),
+		index.Fields("request_body_sha256"),
 		// 复合索引用于时间范围查询
 		index.Fields("user_id", "created_at"),
 		index.Fields("api_key_id", "created_at"),

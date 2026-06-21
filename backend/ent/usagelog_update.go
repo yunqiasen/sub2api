@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/Wei-Shaw/sub2api/ent/account"
 	"github.com/Wei-Shaw/sub2api/ent/apikey"
@@ -105,6 +106,280 @@ func (_u *UsageLogUpdate) SetNillableRequestPrompt(v *string) *UsageLogUpdate {
 // ClearRequestPrompt clears the value of the "request_prompt" field.
 func (_u *UsageLogUpdate) ClearRequestPrompt() *UsageLogUpdate {
 	_u.mutation.ClearRequestPrompt()
+	return _u
+}
+
+// SetSystemPromptSummary sets the "system_prompt_summary" field.
+func (_u *UsageLogUpdate) SetSystemPromptSummary(v string) *UsageLogUpdate {
+	_u.mutation.SetSystemPromptSummary(v)
+	return _u
+}
+
+// SetNillableSystemPromptSummary sets the "system_prompt_summary" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableSystemPromptSummary(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetSystemPromptSummary(*v)
+	}
+	return _u
+}
+
+// ClearSystemPromptSummary clears the value of the "system_prompt_summary" field.
+func (_u *UsageLogUpdate) ClearSystemPromptSummary() *UsageLogUpdate {
+	_u.mutation.ClearSystemPromptSummary()
+	return _u
+}
+
+// SetSystemPromptText sets the "system_prompt_text" field.
+func (_u *UsageLogUpdate) SetSystemPromptText(v string) *UsageLogUpdate {
+	_u.mutation.SetSystemPromptText(v)
+	return _u
+}
+
+// SetNillableSystemPromptText sets the "system_prompt_text" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableSystemPromptText(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetSystemPromptText(*v)
+	}
+	return _u
+}
+
+// ClearSystemPromptText clears the value of the "system_prompt_text" field.
+func (_u *UsageLogUpdate) ClearSystemPromptText() *UsageLogUpdate {
+	_u.mutation.ClearSystemPromptText()
+	return _u
+}
+
+// SetDeveloperPromptText sets the "developer_prompt_text" field.
+func (_u *UsageLogUpdate) SetDeveloperPromptText(v string) *UsageLogUpdate {
+	_u.mutation.SetDeveloperPromptText(v)
+	return _u
+}
+
+// SetNillableDeveloperPromptText sets the "developer_prompt_text" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableDeveloperPromptText(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetDeveloperPromptText(*v)
+	}
+	return _u
+}
+
+// ClearDeveloperPromptText clears the value of the "developer_prompt_text" field.
+func (_u *UsageLogUpdate) ClearDeveloperPromptText() *UsageLogUpdate {
+	_u.mutation.ClearDeveloperPromptText()
+	return _u
+}
+
+// SetToolNames sets the "tool_names" field.
+func (_u *UsageLogUpdate) SetToolNames(v []string) *UsageLogUpdate {
+	_u.mutation.SetToolNames(v)
+	return _u
+}
+
+// AppendToolNames appends value to the "tool_names" field.
+func (_u *UsageLogUpdate) AppendToolNames(v []string) *UsageLogUpdate {
+	_u.mutation.AppendToolNames(v)
+	return _u
+}
+
+// ClearToolNames clears the value of the "tool_names" field.
+func (_u *UsageLogUpdate) ClearToolNames() *UsageLogUpdate {
+	_u.mutation.ClearToolNames()
+	return _u
+}
+
+// SetToolCallNames sets the "tool_call_names" field.
+func (_u *UsageLogUpdate) SetToolCallNames(v []string) *UsageLogUpdate {
+	_u.mutation.SetToolCallNames(v)
+	return _u
+}
+
+// AppendToolCallNames appends value to the "tool_call_names" field.
+func (_u *UsageLogUpdate) AppendToolCallNames(v []string) *UsageLogUpdate {
+	_u.mutation.AppendToolCallNames(v)
+	return _u
+}
+
+// ClearToolCallNames clears the value of the "tool_call_names" field.
+func (_u *UsageLogUpdate) ClearToolCallNames() *UsageLogUpdate {
+	_u.mutation.ClearToolCallNames()
+	return _u
+}
+
+// SetToolCallsJSON sets the "tool_calls_json" field.
+func (_u *UsageLogUpdate) SetToolCallsJSON(v []map[string]interface{}) *UsageLogUpdate {
+	_u.mutation.SetToolCallsJSON(v)
+	return _u
+}
+
+// AppendToolCallsJSON appends value to the "tool_calls_json" field.
+func (_u *UsageLogUpdate) AppendToolCallsJSON(v []map[string]interface{}) *UsageLogUpdate {
+	_u.mutation.AppendToolCallsJSON(v)
+	return _u
+}
+
+// ClearToolCallsJSON clears the value of the "tool_calls_json" field.
+func (_u *UsageLogUpdate) ClearToolCallsJSON() *UsageLogUpdate {
+	_u.mutation.ClearToolCallsJSON()
+	return _u
+}
+
+// SetOutputSummary sets the "output_summary" field.
+func (_u *UsageLogUpdate) SetOutputSummary(v string) *UsageLogUpdate {
+	_u.mutation.SetOutputSummary(v)
+	return _u
+}
+
+// SetNillableOutputSummary sets the "output_summary" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableOutputSummary(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetOutputSummary(*v)
+	}
+	return _u
+}
+
+// ClearOutputSummary clears the value of the "output_summary" field.
+func (_u *UsageLogUpdate) ClearOutputSummary() *UsageLogUpdate {
+	_u.mutation.ClearOutputSummary()
+	return _u
+}
+
+// SetOutputText sets the "output_text" field.
+func (_u *UsageLogUpdate) SetOutputText(v string) *UsageLogUpdate {
+	_u.mutation.SetOutputText(v)
+	return _u
+}
+
+// SetNillableOutputText sets the "output_text" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableOutputText(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetOutputText(*v)
+	}
+	return _u
+}
+
+// ClearOutputText clears the value of the "output_text" field.
+func (_u *UsageLogUpdate) ClearOutputText() *UsageLogUpdate {
+	_u.mutation.ClearOutputText()
+	return _u
+}
+
+// SetRequestBodySha256 sets the "request_body_sha256" field.
+func (_u *UsageLogUpdate) SetRequestBodySha256(v string) *UsageLogUpdate {
+	_u.mutation.SetRequestBodySha256(v)
+	return _u
+}
+
+// SetNillableRequestBodySha256 sets the "request_body_sha256" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableRequestBodySha256(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetRequestBodySha256(*v)
+	}
+	return _u
+}
+
+// ClearRequestBodySha256 clears the value of the "request_body_sha256" field.
+func (_u *UsageLogUpdate) ClearRequestBodySha256() *UsageLogUpdate {
+	_u.mutation.ClearRequestBodySha256()
+	return _u
+}
+
+// SetRequestBodyBytes sets the "request_body_bytes" field.
+func (_u *UsageLogUpdate) SetRequestBodyBytes(v int) *UsageLogUpdate {
+	_u.mutation.ResetRequestBodyBytes()
+	_u.mutation.SetRequestBodyBytes(v)
+	return _u
+}
+
+// SetNillableRequestBodyBytes sets the "request_body_bytes" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableRequestBodyBytes(v *int) *UsageLogUpdate {
+	if v != nil {
+		_u.SetRequestBodyBytes(*v)
+	}
+	return _u
+}
+
+// AddRequestBodyBytes adds value to the "request_body_bytes" field.
+func (_u *UsageLogUpdate) AddRequestBodyBytes(v int) *UsageLogUpdate {
+	_u.mutation.AddRequestBodyBytes(v)
+	return _u
+}
+
+// ClearRequestBodyBytes clears the value of the "request_body_bytes" field.
+func (_u *UsageLogUpdate) ClearRequestBodyBytes() *UsageLogUpdate {
+	_u.mutation.ClearRequestBodyBytes()
+	return _u
+}
+
+// SetRequestBodyTruncated sets the "request_body_truncated" field.
+func (_u *UsageLogUpdate) SetRequestBodyTruncated(v bool) *UsageLogUpdate {
+	_u.mutation.SetRequestBodyTruncated(v)
+	return _u
+}
+
+// SetNillableRequestBodyTruncated sets the "request_body_truncated" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableRequestBodyTruncated(v *bool) *UsageLogUpdate {
+	if v != nil {
+		_u.SetRequestBodyTruncated(*v)
+	}
+	return _u
+}
+
+// SetResponseTextTruncated sets the "response_text_truncated" field.
+func (_u *UsageLogUpdate) SetResponseTextTruncated(v bool) *UsageLogUpdate {
+	_u.mutation.SetResponseTextTruncated(v)
+	return _u
+}
+
+// SetNillableResponseTextTruncated sets the "response_text_truncated" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableResponseTextTruncated(v *bool) *UsageLogUpdate {
+	if v != nil {
+		_u.SetResponseTextTruncated(*v)
+	}
+	return _u
+}
+
+// SetTurnMetadata sets the "turn_metadata" field.
+func (_u *UsageLogUpdate) SetTurnMetadata(v map[string]interface{}) *UsageLogUpdate {
+	_u.mutation.SetTurnMetadata(v)
+	return _u
+}
+
+// ClearTurnMetadata clears the value of the "turn_metadata" field.
+func (_u *UsageLogUpdate) ClearTurnMetadata() *UsageLogUpdate {
+	_u.mutation.ClearTurnMetadata()
+	return _u
+}
+
+// SetIPLocation sets the "ip_location" field.
+func (_u *UsageLogUpdate) SetIPLocation(v map[string]interface{}) *UsageLogUpdate {
+	_u.mutation.SetIPLocation(v)
+	return _u
+}
+
+// ClearIPLocation clears the value of the "ip_location" field.
+func (_u *UsageLogUpdate) ClearIPLocation() *UsageLogUpdate {
+	_u.mutation.ClearIPLocation()
+	return _u
+}
+
+// SetAuditCaptureVersion sets the "audit_capture_version" field.
+func (_u *UsageLogUpdate) SetAuditCaptureVersion(v int16) *UsageLogUpdate {
+	_u.mutation.ResetAuditCaptureVersion()
+	_u.mutation.SetAuditCaptureVersion(v)
+	return _u
+}
+
+// SetNillableAuditCaptureVersion sets the "audit_capture_version" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableAuditCaptureVersion(v *int16) *UsageLogUpdate {
+	if v != nil {
+		_u.SetAuditCaptureVersion(*v)
+	}
+	return _u
+}
+
+// AddAuditCaptureVersion adds value to the "audit_capture_version" field.
+func (_u *UsageLogUpdate) AddAuditCaptureVersion(v int16) *UsageLogUpdate {
+	_u.mutation.AddAuditCaptureVersion(v)
 	return _u
 }
 
@@ -939,6 +1214,11 @@ func (_u *UsageLogUpdate) check() error {
 			return &ValidationError{Name: "request_id", err: fmt.Errorf(`ent: validator failed for field "UsageLog.request_id": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.RequestBodySha256(); ok {
+		if err := usagelog.RequestBodySha256Validator(v); err != nil {
+			return &ValidationError{Name: "request_body_sha256", err: fmt.Errorf(`ent: validator failed for field "UsageLog.request_body_sha256": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Model(); ok {
 		if err := usagelog.ModelValidator(v); err != nil {
 			return &ValidationError{Name: "model", err: fmt.Errorf(`ent: validator failed for field "UsageLog.model": %w`, err)}
@@ -1031,6 +1311,108 @@ func (_u *UsageLogUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.RequestPromptCleared() {
 		_spec.ClearField(usagelog.FieldRequestPrompt, field.TypeString)
+	}
+	if value, ok := _u.mutation.SystemPromptSummary(); ok {
+		_spec.SetField(usagelog.FieldSystemPromptSummary, field.TypeString, value)
+	}
+	if _u.mutation.SystemPromptSummaryCleared() {
+		_spec.ClearField(usagelog.FieldSystemPromptSummary, field.TypeString)
+	}
+	if value, ok := _u.mutation.SystemPromptText(); ok {
+		_spec.SetField(usagelog.FieldSystemPromptText, field.TypeString, value)
+	}
+	if _u.mutation.SystemPromptTextCleared() {
+		_spec.ClearField(usagelog.FieldSystemPromptText, field.TypeString)
+	}
+	if value, ok := _u.mutation.DeveloperPromptText(); ok {
+		_spec.SetField(usagelog.FieldDeveloperPromptText, field.TypeString, value)
+	}
+	if _u.mutation.DeveloperPromptTextCleared() {
+		_spec.ClearField(usagelog.FieldDeveloperPromptText, field.TypeString)
+	}
+	if value, ok := _u.mutation.ToolNames(); ok {
+		_spec.SetField(usagelog.FieldToolNames, field.TypeJSON, value)
+	}
+	if value, ok := _u.mutation.AppendedToolNames(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, usagelog.FieldToolNames, value)
+		})
+	}
+	if _u.mutation.ToolNamesCleared() {
+		_spec.ClearField(usagelog.FieldToolNames, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.ToolCallNames(); ok {
+		_spec.SetField(usagelog.FieldToolCallNames, field.TypeJSON, value)
+	}
+	if value, ok := _u.mutation.AppendedToolCallNames(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, usagelog.FieldToolCallNames, value)
+		})
+	}
+	if _u.mutation.ToolCallNamesCleared() {
+		_spec.ClearField(usagelog.FieldToolCallNames, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.ToolCallsJSON(); ok {
+		_spec.SetField(usagelog.FieldToolCallsJSON, field.TypeJSON, value)
+	}
+	if value, ok := _u.mutation.AppendedToolCallsJSON(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, usagelog.FieldToolCallsJSON, value)
+		})
+	}
+	if _u.mutation.ToolCallsJSONCleared() {
+		_spec.ClearField(usagelog.FieldToolCallsJSON, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.OutputSummary(); ok {
+		_spec.SetField(usagelog.FieldOutputSummary, field.TypeString, value)
+	}
+	if _u.mutation.OutputSummaryCleared() {
+		_spec.ClearField(usagelog.FieldOutputSummary, field.TypeString)
+	}
+	if value, ok := _u.mutation.OutputText(); ok {
+		_spec.SetField(usagelog.FieldOutputText, field.TypeString, value)
+	}
+	if _u.mutation.OutputTextCleared() {
+		_spec.ClearField(usagelog.FieldOutputText, field.TypeString)
+	}
+	if value, ok := _u.mutation.RequestBodySha256(); ok {
+		_spec.SetField(usagelog.FieldRequestBodySha256, field.TypeString, value)
+	}
+	if _u.mutation.RequestBodySha256Cleared() {
+		_spec.ClearField(usagelog.FieldRequestBodySha256, field.TypeString)
+	}
+	if value, ok := _u.mutation.RequestBodyBytes(); ok {
+		_spec.SetField(usagelog.FieldRequestBodyBytes, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedRequestBodyBytes(); ok {
+		_spec.AddField(usagelog.FieldRequestBodyBytes, field.TypeInt, value)
+	}
+	if _u.mutation.RequestBodyBytesCleared() {
+		_spec.ClearField(usagelog.FieldRequestBodyBytes, field.TypeInt)
+	}
+	if value, ok := _u.mutation.RequestBodyTruncated(); ok {
+		_spec.SetField(usagelog.FieldRequestBodyTruncated, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.ResponseTextTruncated(); ok {
+		_spec.SetField(usagelog.FieldResponseTextTruncated, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.TurnMetadata(); ok {
+		_spec.SetField(usagelog.FieldTurnMetadata, field.TypeJSON, value)
+	}
+	if _u.mutation.TurnMetadataCleared() {
+		_spec.ClearField(usagelog.FieldTurnMetadata, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.IPLocation(); ok {
+		_spec.SetField(usagelog.FieldIPLocation, field.TypeJSON, value)
+	}
+	if _u.mutation.IPLocationCleared() {
+		_spec.ClearField(usagelog.FieldIPLocation, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.AuditCaptureVersion(); ok {
+		_spec.SetField(usagelog.FieldAuditCaptureVersion, field.TypeInt16, value)
+	}
+	if value, ok := _u.mutation.AddedAuditCaptureVersion(); ok {
+		_spec.AddField(usagelog.FieldAuditCaptureVersion, field.TypeInt16, value)
 	}
 	if value, ok := _u.mutation.Model(); ok {
 		_spec.SetField(usagelog.FieldModel, field.TypeString, value)
@@ -1477,6 +1859,280 @@ func (_u *UsageLogUpdateOne) SetNillableRequestPrompt(v *string) *UsageLogUpdate
 // ClearRequestPrompt clears the value of the "request_prompt" field.
 func (_u *UsageLogUpdateOne) ClearRequestPrompt() *UsageLogUpdateOne {
 	_u.mutation.ClearRequestPrompt()
+	return _u
+}
+
+// SetSystemPromptSummary sets the "system_prompt_summary" field.
+func (_u *UsageLogUpdateOne) SetSystemPromptSummary(v string) *UsageLogUpdateOne {
+	_u.mutation.SetSystemPromptSummary(v)
+	return _u
+}
+
+// SetNillableSystemPromptSummary sets the "system_prompt_summary" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableSystemPromptSummary(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetSystemPromptSummary(*v)
+	}
+	return _u
+}
+
+// ClearSystemPromptSummary clears the value of the "system_prompt_summary" field.
+func (_u *UsageLogUpdateOne) ClearSystemPromptSummary() *UsageLogUpdateOne {
+	_u.mutation.ClearSystemPromptSummary()
+	return _u
+}
+
+// SetSystemPromptText sets the "system_prompt_text" field.
+func (_u *UsageLogUpdateOne) SetSystemPromptText(v string) *UsageLogUpdateOne {
+	_u.mutation.SetSystemPromptText(v)
+	return _u
+}
+
+// SetNillableSystemPromptText sets the "system_prompt_text" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableSystemPromptText(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetSystemPromptText(*v)
+	}
+	return _u
+}
+
+// ClearSystemPromptText clears the value of the "system_prompt_text" field.
+func (_u *UsageLogUpdateOne) ClearSystemPromptText() *UsageLogUpdateOne {
+	_u.mutation.ClearSystemPromptText()
+	return _u
+}
+
+// SetDeveloperPromptText sets the "developer_prompt_text" field.
+func (_u *UsageLogUpdateOne) SetDeveloperPromptText(v string) *UsageLogUpdateOne {
+	_u.mutation.SetDeveloperPromptText(v)
+	return _u
+}
+
+// SetNillableDeveloperPromptText sets the "developer_prompt_text" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableDeveloperPromptText(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetDeveloperPromptText(*v)
+	}
+	return _u
+}
+
+// ClearDeveloperPromptText clears the value of the "developer_prompt_text" field.
+func (_u *UsageLogUpdateOne) ClearDeveloperPromptText() *UsageLogUpdateOne {
+	_u.mutation.ClearDeveloperPromptText()
+	return _u
+}
+
+// SetToolNames sets the "tool_names" field.
+func (_u *UsageLogUpdateOne) SetToolNames(v []string) *UsageLogUpdateOne {
+	_u.mutation.SetToolNames(v)
+	return _u
+}
+
+// AppendToolNames appends value to the "tool_names" field.
+func (_u *UsageLogUpdateOne) AppendToolNames(v []string) *UsageLogUpdateOne {
+	_u.mutation.AppendToolNames(v)
+	return _u
+}
+
+// ClearToolNames clears the value of the "tool_names" field.
+func (_u *UsageLogUpdateOne) ClearToolNames() *UsageLogUpdateOne {
+	_u.mutation.ClearToolNames()
+	return _u
+}
+
+// SetToolCallNames sets the "tool_call_names" field.
+func (_u *UsageLogUpdateOne) SetToolCallNames(v []string) *UsageLogUpdateOne {
+	_u.mutation.SetToolCallNames(v)
+	return _u
+}
+
+// AppendToolCallNames appends value to the "tool_call_names" field.
+func (_u *UsageLogUpdateOne) AppendToolCallNames(v []string) *UsageLogUpdateOne {
+	_u.mutation.AppendToolCallNames(v)
+	return _u
+}
+
+// ClearToolCallNames clears the value of the "tool_call_names" field.
+func (_u *UsageLogUpdateOne) ClearToolCallNames() *UsageLogUpdateOne {
+	_u.mutation.ClearToolCallNames()
+	return _u
+}
+
+// SetToolCallsJSON sets the "tool_calls_json" field.
+func (_u *UsageLogUpdateOne) SetToolCallsJSON(v []map[string]interface{}) *UsageLogUpdateOne {
+	_u.mutation.SetToolCallsJSON(v)
+	return _u
+}
+
+// AppendToolCallsJSON appends value to the "tool_calls_json" field.
+func (_u *UsageLogUpdateOne) AppendToolCallsJSON(v []map[string]interface{}) *UsageLogUpdateOne {
+	_u.mutation.AppendToolCallsJSON(v)
+	return _u
+}
+
+// ClearToolCallsJSON clears the value of the "tool_calls_json" field.
+func (_u *UsageLogUpdateOne) ClearToolCallsJSON() *UsageLogUpdateOne {
+	_u.mutation.ClearToolCallsJSON()
+	return _u
+}
+
+// SetOutputSummary sets the "output_summary" field.
+func (_u *UsageLogUpdateOne) SetOutputSummary(v string) *UsageLogUpdateOne {
+	_u.mutation.SetOutputSummary(v)
+	return _u
+}
+
+// SetNillableOutputSummary sets the "output_summary" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableOutputSummary(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetOutputSummary(*v)
+	}
+	return _u
+}
+
+// ClearOutputSummary clears the value of the "output_summary" field.
+func (_u *UsageLogUpdateOne) ClearOutputSummary() *UsageLogUpdateOne {
+	_u.mutation.ClearOutputSummary()
+	return _u
+}
+
+// SetOutputText sets the "output_text" field.
+func (_u *UsageLogUpdateOne) SetOutputText(v string) *UsageLogUpdateOne {
+	_u.mutation.SetOutputText(v)
+	return _u
+}
+
+// SetNillableOutputText sets the "output_text" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableOutputText(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetOutputText(*v)
+	}
+	return _u
+}
+
+// ClearOutputText clears the value of the "output_text" field.
+func (_u *UsageLogUpdateOne) ClearOutputText() *UsageLogUpdateOne {
+	_u.mutation.ClearOutputText()
+	return _u
+}
+
+// SetRequestBodySha256 sets the "request_body_sha256" field.
+func (_u *UsageLogUpdateOne) SetRequestBodySha256(v string) *UsageLogUpdateOne {
+	_u.mutation.SetRequestBodySha256(v)
+	return _u
+}
+
+// SetNillableRequestBodySha256 sets the "request_body_sha256" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableRequestBodySha256(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetRequestBodySha256(*v)
+	}
+	return _u
+}
+
+// ClearRequestBodySha256 clears the value of the "request_body_sha256" field.
+func (_u *UsageLogUpdateOne) ClearRequestBodySha256() *UsageLogUpdateOne {
+	_u.mutation.ClearRequestBodySha256()
+	return _u
+}
+
+// SetRequestBodyBytes sets the "request_body_bytes" field.
+func (_u *UsageLogUpdateOne) SetRequestBodyBytes(v int) *UsageLogUpdateOne {
+	_u.mutation.ResetRequestBodyBytes()
+	_u.mutation.SetRequestBodyBytes(v)
+	return _u
+}
+
+// SetNillableRequestBodyBytes sets the "request_body_bytes" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableRequestBodyBytes(v *int) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetRequestBodyBytes(*v)
+	}
+	return _u
+}
+
+// AddRequestBodyBytes adds value to the "request_body_bytes" field.
+func (_u *UsageLogUpdateOne) AddRequestBodyBytes(v int) *UsageLogUpdateOne {
+	_u.mutation.AddRequestBodyBytes(v)
+	return _u
+}
+
+// ClearRequestBodyBytes clears the value of the "request_body_bytes" field.
+func (_u *UsageLogUpdateOne) ClearRequestBodyBytes() *UsageLogUpdateOne {
+	_u.mutation.ClearRequestBodyBytes()
+	return _u
+}
+
+// SetRequestBodyTruncated sets the "request_body_truncated" field.
+func (_u *UsageLogUpdateOne) SetRequestBodyTruncated(v bool) *UsageLogUpdateOne {
+	_u.mutation.SetRequestBodyTruncated(v)
+	return _u
+}
+
+// SetNillableRequestBodyTruncated sets the "request_body_truncated" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableRequestBodyTruncated(v *bool) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetRequestBodyTruncated(*v)
+	}
+	return _u
+}
+
+// SetResponseTextTruncated sets the "response_text_truncated" field.
+func (_u *UsageLogUpdateOne) SetResponseTextTruncated(v bool) *UsageLogUpdateOne {
+	_u.mutation.SetResponseTextTruncated(v)
+	return _u
+}
+
+// SetNillableResponseTextTruncated sets the "response_text_truncated" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableResponseTextTruncated(v *bool) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetResponseTextTruncated(*v)
+	}
+	return _u
+}
+
+// SetTurnMetadata sets the "turn_metadata" field.
+func (_u *UsageLogUpdateOne) SetTurnMetadata(v map[string]interface{}) *UsageLogUpdateOne {
+	_u.mutation.SetTurnMetadata(v)
+	return _u
+}
+
+// ClearTurnMetadata clears the value of the "turn_metadata" field.
+func (_u *UsageLogUpdateOne) ClearTurnMetadata() *UsageLogUpdateOne {
+	_u.mutation.ClearTurnMetadata()
+	return _u
+}
+
+// SetIPLocation sets the "ip_location" field.
+func (_u *UsageLogUpdateOne) SetIPLocation(v map[string]interface{}) *UsageLogUpdateOne {
+	_u.mutation.SetIPLocation(v)
+	return _u
+}
+
+// ClearIPLocation clears the value of the "ip_location" field.
+func (_u *UsageLogUpdateOne) ClearIPLocation() *UsageLogUpdateOne {
+	_u.mutation.ClearIPLocation()
+	return _u
+}
+
+// SetAuditCaptureVersion sets the "audit_capture_version" field.
+func (_u *UsageLogUpdateOne) SetAuditCaptureVersion(v int16) *UsageLogUpdateOne {
+	_u.mutation.ResetAuditCaptureVersion()
+	_u.mutation.SetAuditCaptureVersion(v)
+	return _u
+}
+
+// SetNillableAuditCaptureVersion sets the "audit_capture_version" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableAuditCaptureVersion(v *int16) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetAuditCaptureVersion(*v)
+	}
+	return _u
+}
+
+// AddAuditCaptureVersion adds value to the "audit_capture_version" field.
+func (_u *UsageLogUpdateOne) AddAuditCaptureVersion(v int16) *UsageLogUpdateOne {
+	_u.mutation.AddAuditCaptureVersion(v)
 	return _u
 }
 
@@ -2324,6 +2980,11 @@ func (_u *UsageLogUpdateOne) check() error {
 			return &ValidationError{Name: "request_id", err: fmt.Errorf(`ent: validator failed for field "UsageLog.request_id": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.RequestBodySha256(); ok {
+		if err := usagelog.RequestBodySha256Validator(v); err != nil {
+			return &ValidationError{Name: "request_body_sha256", err: fmt.Errorf(`ent: validator failed for field "UsageLog.request_body_sha256": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Model(); ok {
 		if err := usagelog.ModelValidator(v); err != nil {
 			return &ValidationError{Name: "model", err: fmt.Errorf(`ent: validator failed for field "UsageLog.model": %w`, err)}
@@ -2433,6 +3094,108 @@ func (_u *UsageLogUpdateOne) sqlSave(ctx context.Context) (_node *UsageLog, err 
 	}
 	if _u.mutation.RequestPromptCleared() {
 		_spec.ClearField(usagelog.FieldRequestPrompt, field.TypeString)
+	}
+	if value, ok := _u.mutation.SystemPromptSummary(); ok {
+		_spec.SetField(usagelog.FieldSystemPromptSummary, field.TypeString, value)
+	}
+	if _u.mutation.SystemPromptSummaryCleared() {
+		_spec.ClearField(usagelog.FieldSystemPromptSummary, field.TypeString)
+	}
+	if value, ok := _u.mutation.SystemPromptText(); ok {
+		_spec.SetField(usagelog.FieldSystemPromptText, field.TypeString, value)
+	}
+	if _u.mutation.SystemPromptTextCleared() {
+		_spec.ClearField(usagelog.FieldSystemPromptText, field.TypeString)
+	}
+	if value, ok := _u.mutation.DeveloperPromptText(); ok {
+		_spec.SetField(usagelog.FieldDeveloperPromptText, field.TypeString, value)
+	}
+	if _u.mutation.DeveloperPromptTextCleared() {
+		_spec.ClearField(usagelog.FieldDeveloperPromptText, field.TypeString)
+	}
+	if value, ok := _u.mutation.ToolNames(); ok {
+		_spec.SetField(usagelog.FieldToolNames, field.TypeJSON, value)
+	}
+	if value, ok := _u.mutation.AppendedToolNames(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, usagelog.FieldToolNames, value)
+		})
+	}
+	if _u.mutation.ToolNamesCleared() {
+		_spec.ClearField(usagelog.FieldToolNames, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.ToolCallNames(); ok {
+		_spec.SetField(usagelog.FieldToolCallNames, field.TypeJSON, value)
+	}
+	if value, ok := _u.mutation.AppendedToolCallNames(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, usagelog.FieldToolCallNames, value)
+		})
+	}
+	if _u.mutation.ToolCallNamesCleared() {
+		_spec.ClearField(usagelog.FieldToolCallNames, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.ToolCallsJSON(); ok {
+		_spec.SetField(usagelog.FieldToolCallsJSON, field.TypeJSON, value)
+	}
+	if value, ok := _u.mutation.AppendedToolCallsJSON(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, usagelog.FieldToolCallsJSON, value)
+		})
+	}
+	if _u.mutation.ToolCallsJSONCleared() {
+		_spec.ClearField(usagelog.FieldToolCallsJSON, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.OutputSummary(); ok {
+		_spec.SetField(usagelog.FieldOutputSummary, field.TypeString, value)
+	}
+	if _u.mutation.OutputSummaryCleared() {
+		_spec.ClearField(usagelog.FieldOutputSummary, field.TypeString)
+	}
+	if value, ok := _u.mutation.OutputText(); ok {
+		_spec.SetField(usagelog.FieldOutputText, field.TypeString, value)
+	}
+	if _u.mutation.OutputTextCleared() {
+		_spec.ClearField(usagelog.FieldOutputText, field.TypeString)
+	}
+	if value, ok := _u.mutation.RequestBodySha256(); ok {
+		_spec.SetField(usagelog.FieldRequestBodySha256, field.TypeString, value)
+	}
+	if _u.mutation.RequestBodySha256Cleared() {
+		_spec.ClearField(usagelog.FieldRequestBodySha256, field.TypeString)
+	}
+	if value, ok := _u.mutation.RequestBodyBytes(); ok {
+		_spec.SetField(usagelog.FieldRequestBodyBytes, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedRequestBodyBytes(); ok {
+		_spec.AddField(usagelog.FieldRequestBodyBytes, field.TypeInt, value)
+	}
+	if _u.mutation.RequestBodyBytesCleared() {
+		_spec.ClearField(usagelog.FieldRequestBodyBytes, field.TypeInt)
+	}
+	if value, ok := _u.mutation.RequestBodyTruncated(); ok {
+		_spec.SetField(usagelog.FieldRequestBodyTruncated, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.ResponseTextTruncated(); ok {
+		_spec.SetField(usagelog.FieldResponseTextTruncated, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.TurnMetadata(); ok {
+		_spec.SetField(usagelog.FieldTurnMetadata, field.TypeJSON, value)
+	}
+	if _u.mutation.TurnMetadataCleared() {
+		_spec.ClearField(usagelog.FieldTurnMetadata, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.IPLocation(); ok {
+		_spec.SetField(usagelog.FieldIPLocation, field.TypeJSON, value)
+	}
+	if _u.mutation.IPLocationCleared() {
+		_spec.ClearField(usagelog.FieldIPLocation, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.AuditCaptureVersion(); ok {
+		_spec.SetField(usagelog.FieldAuditCaptureVersion, field.TypeInt16, value)
+	}
+	if value, ok := _u.mutation.AddedAuditCaptureVersion(); ok {
+		_spec.AddField(usagelog.FieldAuditCaptureVersion, field.TypeInt16, value)
 	}
 	if value, ok := _u.mutation.Model(); ok {
 		_spec.SetField(usagelog.FieldModel, field.TypeString, value)

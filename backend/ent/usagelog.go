@@ -33,6 +33,36 @@ type UsageLog struct {
 	RequestID string `json:"request_id,omitempty"`
 	// RequestPrompt holds the value of the "request_prompt" field.
 	RequestPrompt *string `json:"request_prompt,omitempty"`
+	// SystemPromptSummary holds the value of the "system_prompt_summary" field.
+	SystemPromptSummary *string `json:"system_prompt_summary,omitempty"`
+	// SystemPromptText holds the value of the "system_prompt_text" field.
+	SystemPromptText *string `json:"system_prompt_text,omitempty"`
+	// DeveloperPromptText holds the value of the "developer_prompt_text" field.
+	DeveloperPromptText *string `json:"developer_prompt_text,omitempty"`
+	// ToolNames holds the value of the "tool_names" field.
+	ToolNames []string `json:"tool_names,omitempty"`
+	// ToolCallNames holds the value of the "tool_call_names" field.
+	ToolCallNames []string `json:"tool_call_names,omitempty"`
+	// ToolCallsJSON holds the value of the "tool_calls_json" field.
+	ToolCallsJSON []map[string]interface{} `json:"tool_calls_json,omitempty"`
+	// OutputSummary holds the value of the "output_summary" field.
+	OutputSummary *string `json:"output_summary,omitempty"`
+	// OutputText holds the value of the "output_text" field.
+	OutputText *string `json:"output_text,omitempty"`
+	// RequestBodySha256 holds the value of the "request_body_sha256" field.
+	RequestBodySha256 *string `json:"request_body_sha256,omitempty"`
+	// RequestBodyBytes holds the value of the "request_body_bytes" field.
+	RequestBodyBytes *int `json:"request_body_bytes,omitempty"`
+	// RequestBodyTruncated holds the value of the "request_body_truncated" field.
+	RequestBodyTruncated bool `json:"request_body_truncated,omitempty"`
+	// ResponseTextTruncated holds the value of the "response_text_truncated" field.
+	ResponseTextTruncated bool `json:"response_text_truncated,omitempty"`
+	// TurnMetadata holds the value of the "turn_metadata" field.
+	TurnMetadata map[string]interface{} `json:"turn_metadata,omitempty"`
+	// IPLocation holds the value of the "ip_location" field.
+	IPLocation map[string]interface{} `json:"ip_location,omitempty"`
+	// AuditCaptureVersion holds the value of the "audit_capture_version" field.
+	AuditCaptureVersion int16 `json:"audit_capture_version,omitempty"`
 	// Model holds the value of the "model" field.
 	Model string `json:"model,omitempty"`
 	// RequestedModel holds the value of the "requested_model" field.
@@ -190,15 +220,15 @@ func (*UsageLog) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case usagelog.FieldImageSizeBreakdown:
+		case usagelog.FieldToolNames, usagelog.FieldToolCallNames, usagelog.FieldToolCallsJSON, usagelog.FieldTurnMetadata, usagelog.FieldIPLocation, usagelog.FieldImageSizeBreakdown:
 			values[i] = new([]byte)
-		case usagelog.FieldStream, usagelog.FieldCacheTTLOverridden:
+		case usagelog.FieldRequestBodyTruncated, usagelog.FieldResponseTextTruncated, usagelog.FieldStream, usagelog.FieldCacheTTLOverridden:
 			values[i] = new(sql.NullBool)
 		case usagelog.FieldInputCost, usagelog.FieldOutputCost, usagelog.FieldCacheCreationCost, usagelog.FieldCacheReadCost, usagelog.FieldTotalCost, usagelog.FieldActualCost, usagelog.FieldRateMultiplier, usagelog.FieldAccountRateMultiplier:
 			values[i] = new(sql.NullFloat64)
-		case usagelog.FieldID, usagelog.FieldUserID, usagelog.FieldAPIKeyID, usagelog.FieldAccountID, usagelog.FieldChannelID, usagelog.FieldGroupID, usagelog.FieldSubscriptionID, usagelog.FieldInputTokens, usagelog.FieldOutputTokens, usagelog.FieldCacheCreationTokens, usagelog.FieldCacheReadTokens, usagelog.FieldCacheCreation5mTokens, usagelog.FieldCacheCreation1hTokens, usagelog.FieldBillingType, usagelog.FieldDurationMs, usagelog.FieldFirstTokenMs, usagelog.FieldImageCount:
+		case usagelog.FieldID, usagelog.FieldUserID, usagelog.FieldAPIKeyID, usagelog.FieldAccountID, usagelog.FieldRequestBodyBytes, usagelog.FieldAuditCaptureVersion, usagelog.FieldChannelID, usagelog.FieldGroupID, usagelog.FieldSubscriptionID, usagelog.FieldInputTokens, usagelog.FieldOutputTokens, usagelog.FieldCacheCreationTokens, usagelog.FieldCacheReadTokens, usagelog.FieldCacheCreation5mTokens, usagelog.FieldCacheCreation1hTokens, usagelog.FieldBillingType, usagelog.FieldDurationMs, usagelog.FieldFirstTokenMs, usagelog.FieldImageCount:
 			values[i] = new(sql.NullInt64)
-		case usagelog.FieldRequestID, usagelog.FieldRequestPrompt, usagelog.FieldModel, usagelog.FieldRequestedModel, usagelog.FieldUpstreamModel, usagelog.FieldModelMappingChain, usagelog.FieldBillingTier, usagelog.FieldBillingMode, usagelog.FieldUserAgent, usagelog.FieldIPAddress, usagelog.FieldImageSize, usagelog.FieldImageInputSize, usagelog.FieldImageOutputSize, usagelog.FieldImageSizeSource:
+		case usagelog.FieldRequestID, usagelog.FieldRequestPrompt, usagelog.FieldSystemPromptSummary, usagelog.FieldSystemPromptText, usagelog.FieldDeveloperPromptText, usagelog.FieldOutputSummary, usagelog.FieldOutputText, usagelog.FieldRequestBodySha256, usagelog.FieldModel, usagelog.FieldRequestedModel, usagelog.FieldUpstreamModel, usagelog.FieldModelMappingChain, usagelog.FieldBillingTier, usagelog.FieldBillingMode, usagelog.FieldUserAgent, usagelog.FieldIPAddress, usagelog.FieldImageSize, usagelog.FieldImageInputSize, usagelog.FieldImageOutputSize, usagelog.FieldImageSizeSource:
 			values[i] = new(sql.NullString)
 		case usagelog.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -253,6 +283,113 @@ func (_m *UsageLog) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.RequestPrompt = new(string)
 				*_m.RequestPrompt = value.String
+			}
+		case usagelog.FieldSystemPromptSummary:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field system_prompt_summary", values[i])
+			} else if value.Valid {
+				_m.SystemPromptSummary = new(string)
+				*_m.SystemPromptSummary = value.String
+			}
+		case usagelog.FieldSystemPromptText:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field system_prompt_text", values[i])
+			} else if value.Valid {
+				_m.SystemPromptText = new(string)
+				*_m.SystemPromptText = value.String
+			}
+		case usagelog.FieldDeveloperPromptText:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field developer_prompt_text", values[i])
+			} else if value.Valid {
+				_m.DeveloperPromptText = new(string)
+				*_m.DeveloperPromptText = value.String
+			}
+		case usagelog.FieldToolNames:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field tool_names", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.ToolNames); err != nil {
+					return fmt.Errorf("unmarshal field tool_names: %w", err)
+				}
+			}
+		case usagelog.FieldToolCallNames:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field tool_call_names", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.ToolCallNames); err != nil {
+					return fmt.Errorf("unmarshal field tool_call_names: %w", err)
+				}
+			}
+		case usagelog.FieldToolCallsJSON:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field tool_calls_json", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.ToolCallsJSON); err != nil {
+					return fmt.Errorf("unmarshal field tool_calls_json: %w", err)
+				}
+			}
+		case usagelog.FieldOutputSummary:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field output_summary", values[i])
+			} else if value.Valid {
+				_m.OutputSummary = new(string)
+				*_m.OutputSummary = value.String
+			}
+		case usagelog.FieldOutputText:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field output_text", values[i])
+			} else if value.Valid {
+				_m.OutputText = new(string)
+				*_m.OutputText = value.String
+			}
+		case usagelog.FieldRequestBodySha256:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field request_body_sha256", values[i])
+			} else if value.Valid {
+				_m.RequestBodySha256 = new(string)
+				*_m.RequestBodySha256 = value.String
+			}
+		case usagelog.FieldRequestBodyBytes:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field request_body_bytes", values[i])
+			} else if value.Valid {
+				_m.RequestBodyBytes = new(int)
+				*_m.RequestBodyBytes = int(value.Int64)
+			}
+		case usagelog.FieldRequestBodyTruncated:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field request_body_truncated", values[i])
+			} else if value.Valid {
+				_m.RequestBodyTruncated = value.Bool
+			}
+		case usagelog.FieldResponseTextTruncated:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field response_text_truncated", values[i])
+			} else if value.Valid {
+				_m.ResponseTextTruncated = value.Bool
+			}
+		case usagelog.FieldTurnMetadata:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field turn_metadata", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.TurnMetadata); err != nil {
+					return fmt.Errorf("unmarshal field turn_metadata: %w", err)
+				}
+			}
+		case usagelog.FieldIPLocation:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field ip_location", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.IPLocation); err != nil {
+					return fmt.Errorf("unmarshal field ip_location: %w", err)
+				}
+			}
+		case usagelog.FieldAuditCaptureVersion:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field audit_capture_version", values[i])
+			} else if value.Valid {
+				_m.AuditCaptureVersion = int16(value.Int64)
 			}
 		case usagelog.FieldModel:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -572,6 +709,65 @@ func (_m *UsageLog) String() string {
 		builder.WriteString("request_prompt=")
 		builder.WriteString(*v)
 	}
+	builder.WriteString(", ")
+	if v := _m.SystemPromptSummary; v != nil {
+		builder.WriteString("system_prompt_summary=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.SystemPromptText; v != nil {
+		builder.WriteString("system_prompt_text=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.DeveloperPromptText; v != nil {
+		builder.WriteString("developer_prompt_text=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	builder.WriteString("tool_names=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ToolNames))
+	builder.WriteString(", ")
+	builder.WriteString("tool_call_names=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ToolCallNames))
+	builder.WriteString(", ")
+	builder.WriteString("tool_calls_json=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ToolCallsJSON))
+	builder.WriteString(", ")
+	if v := _m.OutputSummary; v != nil {
+		builder.WriteString("output_summary=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.OutputText; v != nil {
+		builder.WriteString("output_text=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.RequestBodySha256; v != nil {
+		builder.WriteString("request_body_sha256=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.RequestBodyBytes; v != nil {
+		builder.WriteString("request_body_bytes=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	builder.WriteString("request_body_truncated=")
+	builder.WriteString(fmt.Sprintf("%v", _m.RequestBodyTruncated))
+	builder.WriteString(", ")
+	builder.WriteString("response_text_truncated=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ResponseTextTruncated))
+	builder.WriteString(", ")
+	builder.WriteString("turn_metadata=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TurnMetadata))
+	builder.WriteString(", ")
+	builder.WriteString("ip_location=")
+	builder.WriteString(fmt.Sprintf("%v", _m.IPLocation))
+	builder.WriteString(", ")
+	builder.WriteString("audit_capture_version=")
+	builder.WriteString(fmt.Sprintf("%v", _m.AuditCaptureVersion))
 	builder.WriteString(", ")
 	builder.WriteString("model=")
 	builder.WriteString(_m.Model)

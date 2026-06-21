@@ -24,6 +24,36 @@ const (
 	FieldRequestID = "request_id"
 	// FieldRequestPrompt holds the string denoting the request_prompt field in the database.
 	FieldRequestPrompt = "request_prompt"
+	// FieldSystemPromptSummary holds the string denoting the system_prompt_summary field in the database.
+	FieldSystemPromptSummary = "system_prompt_summary"
+	// FieldSystemPromptText holds the string denoting the system_prompt_text field in the database.
+	FieldSystemPromptText = "system_prompt_text"
+	// FieldDeveloperPromptText holds the string denoting the developer_prompt_text field in the database.
+	FieldDeveloperPromptText = "developer_prompt_text"
+	// FieldToolNames holds the string denoting the tool_names field in the database.
+	FieldToolNames = "tool_names"
+	// FieldToolCallNames holds the string denoting the tool_call_names field in the database.
+	FieldToolCallNames = "tool_call_names"
+	// FieldToolCallsJSON holds the string denoting the tool_calls_json field in the database.
+	FieldToolCallsJSON = "tool_calls_json"
+	// FieldOutputSummary holds the string denoting the output_summary field in the database.
+	FieldOutputSummary = "output_summary"
+	// FieldOutputText holds the string denoting the output_text field in the database.
+	FieldOutputText = "output_text"
+	// FieldRequestBodySha256 holds the string denoting the request_body_sha256 field in the database.
+	FieldRequestBodySha256 = "request_body_sha256"
+	// FieldRequestBodyBytes holds the string denoting the request_body_bytes field in the database.
+	FieldRequestBodyBytes = "request_body_bytes"
+	// FieldRequestBodyTruncated holds the string denoting the request_body_truncated field in the database.
+	FieldRequestBodyTruncated = "request_body_truncated"
+	// FieldResponseTextTruncated holds the string denoting the response_text_truncated field in the database.
+	FieldResponseTextTruncated = "response_text_truncated"
+	// FieldTurnMetadata holds the string denoting the turn_metadata field in the database.
+	FieldTurnMetadata = "turn_metadata"
+	// FieldIPLocation holds the string denoting the ip_location field in the database.
+	FieldIPLocation = "ip_location"
+	// FieldAuditCaptureVersion holds the string denoting the audit_capture_version field in the database.
+	FieldAuditCaptureVersion = "audit_capture_version"
 	// FieldModel holds the string denoting the model field in the database.
 	FieldModel = "model"
 	// FieldRequestedModel holds the string denoting the requested_model field in the database.
@@ -155,6 +185,21 @@ var Columns = []string{
 	FieldAccountID,
 	FieldRequestID,
 	FieldRequestPrompt,
+	FieldSystemPromptSummary,
+	FieldSystemPromptText,
+	FieldDeveloperPromptText,
+	FieldToolNames,
+	FieldToolCallNames,
+	FieldToolCallsJSON,
+	FieldOutputSummary,
+	FieldOutputText,
+	FieldRequestBodySha256,
+	FieldRequestBodyBytes,
+	FieldRequestBodyTruncated,
+	FieldResponseTextTruncated,
+	FieldTurnMetadata,
+	FieldIPLocation,
+	FieldAuditCaptureVersion,
 	FieldModel,
 	FieldRequestedModel,
 	FieldUpstreamModel,
@@ -207,6 +252,14 @@ func ValidColumn(column string) bool {
 var (
 	// RequestIDValidator is a validator for the "request_id" field. It is called by the builders before save.
 	RequestIDValidator func(string) error
+	// RequestBodySha256Validator is a validator for the "request_body_sha256" field. It is called by the builders before save.
+	RequestBodySha256Validator func(string) error
+	// DefaultRequestBodyTruncated holds the default value on creation for the "request_body_truncated" field.
+	DefaultRequestBodyTruncated bool
+	// DefaultResponseTextTruncated holds the default value on creation for the "response_text_truncated" field.
+	DefaultResponseTextTruncated bool
+	// DefaultAuditCaptureVersion holds the default value on creation for the "audit_capture_version" field.
+	DefaultAuditCaptureVersion int16
 	// ModelValidator is a validator for the "model" field. It is called by the builders before save.
 	ModelValidator func(string) error
 	// RequestedModelValidator is a validator for the "requested_model" field. It is called by the builders before save.
@@ -300,6 +353,56 @@ func ByRequestID(opts ...sql.OrderTermOption) OrderOption {
 // ByRequestPrompt orders the results by the request_prompt field.
 func ByRequestPrompt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRequestPrompt, opts...).ToFunc()
+}
+
+// BySystemPromptSummary orders the results by the system_prompt_summary field.
+func BySystemPromptSummary(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSystemPromptSummary, opts...).ToFunc()
+}
+
+// BySystemPromptText orders the results by the system_prompt_text field.
+func BySystemPromptText(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSystemPromptText, opts...).ToFunc()
+}
+
+// ByDeveloperPromptText orders the results by the developer_prompt_text field.
+func ByDeveloperPromptText(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeveloperPromptText, opts...).ToFunc()
+}
+
+// ByOutputSummary orders the results by the output_summary field.
+func ByOutputSummary(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOutputSummary, opts...).ToFunc()
+}
+
+// ByOutputText orders the results by the output_text field.
+func ByOutputText(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOutputText, opts...).ToFunc()
+}
+
+// ByRequestBodySha256 orders the results by the request_body_sha256 field.
+func ByRequestBodySha256(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRequestBodySha256, opts...).ToFunc()
+}
+
+// ByRequestBodyBytes orders the results by the request_body_bytes field.
+func ByRequestBodyBytes(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRequestBodyBytes, opts...).ToFunc()
+}
+
+// ByRequestBodyTruncated orders the results by the request_body_truncated field.
+func ByRequestBodyTruncated(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRequestBodyTruncated, opts...).ToFunc()
+}
+
+// ByResponseTextTruncated orders the results by the response_text_truncated field.
+func ByResponseTextTruncated(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldResponseTextTruncated, opts...).ToFunc()
+}
+
+// ByAuditCaptureVersion orders the results by the audit_capture_version field.
+func ByAuditCaptureVersion(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAuditCaptureVersion, opts...).ToFunc()
 }
 
 // ByModel orders the results by the model field.

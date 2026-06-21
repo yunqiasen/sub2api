@@ -34890,6 +34890,26 @@ type UsageLogMutation struct {
 	id                          *int64
 	request_id                  *string
 	request_prompt              *string
+	system_prompt_summary       *string
+	system_prompt_text          *string
+	developer_prompt_text       *string
+	tool_names                  *[]string
+	appendtool_names            []string
+	tool_call_names             *[]string
+	appendtool_call_names       []string
+	tool_calls_json             *[]map[string]interface{}
+	appendtool_calls_json       []map[string]interface{}
+	output_summary              *string
+	output_text                 *string
+	request_body_sha256         *string
+	request_body_bytes          *int
+	addrequest_body_bytes       *int
+	request_body_truncated      *bool
+	response_text_truncated     *bool
+	turn_metadata               *map[string]interface{}
+	ip_location                 *map[string]interface{}
+	audit_capture_version       *int16
+	addaudit_capture_version    *int16
 	model                       *string
 	requested_model             *string
 	upstream_model              *string
@@ -35249,6 +35269,791 @@ func (m *UsageLogMutation) RequestPromptCleared() bool {
 func (m *UsageLogMutation) ResetRequestPrompt() {
 	m.request_prompt = nil
 	delete(m.clearedFields, usagelog.FieldRequestPrompt)
+}
+
+// SetSystemPromptSummary sets the "system_prompt_summary" field.
+func (m *UsageLogMutation) SetSystemPromptSummary(s string) {
+	m.system_prompt_summary = &s
+}
+
+// SystemPromptSummary returns the value of the "system_prompt_summary" field in the mutation.
+func (m *UsageLogMutation) SystemPromptSummary() (r string, exists bool) {
+	v := m.system_prompt_summary
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSystemPromptSummary returns the old "system_prompt_summary" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldSystemPromptSummary(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSystemPromptSummary is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSystemPromptSummary requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSystemPromptSummary: %w", err)
+	}
+	return oldValue.SystemPromptSummary, nil
+}
+
+// ClearSystemPromptSummary clears the value of the "system_prompt_summary" field.
+func (m *UsageLogMutation) ClearSystemPromptSummary() {
+	m.system_prompt_summary = nil
+	m.clearedFields[usagelog.FieldSystemPromptSummary] = struct{}{}
+}
+
+// SystemPromptSummaryCleared returns if the "system_prompt_summary" field was cleared in this mutation.
+func (m *UsageLogMutation) SystemPromptSummaryCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldSystemPromptSummary]
+	return ok
+}
+
+// ResetSystemPromptSummary resets all changes to the "system_prompt_summary" field.
+func (m *UsageLogMutation) ResetSystemPromptSummary() {
+	m.system_prompt_summary = nil
+	delete(m.clearedFields, usagelog.FieldSystemPromptSummary)
+}
+
+// SetSystemPromptText sets the "system_prompt_text" field.
+func (m *UsageLogMutation) SetSystemPromptText(s string) {
+	m.system_prompt_text = &s
+}
+
+// SystemPromptText returns the value of the "system_prompt_text" field in the mutation.
+func (m *UsageLogMutation) SystemPromptText() (r string, exists bool) {
+	v := m.system_prompt_text
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSystemPromptText returns the old "system_prompt_text" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldSystemPromptText(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSystemPromptText is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSystemPromptText requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSystemPromptText: %w", err)
+	}
+	return oldValue.SystemPromptText, nil
+}
+
+// ClearSystemPromptText clears the value of the "system_prompt_text" field.
+func (m *UsageLogMutation) ClearSystemPromptText() {
+	m.system_prompt_text = nil
+	m.clearedFields[usagelog.FieldSystemPromptText] = struct{}{}
+}
+
+// SystemPromptTextCleared returns if the "system_prompt_text" field was cleared in this mutation.
+func (m *UsageLogMutation) SystemPromptTextCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldSystemPromptText]
+	return ok
+}
+
+// ResetSystemPromptText resets all changes to the "system_prompt_text" field.
+func (m *UsageLogMutation) ResetSystemPromptText() {
+	m.system_prompt_text = nil
+	delete(m.clearedFields, usagelog.FieldSystemPromptText)
+}
+
+// SetDeveloperPromptText sets the "developer_prompt_text" field.
+func (m *UsageLogMutation) SetDeveloperPromptText(s string) {
+	m.developer_prompt_text = &s
+}
+
+// DeveloperPromptText returns the value of the "developer_prompt_text" field in the mutation.
+func (m *UsageLogMutation) DeveloperPromptText() (r string, exists bool) {
+	v := m.developer_prompt_text
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeveloperPromptText returns the old "developer_prompt_text" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldDeveloperPromptText(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeveloperPromptText is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeveloperPromptText requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeveloperPromptText: %w", err)
+	}
+	return oldValue.DeveloperPromptText, nil
+}
+
+// ClearDeveloperPromptText clears the value of the "developer_prompt_text" field.
+func (m *UsageLogMutation) ClearDeveloperPromptText() {
+	m.developer_prompt_text = nil
+	m.clearedFields[usagelog.FieldDeveloperPromptText] = struct{}{}
+}
+
+// DeveloperPromptTextCleared returns if the "developer_prompt_text" field was cleared in this mutation.
+func (m *UsageLogMutation) DeveloperPromptTextCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldDeveloperPromptText]
+	return ok
+}
+
+// ResetDeveloperPromptText resets all changes to the "developer_prompt_text" field.
+func (m *UsageLogMutation) ResetDeveloperPromptText() {
+	m.developer_prompt_text = nil
+	delete(m.clearedFields, usagelog.FieldDeveloperPromptText)
+}
+
+// SetToolNames sets the "tool_names" field.
+func (m *UsageLogMutation) SetToolNames(s []string) {
+	m.tool_names = &s
+	m.appendtool_names = nil
+}
+
+// ToolNames returns the value of the "tool_names" field in the mutation.
+func (m *UsageLogMutation) ToolNames() (r []string, exists bool) {
+	v := m.tool_names
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldToolNames returns the old "tool_names" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldToolNames(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldToolNames is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldToolNames requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldToolNames: %w", err)
+	}
+	return oldValue.ToolNames, nil
+}
+
+// AppendToolNames adds s to the "tool_names" field.
+func (m *UsageLogMutation) AppendToolNames(s []string) {
+	m.appendtool_names = append(m.appendtool_names, s...)
+}
+
+// AppendedToolNames returns the list of values that were appended to the "tool_names" field in this mutation.
+func (m *UsageLogMutation) AppendedToolNames() ([]string, bool) {
+	if len(m.appendtool_names) == 0 {
+		return nil, false
+	}
+	return m.appendtool_names, true
+}
+
+// ClearToolNames clears the value of the "tool_names" field.
+func (m *UsageLogMutation) ClearToolNames() {
+	m.tool_names = nil
+	m.appendtool_names = nil
+	m.clearedFields[usagelog.FieldToolNames] = struct{}{}
+}
+
+// ToolNamesCleared returns if the "tool_names" field was cleared in this mutation.
+func (m *UsageLogMutation) ToolNamesCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldToolNames]
+	return ok
+}
+
+// ResetToolNames resets all changes to the "tool_names" field.
+func (m *UsageLogMutation) ResetToolNames() {
+	m.tool_names = nil
+	m.appendtool_names = nil
+	delete(m.clearedFields, usagelog.FieldToolNames)
+}
+
+// SetToolCallNames sets the "tool_call_names" field.
+func (m *UsageLogMutation) SetToolCallNames(s []string) {
+	m.tool_call_names = &s
+	m.appendtool_call_names = nil
+}
+
+// ToolCallNames returns the value of the "tool_call_names" field in the mutation.
+func (m *UsageLogMutation) ToolCallNames() (r []string, exists bool) {
+	v := m.tool_call_names
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldToolCallNames returns the old "tool_call_names" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldToolCallNames(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldToolCallNames is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldToolCallNames requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldToolCallNames: %w", err)
+	}
+	return oldValue.ToolCallNames, nil
+}
+
+// AppendToolCallNames adds s to the "tool_call_names" field.
+func (m *UsageLogMutation) AppendToolCallNames(s []string) {
+	m.appendtool_call_names = append(m.appendtool_call_names, s...)
+}
+
+// AppendedToolCallNames returns the list of values that were appended to the "tool_call_names" field in this mutation.
+func (m *UsageLogMutation) AppendedToolCallNames() ([]string, bool) {
+	if len(m.appendtool_call_names) == 0 {
+		return nil, false
+	}
+	return m.appendtool_call_names, true
+}
+
+// ClearToolCallNames clears the value of the "tool_call_names" field.
+func (m *UsageLogMutation) ClearToolCallNames() {
+	m.tool_call_names = nil
+	m.appendtool_call_names = nil
+	m.clearedFields[usagelog.FieldToolCallNames] = struct{}{}
+}
+
+// ToolCallNamesCleared returns if the "tool_call_names" field was cleared in this mutation.
+func (m *UsageLogMutation) ToolCallNamesCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldToolCallNames]
+	return ok
+}
+
+// ResetToolCallNames resets all changes to the "tool_call_names" field.
+func (m *UsageLogMutation) ResetToolCallNames() {
+	m.tool_call_names = nil
+	m.appendtool_call_names = nil
+	delete(m.clearedFields, usagelog.FieldToolCallNames)
+}
+
+// SetToolCallsJSON sets the "tool_calls_json" field.
+func (m *UsageLogMutation) SetToolCallsJSON(value []map[string]interface{}) {
+	m.tool_calls_json = &value
+	m.appendtool_calls_json = nil
+}
+
+// ToolCallsJSON returns the value of the "tool_calls_json" field in the mutation.
+func (m *UsageLogMutation) ToolCallsJSON() (r []map[string]interface{}, exists bool) {
+	v := m.tool_calls_json
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldToolCallsJSON returns the old "tool_calls_json" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldToolCallsJSON(ctx context.Context) (v []map[string]interface{}, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldToolCallsJSON is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldToolCallsJSON requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldToolCallsJSON: %w", err)
+	}
+	return oldValue.ToolCallsJSON, nil
+}
+
+// AppendToolCallsJSON adds value to the "tool_calls_json" field.
+func (m *UsageLogMutation) AppendToolCallsJSON(value []map[string]interface{}) {
+	m.appendtool_calls_json = append(m.appendtool_calls_json, value...)
+}
+
+// AppendedToolCallsJSON returns the list of values that were appended to the "tool_calls_json" field in this mutation.
+func (m *UsageLogMutation) AppendedToolCallsJSON() ([]map[string]interface{}, bool) {
+	if len(m.appendtool_calls_json) == 0 {
+		return nil, false
+	}
+	return m.appendtool_calls_json, true
+}
+
+// ClearToolCallsJSON clears the value of the "tool_calls_json" field.
+func (m *UsageLogMutation) ClearToolCallsJSON() {
+	m.tool_calls_json = nil
+	m.appendtool_calls_json = nil
+	m.clearedFields[usagelog.FieldToolCallsJSON] = struct{}{}
+}
+
+// ToolCallsJSONCleared returns if the "tool_calls_json" field was cleared in this mutation.
+func (m *UsageLogMutation) ToolCallsJSONCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldToolCallsJSON]
+	return ok
+}
+
+// ResetToolCallsJSON resets all changes to the "tool_calls_json" field.
+func (m *UsageLogMutation) ResetToolCallsJSON() {
+	m.tool_calls_json = nil
+	m.appendtool_calls_json = nil
+	delete(m.clearedFields, usagelog.FieldToolCallsJSON)
+}
+
+// SetOutputSummary sets the "output_summary" field.
+func (m *UsageLogMutation) SetOutputSummary(s string) {
+	m.output_summary = &s
+}
+
+// OutputSummary returns the value of the "output_summary" field in the mutation.
+func (m *UsageLogMutation) OutputSummary() (r string, exists bool) {
+	v := m.output_summary
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOutputSummary returns the old "output_summary" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldOutputSummary(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOutputSummary is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOutputSummary requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOutputSummary: %w", err)
+	}
+	return oldValue.OutputSummary, nil
+}
+
+// ClearOutputSummary clears the value of the "output_summary" field.
+func (m *UsageLogMutation) ClearOutputSummary() {
+	m.output_summary = nil
+	m.clearedFields[usagelog.FieldOutputSummary] = struct{}{}
+}
+
+// OutputSummaryCleared returns if the "output_summary" field was cleared in this mutation.
+func (m *UsageLogMutation) OutputSummaryCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldOutputSummary]
+	return ok
+}
+
+// ResetOutputSummary resets all changes to the "output_summary" field.
+func (m *UsageLogMutation) ResetOutputSummary() {
+	m.output_summary = nil
+	delete(m.clearedFields, usagelog.FieldOutputSummary)
+}
+
+// SetOutputText sets the "output_text" field.
+func (m *UsageLogMutation) SetOutputText(s string) {
+	m.output_text = &s
+}
+
+// OutputText returns the value of the "output_text" field in the mutation.
+func (m *UsageLogMutation) OutputText() (r string, exists bool) {
+	v := m.output_text
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOutputText returns the old "output_text" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldOutputText(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOutputText is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOutputText requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOutputText: %w", err)
+	}
+	return oldValue.OutputText, nil
+}
+
+// ClearOutputText clears the value of the "output_text" field.
+func (m *UsageLogMutation) ClearOutputText() {
+	m.output_text = nil
+	m.clearedFields[usagelog.FieldOutputText] = struct{}{}
+}
+
+// OutputTextCleared returns if the "output_text" field was cleared in this mutation.
+func (m *UsageLogMutation) OutputTextCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldOutputText]
+	return ok
+}
+
+// ResetOutputText resets all changes to the "output_text" field.
+func (m *UsageLogMutation) ResetOutputText() {
+	m.output_text = nil
+	delete(m.clearedFields, usagelog.FieldOutputText)
+}
+
+// SetRequestBodySha256 sets the "request_body_sha256" field.
+func (m *UsageLogMutation) SetRequestBodySha256(s string) {
+	m.request_body_sha256 = &s
+}
+
+// RequestBodySha256 returns the value of the "request_body_sha256" field in the mutation.
+func (m *UsageLogMutation) RequestBodySha256() (r string, exists bool) {
+	v := m.request_body_sha256
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRequestBodySha256 returns the old "request_body_sha256" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldRequestBodySha256(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRequestBodySha256 is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRequestBodySha256 requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRequestBodySha256: %w", err)
+	}
+	return oldValue.RequestBodySha256, nil
+}
+
+// ClearRequestBodySha256 clears the value of the "request_body_sha256" field.
+func (m *UsageLogMutation) ClearRequestBodySha256() {
+	m.request_body_sha256 = nil
+	m.clearedFields[usagelog.FieldRequestBodySha256] = struct{}{}
+}
+
+// RequestBodySha256Cleared returns if the "request_body_sha256" field was cleared in this mutation.
+func (m *UsageLogMutation) RequestBodySha256Cleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldRequestBodySha256]
+	return ok
+}
+
+// ResetRequestBodySha256 resets all changes to the "request_body_sha256" field.
+func (m *UsageLogMutation) ResetRequestBodySha256() {
+	m.request_body_sha256 = nil
+	delete(m.clearedFields, usagelog.FieldRequestBodySha256)
+}
+
+// SetRequestBodyBytes sets the "request_body_bytes" field.
+func (m *UsageLogMutation) SetRequestBodyBytes(i int) {
+	m.request_body_bytes = &i
+	m.addrequest_body_bytes = nil
+}
+
+// RequestBodyBytes returns the value of the "request_body_bytes" field in the mutation.
+func (m *UsageLogMutation) RequestBodyBytes() (r int, exists bool) {
+	v := m.request_body_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRequestBodyBytes returns the old "request_body_bytes" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldRequestBodyBytes(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRequestBodyBytes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRequestBodyBytes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRequestBodyBytes: %w", err)
+	}
+	return oldValue.RequestBodyBytes, nil
+}
+
+// AddRequestBodyBytes adds i to the "request_body_bytes" field.
+func (m *UsageLogMutation) AddRequestBodyBytes(i int) {
+	if m.addrequest_body_bytes != nil {
+		*m.addrequest_body_bytes += i
+	} else {
+		m.addrequest_body_bytes = &i
+	}
+}
+
+// AddedRequestBodyBytes returns the value that was added to the "request_body_bytes" field in this mutation.
+func (m *UsageLogMutation) AddedRequestBodyBytes() (r int, exists bool) {
+	v := m.addrequest_body_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearRequestBodyBytes clears the value of the "request_body_bytes" field.
+func (m *UsageLogMutation) ClearRequestBodyBytes() {
+	m.request_body_bytes = nil
+	m.addrequest_body_bytes = nil
+	m.clearedFields[usagelog.FieldRequestBodyBytes] = struct{}{}
+}
+
+// RequestBodyBytesCleared returns if the "request_body_bytes" field was cleared in this mutation.
+func (m *UsageLogMutation) RequestBodyBytesCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldRequestBodyBytes]
+	return ok
+}
+
+// ResetRequestBodyBytes resets all changes to the "request_body_bytes" field.
+func (m *UsageLogMutation) ResetRequestBodyBytes() {
+	m.request_body_bytes = nil
+	m.addrequest_body_bytes = nil
+	delete(m.clearedFields, usagelog.FieldRequestBodyBytes)
+}
+
+// SetRequestBodyTruncated sets the "request_body_truncated" field.
+func (m *UsageLogMutation) SetRequestBodyTruncated(b bool) {
+	m.request_body_truncated = &b
+}
+
+// RequestBodyTruncated returns the value of the "request_body_truncated" field in the mutation.
+func (m *UsageLogMutation) RequestBodyTruncated() (r bool, exists bool) {
+	v := m.request_body_truncated
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRequestBodyTruncated returns the old "request_body_truncated" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldRequestBodyTruncated(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRequestBodyTruncated is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRequestBodyTruncated requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRequestBodyTruncated: %w", err)
+	}
+	return oldValue.RequestBodyTruncated, nil
+}
+
+// ResetRequestBodyTruncated resets all changes to the "request_body_truncated" field.
+func (m *UsageLogMutation) ResetRequestBodyTruncated() {
+	m.request_body_truncated = nil
+}
+
+// SetResponseTextTruncated sets the "response_text_truncated" field.
+func (m *UsageLogMutation) SetResponseTextTruncated(b bool) {
+	m.response_text_truncated = &b
+}
+
+// ResponseTextTruncated returns the value of the "response_text_truncated" field in the mutation.
+func (m *UsageLogMutation) ResponseTextTruncated() (r bool, exists bool) {
+	v := m.response_text_truncated
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldResponseTextTruncated returns the old "response_text_truncated" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldResponseTextTruncated(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldResponseTextTruncated is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldResponseTextTruncated requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldResponseTextTruncated: %w", err)
+	}
+	return oldValue.ResponseTextTruncated, nil
+}
+
+// ResetResponseTextTruncated resets all changes to the "response_text_truncated" field.
+func (m *UsageLogMutation) ResetResponseTextTruncated() {
+	m.response_text_truncated = nil
+}
+
+// SetTurnMetadata sets the "turn_metadata" field.
+func (m *UsageLogMutation) SetTurnMetadata(value map[string]interface{}) {
+	m.turn_metadata = &value
+}
+
+// TurnMetadata returns the value of the "turn_metadata" field in the mutation.
+func (m *UsageLogMutation) TurnMetadata() (r map[string]interface{}, exists bool) {
+	v := m.turn_metadata
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTurnMetadata returns the old "turn_metadata" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldTurnMetadata(ctx context.Context) (v map[string]interface{}, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTurnMetadata is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTurnMetadata requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTurnMetadata: %w", err)
+	}
+	return oldValue.TurnMetadata, nil
+}
+
+// ClearTurnMetadata clears the value of the "turn_metadata" field.
+func (m *UsageLogMutation) ClearTurnMetadata() {
+	m.turn_metadata = nil
+	m.clearedFields[usagelog.FieldTurnMetadata] = struct{}{}
+}
+
+// TurnMetadataCleared returns if the "turn_metadata" field was cleared in this mutation.
+func (m *UsageLogMutation) TurnMetadataCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldTurnMetadata]
+	return ok
+}
+
+// ResetTurnMetadata resets all changes to the "turn_metadata" field.
+func (m *UsageLogMutation) ResetTurnMetadata() {
+	m.turn_metadata = nil
+	delete(m.clearedFields, usagelog.FieldTurnMetadata)
+}
+
+// SetIPLocation sets the "ip_location" field.
+func (m *UsageLogMutation) SetIPLocation(value map[string]interface{}) {
+	m.ip_location = &value
+}
+
+// IPLocation returns the value of the "ip_location" field in the mutation.
+func (m *UsageLogMutation) IPLocation() (r map[string]interface{}, exists bool) {
+	v := m.ip_location
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIPLocation returns the old "ip_location" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldIPLocation(ctx context.Context) (v map[string]interface{}, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIPLocation is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIPLocation requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIPLocation: %w", err)
+	}
+	return oldValue.IPLocation, nil
+}
+
+// ClearIPLocation clears the value of the "ip_location" field.
+func (m *UsageLogMutation) ClearIPLocation() {
+	m.ip_location = nil
+	m.clearedFields[usagelog.FieldIPLocation] = struct{}{}
+}
+
+// IPLocationCleared returns if the "ip_location" field was cleared in this mutation.
+func (m *UsageLogMutation) IPLocationCleared() bool {
+	_, ok := m.clearedFields[usagelog.FieldIPLocation]
+	return ok
+}
+
+// ResetIPLocation resets all changes to the "ip_location" field.
+func (m *UsageLogMutation) ResetIPLocation() {
+	m.ip_location = nil
+	delete(m.clearedFields, usagelog.FieldIPLocation)
+}
+
+// SetAuditCaptureVersion sets the "audit_capture_version" field.
+func (m *UsageLogMutation) SetAuditCaptureVersion(i int16) {
+	m.audit_capture_version = &i
+	m.addaudit_capture_version = nil
+}
+
+// AuditCaptureVersion returns the value of the "audit_capture_version" field in the mutation.
+func (m *UsageLogMutation) AuditCaptureVersion() (r int16, exists bool) {
+	v := m.audit_capture_version
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAuditCaptureVersion returns the old "audit_capture_version" field's value of the UsageLog entity.
+// If the UsageLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UsageLogMutation) OldAuditCaptureVersion(ctx context.Context) (v int16, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAuditCaptureVersion is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAuditCaptureVersion requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAuditCaptureVersion: %w", err)
+	}
+	return oldValue.AuditCaptureVersion, nil
+}
+
+// AddAuditCaptureVersion adds i to the "audit_capture_version" field.
+func (m *UsageLogMutation) AddAuditCaptureVersion(i int16) {
+	if m.addaudit_capture_version != nil {
+		*m.addaudit_capture_version += i
+	} else {
+		m.addaudit_capture_version = &i
+	}
+}
+
+// AddedAuditCaptureVersion returns the value that was added to the "audit_capture_version" field in this mutation.
+func (m *UsageLogMutation) AddedAuditCaptureVersion() (r int16, exists bool) {
+	v := m.addaudit_capture_version
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAuditCaptureVersion resets all changes to the "audit_capture_version" field.
+func (m *UsageLogMutation) ResetAuditCaptureVersion() {
+	m.audit_capture_version = nil
+	m.addaudit_capture_version = nil
 }
 
 // SetModel sets the "model" field.
@@ -37370,7 +38175,7 @@ func (m *UsageLogMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UsageLogMutation) Fields() []string {
-	fields := make([]string, 0, 42)
+	fields := make([]string, 0, 57)
 	if m.user != nil {
 		fields = append(fields, usagelog.FieldUserID)
 	}
@@ -37385,6 +38190,51 @@ func (m *UsageLogMutation) Fields() []string {
 	}
 	if m.request_prompt != nil {
 		fields = append(fields, usagelog.FieldRequestPrompt)
+	}
+	if m.system_prompt_summary != nil {
+		fields = append(fields, usagelog.FieldSystemPromptSummary)
+	}
+	if m.system_prompt_text != nil {
+		fields = append(fields, usagelog.FieldSystemPromptText)
+	}
+	if m.developer_prompt_text != nil {
+		fields = append(fields, usagelog.FieldDeveloperPromptText)
+	}
+	if m.tool_names != nil {
+		fields = append(fields, usagelog.FieldToolNames)
+	}
+	if m.tool_call_names != nil {
+		fields = append(fields, usagelog.FieldToolCallNames)
+	}
+	if m.tool_calls_json != nil {
+		fields = append(fields, usagelog.FieldToolCallsJSON)
+	}
+	if m.output_summary != nil {
+		fields = append(fields, usagelog.FieldOutputSummary)
+	}
+	if m.output_text != nil {
+		fields = append(fields, usagelog.FieldOutputText)
+	}
+	if m.request_body_sha256 != nil {
+		fields = append(fields, usagelog.FieldRequestBodySha256)
+	}
+	if m.request_body_bytes != nil {
+		fields = append(fields, usagelog.FieldRequestBodyBytes)
+	}
+	if m.request_body_truncated != nil {
+		fields = append(fields, usagelog.FieldRequestBodyTruncated)
+	}
+	if m.response_text_truncated != nil {
+		fields = append(fields, usagelog.FieldResponseTextTruncated)
+	}
+	if m.turn_metadata != nil {
+		fields = append(fields, usagelog.FieldTurnMetadata)
+	}
+	if m.ip_location != nil {
+		fields = append(fields, usagelog.FieldIPLocation)
+	}
+	if m.audit_capture_version != nil {
+		fields = append(fields, usagelog.FieldAuditCaptureVersion)
 	}
 	if m.model != nil {
 		fields = append(fields, usagelog.FieldModel)
@@ -37515,6 +38365,36 @@ func (m *UsageLogMutation) Field(name string) (ent.Value, bool) {
 		return m.RequestID()
 	case usagelog.FieldRequestPrompt:
 		return m.RequestPrompt()
+	case usagelog.FieldSystemPromptSummary:
+		return m.SystemPromptSummary()
+	case usagelog.FieldSystemPromptText:
+		return m.SystemPromptText()
+	case usagelog.FieldDeveloperPromptText:
+		return m.DeveloperPromptText()
+	case usagelog.FieldToolNames:
+		return m.ToolNames()
+	case usagelog.FieldToolCallNames:
+		return m.ToolCallNames()
+	case usagelog.FieldToolCallsJSON:
+		return m.ToolCallsJSON()
+	case usagelog.FieldOutputSummary:
+		return m.OutputSummary()
+	case usagelog.FieldOutputText:
+		return m.OutputText()
+	case usagelog.FieldRequestBodySha256:
+		return m.RequestBodySha256()
+	case usagelog.FieldRequestBodyBytes:
+		return m.RequestBodyBytes()
+	case usagelog.FieldRequestBodyTruncated:
+		return m.RequestBodyTruncated()
+	case usagelog.FieldResponseTextTruncated:
+		return m.ResponseTextTruncated()
+	case usagelog.FieldTurnMetadata:
+		return m.TurnMetadata()
+	case usagelog.FieldIPLocation:
+		return m.IPLocation()
+	case usagelog.FieldAuditCaptureVersion:
+		return m.AuditCaptureVersion()
 	case usagelog.FieldModel:
 		return m.Model()
 	case usagelog.FieldRequestedModel:
@@ -37608,6 +38488,36 @@ func (m *UsageLogMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldRequestID(ctx)
 	case usagelog.FieldRequestPrompt:
 		return m.OldRequestPrompt(ctx)
+	case usagelog.FieldSystemPromptSummary:
+		return m.OldSystemPromptSummary(ctx)
+	case usagelog.FieldSystemPromptText:
+		return m.OldSystemPromptText(ctx)
+	case usagelog.FieldDeveloperPromptText:
+		return m.OldDeveloperPromptText(ctx)
+	case usagelog.FieldToolNames:
+		return m.OldToolNames(ctx)
+	case usagelog.FieldToolCallNames:
+		return m.OldToolCallNames(ctx)
+	case usagelog.FieldToolCallsJSON:
+		return m.OldToolCallsJSON(ctx)
+	case usagelog.FieldOutputSummary:
+		return m.OldOutputSummary(ctx)
+	case usagelog.FieldOutputText:
+		return m.OldOutputText(ctx)
+	case usagelog.FieldRequestBodySha256:
+		return m.OldRequestBodySha256(ctx)
+	case usagelog.FieldRequestBodyBytes:
+		return m.OldRequestBodyBytes(ctx)
+	case usagelog.FieldRequestBodyTruncated:
+		return m.OldRequestBodyTruncated(ctx)
+	case usagelog.FieldResponseTextTruncated:
+		return m.OldResponseTextTruncated(ctx)
+	case usagelog.FieldTurnMetadata:
+		return m.OldTurnMetadata(ctx)
+	case usagelog.FieldIPLocation:
+		return m.OldIPLocation(ctx)
+	case usagelog.FieldAuditCaptureVersion:
+		return m.OldAuditCaptureVersion(ctx)
 	case usagelog.FieldModel:
 		return m.OldModel(ctx)
 	case usagelog.FieldRequestedModel:
@@ -37725,6 +38635,111 @@ func (m *UsageLogMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRequestPrompt(v)
+		return nil
+	case usagelog.FieldSystemPromptSummary:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSystemPromptSummary(v)
+		return nil
+	case usagelog.FieldSystemPromptText:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSystemPromptText(v)
+		return nil
+	case usagelog.FieldDeveloperPromptText:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeveloperPromptText(v)
+		return nil
+	case usagelog.FieldToolNames:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetToolNames(v)
+		return nil
+	case usagelog.FieldToolCallNames:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetToolCallNames(v)
+		return nil
+	case usagelog.FieldToolCallsJSON:
+		v, ok := value.([]map[string]interface{})
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetToolCallsJSON(v)
+		return nil
+	case usagelog.FieldOutputSummary:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOutputSummary(v)
+		return nil
+	case usagelog.FieldOutputText:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOutputText(v)
+		return nil
+	case usagelog.FieldRequestBodySha256:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRequestBodySha256(v)
+		return nil
+	case usagelog.FieldRequestBodyBytes:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRequestBodyBytes(v)
+		return nil
+	case usagelog.FieldRequestBodyTruncated:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRequestBodyTruncated(v)
+		return nil
+	case usagelog.FieldResponseTextTruncated:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetResponseTextTruncated(v)
+		return nil
+	case usagelog.FieldTurnMetadata:
+		v, ok := value.(map[string]interface{})
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTurnMetadata(v)
+		return nil
+	case usagelog.FieldIPLocation:
+		v, ok := value.(map[string]interface{})
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIPLocation(v)
+		return nil
+	case usagelog.FieldAuditCaptureVersion:
+		v, ok := value.(int16)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAuditCaptureVersion(v)
 		return nil
 	case usagelog.FieldModel:
 		v, ok := value.(string)
@@ -37993,6 +39008,12 @@ func (m *UsageLogMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *UsageLogMutation) AddedFields() []string {
 	var fields []string
+	if m.addrequest_body_bytes != nil {
+		fields = append(fields, usagelog.FieldRequestBodyBytes)
+	}
+	if m.addaudit_capture_version != nil {
+		fields = append(fields, usagelog.FieldAuditCaptureVersion)
+	}
 	if m.addchannel_id != nil {
 		fields = append(fields, usagelog.FieldChannelID)
 	}
@@ -38058,6 +39079,10 @@ func (m *UsageLogMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *UsageLogMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case usagelog.FieldRequestBodyBytes:
+		return m.AddedRequestBodyBytes()
+	case usagelog.FieldAuditCaptureVersion:
+		return m.AddedAuditCaptureVersion()
 	case usagelog.FieldChannelID:
 		return m.AddedChannelID()
 	case usagelog.FieldInputTokens:
@@ -38105,6 +39130,20 @@ func (m *UsageLogMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *UsageLogMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case usagelog.FieldRequestBodyBytes:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRequestBodyBytes(v)
+		return nil
+	case usagelog.FieldAuditCaptureVersion:
+		v, ok := value.(int16)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAuditCaptureVersion(v)
+		return nil
 	case usagelog.FieldChannelID:
 		v, ok := value.(int64)
 		if !ok {
@@ -38249,6 +39288,42 @@ func (m *UsageLogMutation) ClearedFields() []string {
 	if m.FieldCleared(usagelog.FieldRequestPrompt) {
 		fields = append(fields, usagelog.FieldRequestPrompt)
 	}
+	if m.FieldCleared(usagelog.FieldSystemPromptSummary) {
+		fields = append(fields, usagelog.FieldSystemPromptSummary)
+	}
+	if m.FieldCleared(usagelog.FieldSystemPromptText) {
+		fields = append(fields, usagelog.FieldSystemPromptText)
+	}
+	if m.FieldCleared(usagelog.FieldDeveloperPromptText) {
+		fields = append(fields, usagelog.FieldDeveloperPromptText)
+	}
+	if m.FieldCleared(usagelog.FieldToolNames) {
+		fields = append(fields, usagelog.FieldToolNames)
+	}
+	if m.FieldCleared(usagelog.FieldToolCallNames) {
+		fields = append(fields, usagelog.FieldToolCallNames)
+	}
+	if m.FieldCleared(usagelog.FieldToolCallsJSON) {
+		fields = append(fields, usagelog.FieldToolCallsJSON)
+	}
+	if m.FieldCleared(usagelog.FieldOutputSummary) {
+		fields = append(fields, usagelog.FieldOutputSummary)
+	}
+	if m.FieldCleared(usagelog.FieldOutputText) {
+		fields = append(fields, usagelog.FieldOutputText)
+	}
+	if m.FieldCleared(usagelog.FieldRequestBodySha256) {
+		fields = append(fields, usagelog.FieldRequestBodySha256)
+	}
+	if m.FieldCleared(usagelog.FieldRequestBodyBytes) {
+		fields = append(fields, usagelog.FieldRequestBodyBytes)
+	}
+	if m.FieldCleared(usagelog.FieldTurnMetadata) {
+		fields = append(fields, usagelog.FieldTurnMetadata)
+	}
+	if m.FieldCleared(usagelog.FieldIPLocation) {
+		fields = append(fields, usagelog.FieldIPLocation)
+	}
 	if m.FieldCleared(usagelog.FieldRequestedModel) {
 		fields = append(fields, usagelog.FieldRequestedModel)
 	}
@@ -38319,6 +39394,42 @@ func (m *UsageLogMutation) ClearField(name string) error {
 	switch name {
 	case usagelog.FieldRequestPrompt:
 		m.ClearRequestPrompt()
+		return nil
+	case usagelog.FieldSystemPromptSummary:
+		m.ClearSystemPromptSummary()
+		return nil
+	case usagelog.FieldSystemPromptText:
+		m.ClearSystemPromptText()
+		return nil
+	case usagelog.FieldDeveloperPromptText:
+		m.ClearDeveloperPromptText()
+		return nil
+	case usagelog.FieldToolNames:
+		m.ClearToolNames()
+		return nil
+	case usagelog.FieldToolCallNames:
+		m.ClearToolCallNames()
+		return nil
+	case usagelog.FieldToolCallsJSON:
+		m.ClearToolCallsJSON()
+		return nil
+	case usagelog.FieldOutputSummary:
+		m.ClearOutputSummary()
+		return nil
+	case usagelog.FieldOutputText:
+		m.ClearOutputText()
+		return nil
+	case usagelog.FieldRequestBodySha256:
+		m.ClearRequestBodySha256()
+		return nil
+	case usagelog.FieldRequestBodyBytes:
+		m.ClearRequestBodyBytes()
+		return nil
+	case usagelog.FieldTurnMetadata:
+		m.ClearTurnMetadata()
+		return nil
+	case usagelog.FieldIPLocation:
+		m.ClearIPLocation()
 		return nil
 	case usagelog.FieldRequestedModel:
 		m.ClearRequestedModel()
@@ -38396,6 +39507,51 @@ func (m *UsageLogMutation) ResetField(name string) error {
 		return nil
 	case usagelog.FieldRequestPrompt:
 		m.ResetRequestPrompt()
+		return nil
+	case usagelog.FieldSystemPromptSummary:
+		m.ResetSystemPromptSummary()
+		return nil
+	case usagelog.FieldSystemPromptText:
+		m.ResetSystemPromptText()
+		return nil
+	case usagelog.FieldDeveloperPromptText:
+		m.ResetDeveloperPromptText()
+		return nil
+	case usagelog.FieldToolNames:
+		m.ResetToolNames()
+		return nil
+	case usagelog.FieldToolCallNames:
+		m.ResetToolCallNames()
+		return nil
+	case usagelog.FieldToolCallsJSON:
+		m.ResetToolCallsJSON()
+		return nil
+	case usagelog.FieldOutputSummary:
+		m.ResetOutputSummary()
+		return nil
+	case usagelog.FieldOutputText:
+		m.ResetOutputText()
+		return nil
+	case usagelog.FieldRequestBodySha256:
+		m.ResetRequestBodySha256()
+		return nil
+	case usagelog.FieldRequestBodyBytes:
+		m.ResetRequestBodyBytes()
+		return nil
+	case usagelog.FieldRequestBodyTruncated:
+		m.ResetRequestBodyTruncated()
+		return nil
+	case usagelog.FieldResponseTextTruncated:
+		m.ResetResponseTextTruncated()
+		return nil
+	case usagelog.FieldTurnMetadata:
+		m.ResetTurnMetadata()
+		return nil
+	case usagelog.FieldIPLocation:
+		m.ResetIPLocation()
+		return nil
+	case usagelog.FieldAuditCaptureVersion:
+		m.ResetAuditCaptureVersion()
 		return nil
 	case usagelog.FieldModel:
 		m.ResetModel()
