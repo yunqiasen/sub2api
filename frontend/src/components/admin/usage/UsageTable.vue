@@ -88,6 +88,12 @@
           </span>
         </template>
 
+        <template #cell-status_code="{ row }">
+          <span class="inline-flex items-center rounded px-2 py-0.5 text-xs font-semibold" :class="getUsageStatusBadgeClass(row)">
+            {{ getUsageStatusCode(row) }}
+          </span>
+        </template>
+
         <template #cell-billing_mode="{ row }">
           <span class="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium" :class="getBillingModeBadgeClass(getDisplayBillingMode(row))">
             {{ getBillingModeLabel(getDisplayBillingMode(row), t) }}
@@ -188,21 +194,29 @@
         </template>
 
         <template #cell-ip_address="{ row }">
-          <span
-            v-if="row.ip_address"
-            class="inline-block max-w-[220px] truncate text-sm font-mono text-gray-600 dark:text-gray-400"
-            :title="row.ip_address"
-          >
-            {{ row.ip_address }}
-          </span>
+          <div v-if="row.ip_address" class="max-w-[170px] space-y-0.5">
+            <div
+              class="truncate font-mono text-xs text-gray-700 dark:text-gray-300"
+              :title="formatIPTitle(row)"
+            >
+              {{ row.ip_address }}
+            </div>
+            <div
+              v-if="formatAuditLocation(row.ip_location)"
+              class="truncate text-[11px] leading-tight text-gray-500 dark:text-gray-400"
+              :title="formatAuditLocation(row.ip_location)"
+            >
+              {{ formatAuditLocation(row.ip_location) }}
+            </div>
+          </div>
           <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
         </template>
 
         <template #cell-request_prompt="{ row }">
-          <div v-if="row.request_prompt" class="max-w-[360px] space-y-1">
+          <div v-if="row.request_prompt" class="max-w-[240px] space-y-0.5">
             <button
               type="button"
-              class="block w-full text-left text-sm text-gray-700 dark:text-gray-300"
+              class="block w-full text-left text-xs text-gray-700 dark:text-gray-300"
               :title="row.request_prompt"
               @click="openPromptDialog(row.request_prompt)"
             >
@@ -210,7 +224,7 @@
             </button>
             <button
               type="button"
-              class="text-xs font-medium text-primary-600 transition-colors hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+              class="text-[11px] font-medium text-primary-600 transition-colors hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
               @click="openPromptDialog(row.request_prompt)"
             >
               {{ t('admin.usage.viewPrompt') }}
@@ -222,7 +236,7 @@
         <template #cell-system_prompt_summary="{ row }">
           <span
             v-if="row.system_prompt_summary"
-            class="block max-w-[300px] truncate text-sm text-gray-700 dark:text-gray-300"
+            class="block max-w-[220px] truncate text-xs text-gray-700 dark:text-gray-300"
             :title="row.system_prompt_summary"
           >
             {{ summarizePrompt(row.system_prompt_summary) }}
@@ -233,7 +247,7 @@
         <template #cell-tool_call_names="{ row }">
           <span
             v-if="row.tool_call_names?.length"
-            class="block max-w-[260px] truncate text-sm text-gray-700 dark:text-gray-300"
+            class="block max-w-[180px] truncate text-xs text-gray-700 dark:text-gray-300"
             :title="formatAuditList(row.tool_call_names)"
           >
             {{ formatAuditList(row.tool_call_names) }}
@@ -244,7 +258,7 @@
         <template #cell-output_summary="{ row }">
           <span
             v-if="row.output_summary"
-            class="block max-w-[320px] truncate text-sm text-gray-700 dark:text-gray-300"
+            class="block max-w-[240px] truncate text-xs text-gray-700 dark:text-gray-300"
             :title="row.output_summary"
           >
             {{ summarizePrompt(row.output_summary) }}
@@ -255,11 +269,11 @@
         <template #cell-audit_preview="{ row }">
           <button
             type="button"
-            class="whitespace-nowrap rounded border border-primary-200 px-2 py-1 text-xs font-medium text-primary-600 transition-colors hover:bg-primary-50 dark:border-primary-800 dark:text-primary-400 dark:hover:bg-primary-950/40"
+            class="whitespace-nowrap rounded border border-primary-200 px-1.5 py-0.5 text-[11px] font-medium text-primary-600 transition-colors hover:bg-primary-50 dark:border-primary-800 dark:text-primary-400 dark:hover:bg-primary-950/40"
             :class="{ 'opacity-60': !hasUsageAudit(row) }"
             @click="openAuditDialog(row)"
           >
-            {{ t('admin.usage.preview') }}
+            {{ t('admin.usage.details') }}
           </button>
         </template>
 
@@ -472,7 +486,7 @@
               <span class="font-medium text-pink-300">${{ tooltipData.image_output_cost.toFixed(6) }}</span>
             </div>
             <!-- Token billing: show unit prices per 1M tokens -->
-            <template v-if="!tooltipData?.billing_mode || tooltipData.billing_mode === BILLING_MODE_TOKEN">
+            <template v-if="!isImageUsage(tooltipData) && (!tooltipData?.billing_mode || tooltipData.billing_mode === BILLING_MODE_TOKEN)">
               <div v-if="tooltipData && tooltipData.input_tokens > 0" class="flex items-center justify-between gap-4">
                 <span class="text-gray-400">{{ t('usage.inputTokenPrice') }}</span>
                 <span class="font-medium text-sky-300">{{ formatTokenPricePerMillion(tooltipData.input_cost, tooltipData.input_tokens) }} {{ t('usage.perMillionTokens') }}</span>
@@ -486,7 +500,7 @@
                 <span class="font-medium text-pink-300">{{ formatTokenPricePerMillion(tooltipData.image_output_cost ?? 0, tooltipData.image_output_tokens) }} {{ t('usage.perMillionTokens') }}</span>
               </div>
             </template>
-            <template v-else-if="isImageUsage(tooltipData)">
+            <template v-else-if="tooltipData && isImageUsage(tooltipData)">
               <div class="flex items-center justify-between gap-4">
                 <span class="text-gray-400">{{ t('usage.imageCount') }}</span>
                 <span class="font-medium text-white">{{ tooltipData.image_count }}{{ t('usage.imageUnit') }}</span>
@@ -665,6 +679,15 @@ const getRequestTypeBadgeClass = (row: AdminUsageLog): string => {
   return 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'
 }
 
+const getUsageStatusCode = (row: AdminUsageLog): number | string => row.status_code ?? 200
+
+const getUsageStatusBadgeClass = (row: AdminUsageLog): string => {
+  const code = Number(getUsageStatusCode(row))
+  if (code >= 500) return 'bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-200'
+  if (code >= 400) return 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-200'
+  return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200'
+}
+
 
 
 const formatUserAgent = (ua: string): string => {
@@ -741,8 +764,20 @@ const formatAuditLocation = (value?: Record<string, unknown> | null): string => 
   const parts = ['country', 'region', 'city', 'timezone']
     .map((key) => value[key])
     .filter((item): item is string | number => typeof item === 'string' || typeof item === 'number')
-    .map(String)
-  return parts.length ? parts.join(' / ') : ''
+    .map((item) => String(item).trim())
+    .filter(Boolean)
+  if (parts.length) return parts.join(' / ')
+
+  const source = typeof value.source === 'string' ? value.source.trim().toLowerCase() : ''
+  if (source === 'reserved') return '保留地址'
+  if (source === 'private') return '内网地址'
+  if (source === 'loopback' || source === 'local') return '本机地址'
+  return ''
+}
+
+const formatIPTitle = (row: AdminUsageLog): string => {
+  const location = formatAuditLocation(row.ip_location)
+  return location ? `${row.ip_address} · ${location}` : row.ip_address || ''
 }
 
 // Cost tooltip functions

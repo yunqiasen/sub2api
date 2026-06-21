@@ -48,6 +48,7 @@ const messages: Record<string, string> = {
   'admin.usage.billingModeToken': 'Token',
   'admin.usage.billingModePerRequest': 'Per request',
   'admin.usage.billingModeImage': 'Image',
+  'usage.billingModeImage': 'Image',
 }
 
 vi.mock('vue-i18n', async () => {
@@ -66,9 +67,16 @@ const DataTableStub = {
     <div>
       <div v-for="row in data" :key="row.request_id">
         <slot name="cell-model" :row="row" :value="row.model" />
+        <slot name="cell-stream" :row="row" />
+        <slot name="cell-status_code" :row="row" />
         <slot name="cell-billing_mode" :row="row" />
         <slot name="cell-tokens" :row="row" />
         <slot name="cell-cost" :row="row" />
+        <slot name="cell-ip_address" :row="row" />
+        <slot name="cell-request_prompt" :row="row" />
+        <slot name="cell-system_prompt_summary" :row="row" />
+        <slot name="cell-tool_call_names" :row="row" />
+        <slot name="cell-audit_preview" :row="row" />
       </div>
     </div>
   `,
@@ -103,6 +111,60 @@ const baseImageRow = {
 }
 
 describe('admin UsageTable tooltip', () => {
+
+  it('shows compact audit columns with IP location and status code', () => {
+    const row = {
+      request_id: 'req-admin-audit-visible',
+      model: 'gpt-5.1-codex',
+      actual_cost: 0,
+      total_cost: 0,
+      account_rate_multiplier: 1,
+      rate_multiplier: 1,
+      input_cost: 0,
+      output_cost: 0,
+      cache_creation_cost: 0,
+      cache_read_cost: 0,
+      input_tokens: 1,
+      output_tokens: 1,
+      cache_creation_tokens: 0,
+      cache_read_tokens: 0,
+      cache_creation_5m_tokens: 0,
+      cache_creation_1h_tokens: 0,
+      cache_ttl_overridden: false,
+      stream: false,
+      ip_address: '100.126.43.55',
+      ip_location: { country: '', region: '', city: '', source: 'reserved' },
+      request_prompt: '帮我检查审计预览是否正常显示',
+      system_prompt_summary: 'You are Codex. Preserve audit metadata.',
+      tool_call_names: ['exec_command', 'search_docs'],
+    }
+
+    const wrapper = mount(UsageTable, {
+      props: {
+        data: [row],
+        loading: false,
+        columns: [],
+      },
+      global: {
+        stubs: {
+          DataTable: DataTableStub,
+          EmptyState: true,
+          BaseDialog: true,
+          Icon: true,
+          Teleport: true,
+        },
+      },
+    })
+
+    const text = wrapper.text()
+    expect(text).toContain('100.126.43.55')
+    expect(text).toContain('保留地址')
+    expect(text).toContain('帮我检查审计预览是否正常显示')
+    expect(text).toContain('You are Codex. Preserve')
+    expect(text).toContain('exec_command, search_docs')
+    expect(text).toContain('200')
+  })
+
   beforeEach(() => {
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
       x: 0,
@@ -336,9 +398,16 @@ const DataTableStubWithUser = {
       <div v-for="row in data" :key="row.request_id">
         <slot name="cell-user" :row="row" />
         <slot name="cell-model" :row="row" :value="row.model" />
+        <slot name="cell-stream" :row="row" />
+        <slot name="cell-status_code" :row="row" />
         <slot name="cell-billing_mode" :row="row" />
         <slot name="cell-tokens" :row="row" />
         <slot name="cell-cost" :row="row" />
+        <slot name="cell-ip_address" :row="row" />
+        <slot name="cell-request_prompt" :row="row" />
+        <slot name="cell-system_prompt_summary" :row="row" />
+        <slot name="cell-tool_call_names" :row="row" />
+        <slot name="cell-audit_preview" :row="row" />
       </div>
     </div>
   `,

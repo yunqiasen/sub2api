@@ -1301,6 +1301,7 @@ export interface AdminUsageLog extends UsageLog {
 
   // 用户请求 IP（仅管理员可见）
   ip_address?: string | null
+  status_code?: number | null
 
   // 用户请求提示词（仅管理员可见）
   request_prompt?: string | null

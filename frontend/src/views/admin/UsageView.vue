@@ -525,7 +525,7 @@ const exportToExcel = async () => {
       t('usage.time'), t('admin.usage.user'), t('usage.apiKeyFilter'),
       t('admin.usage.account'), t('usage.model'), t('usage.upstreamModel'), t('usage.reasoningEffort'), t('admin.usage.group'),
       t('usage.inboundEndpoint'), t('usage.upstreamEndpoint'),
-      t('usage.type'),
+      t('usage.type'), t('admin.usage.statusCode'),
       t('admin.usage.inputTokens'), t('admin.usage.outputTokens'),
       t('admin.usage.cacheReadTokens'), t('admin.usage.cacheCreationTokens'),
       t('admin.usage.inputCost'), t('admin.usage.outputCost'),
@@ -548,7 +548,7 @@ const exportToExcel = async () => {
       const rows = (res.items || []).map((log: AdminUsageLog) => [
         log.created_at, log.user?.email || '', log.api_key?.name || '', log.account?.name || '', log.model,
         log.upstream_model || '', formatReasoningEffort(log.reasoning_effort), log.group?.name || '',
-        log.inbound_endpoint || '', log.upstream_endpoint || '', getRequestTypeLabel(log),
+        log.inbound_endpoint || '', log.upstream_endpoint || '', getRequestTypeLabel(log), log.status_code ?? 200,
         log.input_tokens, log.output_tokens, log.cache_read_tokens, log.cache_creation_tokens,
         log.input_cost?.toFixed(6) || '0.000000', log.output_cost?.toFixed(6) || '0.000000',
         log.cache_read_cost?.toFixed(6) || '0.000000', log.cache_creation_cost?.toFixed(6) || '0.000000',
@@ -581,8 +581,8 @@ const exportToExcel = async () => {
 
 // Column visibility
 const ALWAYS_VISIBLE = ['user', 'created_at']
-const DEFAULT_HIDDEN_COLUMNS = ['reasoning_effort', 'user_agent', 'system_prompt_summary', 'tool_call_names', 'output_summary']
-const HIDDEN_COLUMNS_KEY = 'usage-hidden-columns'
+const DEFAULT_HIDDEN_COLUMNS = ['reasoning_effort', 'user_agent', 'output_summary']
+const HIDDEN_COLUMNS_KEY = 'usage-hidden-columns-v2'
 
 const allColumns = computed(() => [
   { key: 'user', label: t('admin.usage.user'), sortable: false },
@@ -593,6 +593,7 @@ const allColumns = computed(() => [
   { key: 'endpoint', label: t('usage.endpoint'), sortable: false },
   { key: 'group', label: t('admin.usage.group'), sortable: false },
   { key: 'stream', label: t('usage.type'), sortable: false },
+  { key: 'status_code', label: t('admin.usage.statusCode'), sortable: false },
   { key: 'billing_mode', label: t('admin.usage.billingMode'), sortable: false },
   { key: 'tokens', label: t('usage.tokens'), sortable: false },
   { key: 'cost', label: t('usage.cost'), sortable: false },
@@ -602,8 +603,8 @@ const allColumns = computed(() => [
   { key: 'user_agent', label: t('usage.userAgent'), sortable: false },
   { key: 'ip_address', label: t('admin.usage.ipAddress'), sortable: false },
   { key: 'request_prompt', label: t('admin.usage.requestPrompt'), sortable: false },
-  { key: 'system_prompt_summary', label: t('admin.usage.systemPromptSummary'), sortable: false },
-  { key: 'tool_call_names', label: t('admin.usage.actualCalls'), sortable: false },
+  { key: 'system_prompt_summary', label: t('admin.usage.systemPromptShort'), sortable: false },
+  { key: 'tool_call_names', label: t('admin.usage.actualTools'), sortable: false },
   { key: 'output_summary', label: t('admin.usage.outputSummary'), sortable: false },
   { key: 'audit_preview', label: t('admin.usage.auditPreview'), sortable: false }
 ])
