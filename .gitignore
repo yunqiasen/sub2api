@@ -122,12 +122,15 @@ scripts
 .code-review-state
 #openspec/
 code-reviews/
-AGENTS.md
+# AGENTS.md is the fork maintenance guide and should be tracked.
+!AGENTS.md
 backend/cmd/server/server
 deploy/docker-compose.override.yml
 .gocache/
 vite.config.js
 docs/*
+!docs/superpowers/
+!docs/superpowers/**
 !docs/PAYMENT.md
 !docs/PAYMENT_CN.md
 !docs/ADMIN_PAYMENT_INTEGRATION_API.md
