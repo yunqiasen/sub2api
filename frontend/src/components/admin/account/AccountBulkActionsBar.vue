@@ -31,7 +31,7 @@
         :disabled="!canDeleteGroup"
         :title="canDeleteGroup && groupName ? groupName : t('admin.accounts.bulkDeleteGroupSelectRequired')"
       >
-        {{ canDeleteGroup ? t('admin.accounts.bulkActions.deleteCurrentGroup') : t('admin.accounts.bulkActions.selectGroupToDelete') }}
+        {{ deleteGroupLabel || (canDeleteGroup ? t('admin.accounts.bulkActions.deleteCurrentGroup') : t('admin.accounts.bulkActions.selectGroupToDelete')) }}
       </button>
       <template v-if="selectedIds.length > 0">
         <button @click="$emit('delete')" class="btn btn-danger btn-sm">{{ t('admin.accounts.bulkActions.delete') }}</button>
@@ -55,9 +55,11 @@ withDefaults(defineProps<{
   selectedIds: number[]
   canDeleteGroup?: boolean
   groupName?: string
+  deleteGroupLabel?: string
 }>(), {
   canDeleteGroup: false,
-  groupName: ''
+  groupName: '',
+  deleteGroupLabel: ''
 })
 
 defineEmits<{

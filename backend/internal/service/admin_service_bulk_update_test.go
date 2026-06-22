@@ -247,14 +247,25 @@ func TestAdminServiceBulkUpdateAccounts_ResolvesIDsFromFilters(t *testing.T) {
 	require.Equal(t, []int64{7, 11}, result.SuccessIDs)
 }
 
-func TestAdminServiceDeleteAccountsByGroupRequiresConcreteGroup(t *testing.T) {
-	svc := &adminServiceImpl{accountRepo: &accountRepoStubForBulkUpdate{}}
+func TestAdminServiceDeleteAccountsByGroupDeletesAllWhenGroupIDZero(t *testing.T) {
+	repo := &accountRepoStubForBulkUpdate{
+		listData: []Account{
+			{ID: 7},
+			{ID: 11},
+		},
+		listResult: &pagination.PaginationResult{Total: 2},
+	}
+	svc := &adminServiceImpl{accountRepo: repo}
 
 	result, err := svc.DeleteAccountsByGroup(context.Background(), 0)
 
-	require.Nil(t, result)
-	require.Error(t, err)
-	require.Contains(t, err.Error(), "group_id is required")
+	require.NoError(t, err)
+	require.True(t, repo.listCalled)
+	require.Equal(t, int64(0), repo.lastListFilters.groupID)
+	require.ElementsMatch(t, []int64{7, 11}, repo.deletedIDs)
+	require.Equal(t, 2, result.Success)
+	require.Equal(t, 0, result.Failed)
+	require.ElementsMatch(t, []int64{7, 11}, result.SuccessIDs)
 }
 
 func TestAdminServiceDeleteAccountsByGroupDeletesOnlyResolvedGroupIDs(t *testing.T) {

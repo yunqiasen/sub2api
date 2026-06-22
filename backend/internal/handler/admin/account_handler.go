@@ -137,7 +137,7 @@ type DeleteAccountsRequest struct {
 }
 
 type DeleteGroupAccountsRequest struct {
-	GroupID int64 `json:"group_id" binding:"required"`
+	GroupID *int64 `json:"group_id"`
 }
 
 // BulkUpdateAccountsRequest represents the payload for bulk editing accounts
@@ -734,12 +734,16 @@ func (h *AccountHandler) DeleteGroupAccounts(c *gin.Context) {
 		response.BadRequest(c, err.Error())
 		return
 	}
-	if req.GroupID <= 0 {
+	if req.GroupID == nil {
 		response.BadRequest(c, "group_id is required")
 		return
 	}
+	if *req.GroupID < 0 {
+		response.BadRequest(c, "group_id is invalid")
+		return
+	}
 
-	result, err := h.adminService.DeleteAccountsByGroup(c.Request.Context(), req.GroupID)
+	result, err := h.adminService.DeleteAccountsByGroup(c.Request.Context(), *req.GroupID)
 	if err != nil {
 		response.ErrorFrom(c, err)
 		return

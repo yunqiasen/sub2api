@@ -3045,20 +3045,26 @@ func (s *adminServiceImpl) deleteAccountIDs(ctx context.Context, accountIDs []in
 }
 
 // DeleteAccountsByGroup deletes every account currently bound to a concrete group.
-// The group id is mandatory so callers cannot accidentally delete all accounts.
+// groupID 0 represents the built-in "all accounts" group; positive ids delete one concrete group.
 func (s *adminServiceImpl) DeleteAccountsByGroup(ctx context.Context, groupID int64) (*BulkUpdateAccountsResult, error) {
-	if groupID <= 0 {
-		return nil, infraerrors.BadRequest("GROUP_REQUIRED", "group_id is required")
+	if groupID < 0 {
+		return nil, infraerrors.BadRequest("GROUP_INVALID", "group_id is invalid")
 	}
-	if s.groupRepo == nil {
-		return nil, errors.New("group repository is required")
-	}
-	if _, err := s.groupRepo.GetByID(ctx, groupID); err != nil {
-		return nil, err
+	if groupID > 0 {
+		if s.groupRepo == nil {
+			return nil, errors.New("group repository is required")
+		}
+		if _, err := s.groupRepo.GetByID(ctx, groupID); err != nil {
+			return nil, err
+		}
 	}
 
+	groupFilter := ""
+	if groupID > 0 {
+		groupFilter = strconv.FormatInt(groupID, 10)
+	}
 	accountIDs, err := s.resolveBulkUpdateTargetIDs(ctx, &BulkUpdateAccountFilters{
-		Group: strconv.FormatInt(groupID, 10),
+		Group: groupFilter,
 	})
 	if err != nil {
 		return nil, err

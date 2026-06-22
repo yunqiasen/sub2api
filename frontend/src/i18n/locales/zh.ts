@@ -3178,6 +3178,7 @@ export default {
       allTypes: '全部类型',
       allStatus: '全部状态',
       allGroups: '全部分组',
+      allAccountsGroup: '全部账号',
       ungroupedGroup: '未分配分组',
       oauthType: 'OAuth',
       // Schedulable toggle
@@ -3460,6 +3461,7 @@ export default {
         edit: '批量编辑账号',
         delete: '批量删除',
         deleteCurrentGroup: '删除当前分组全部账号',
+        deleteAllAccounts: '删除全部账号',
         selectGroupToDelete: '先选分组再删除全部',
         enableScheduling: '批量启用调度',
         disableScheduling: '批量停止调度',

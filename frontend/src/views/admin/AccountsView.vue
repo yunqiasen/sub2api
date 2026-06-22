@@ -176,6 +176,7 @@
           :selected-ids="selIds"
           :can-delete-group="canBulkDeleteCurrentGroup"
           :group-name="bulkDeleteGroupName"
+          :delete-group-label="bulkDeleteGroupButtonLabel"
           @delete="handleBulkDelete"
           @delete-group="handleBulkDeleteCurrentGroup"
           @reset-status="handleBulkResetStatus"
@@ -1265,15 +1266,24 @@ const toggleSelectAllVisible = (event: Event) => {
 
 const currentGroupIDForBulkDelete = computed<number | null>(() => {
   const raw = String(params.group || '').trim()
-  if (!raw || raw === ACCOUNT_UNGROUPED_GROUP_QUERY_VALUE) return null
+  if (!raw) return 0
+  if (raw === ACCOUNT_UNGROUPED_GROUP_QUERY_VALUE) return null
   const id = Number(raw)
   return Number.isInteger(id) && id > 0 ? id : null
 })
 
 const bulkDeleteGroupName = computed(() => {
   const groupID = currentGroupIDForBulkDelete.value
+  if (groupID === 0) return t('admin.accounts.allAccountsGroup')
   if (!groupID) return ''
   return groups.value.find(group => group.id === groupID)?.name || `#${groupID}`
+})
+
+const bulkDeleteGroupButtonLabel = computed(() => {
+  const groupID = currentGroupIDForBulkDelete.value
+  if (groupID === 0) return t('admin.accounts.bulkActions.deleteAllAccounts')
+  if (groupID !== null) return t('admin.accounts.bulkActions.deleteCurrentGroup')
+  return t('admin.accounts.bulkActions.selectGroupToDelete')
 })
 
 const canBulkDeleteCurrentGroup = computed(() => currentGroupIDForBulkDelete.value !== null)
@@ -1297,13 +1307,14 @@ const handleBulkDelete = async () => {
 
 const handleBulkDeleteCurrentGroup = async () => {
   const groupID = currentGroupIDForBulkDelete.value
-  if (!groupID) {
+  if (groupID === null) {
     appStore.showError(t('admin.accounts.bulkDeleteGroupSelectRequired'))
     return
   }
   const groupName = bulkDeleteGroupName.value
   try {
-    const preview = await adminAPI.accounts.list(1, 1, { group: String(groupID) })
+    const previewFilters = groupID === 0 ? undefined : { group: String(groupID) }
+    const preview = await adminAPI.accounts.list(1, 1, previewFilters)
     const count = preview.total || 0
     if (count <= 0) {
       appStore.showSuccess(t('admin.accounts.bulkDeleteGroupNoAccounts', { name: groupName }))
