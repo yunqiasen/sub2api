@@ -280,3 +280,26 @@ func TestAdminServiceDeleteAccountsByGroupDeletesOnlyResolvedGroupIDs(t *testing
 	require.Equal(t, 0, result.Failed)
 	require.ElementsMatch(t, []int64{7, 11}, result.SuccessIDs)
 }
+
+func TestAdminServiceDeleteAccountsRequiresExplicitIDs(t *testing.T) {
+	svc := &adminServiceImpl{accountRepo: &accountRepoStubForBulkUpdate{}}
+
+	result, err := svc.DeleteAccounts(context.Background(), nil)
+
+	require.Nil(t, result)
+	require.Error(t, err)
+	require.Contains(t, err.Error(), "account_ids is required")
+}
+
+func TestAdminServiceDeleteAccountsDeletesExplicitIDsOnce(t *testing.T) {
+	repo := &accountRepoStubForBulkUpdate{}
+	svc := &adminServiceImpl{accountRepo: repo}
+
+	result, err := svc.DeleteAccounts(context.Background(), []int64{7, 11, 7, 0, -1})
+
+	require.NoError(t, err)
+	require.Equal(t, []int64{7, 11}, repo.deletedIDs)
+	require.Equal(t, 2, result.Success)
+	require.Equal(t, 0, result.Failed)
+	require.Equal(t, []int64{7, 11}, result.SuccessIDs)
+}

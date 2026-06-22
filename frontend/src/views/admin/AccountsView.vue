@@ -1281,10 +1281,13 @@ const canBulkDeleteCurrentGroup = computed(() => currentGroupIDForBulkDelete.val
 const handleBulkDelete = async () => {
   if (!confirm(t('admin.accounts.bulkDeleteConfirm', { count: selIds.value.length }))) return
   try {
-    await Promise.all(selIds.value.map(id => adminAPI.accounts.delete(id)))
-    const count = selIds.value.length
+    const result = await adminAPI.accounts.batchDelete([...selIds.value])
     clearSelection()
-    appStore.showSuccess(t('admin.accounts.bulkDeleteSuccess', { count }))
+    if (result.failed > 0) {
+      appStore.showError(t('admin.accounts.bulkDeletePartial', { success: result.success, failed: result.failed }))
+    } else {
+      appStore.showSuccess(t('admin.accounts.bulkDeleteSuccess', { count: result.success }))
+    }
     reload()
   } catch (error: any) {
     console.error('Failed to bulk delete accounts:', error)

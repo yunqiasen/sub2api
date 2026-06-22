@@ -687,6 +687,20 @@ export async function bulkDeleteGroup(groupId: number): Promise<BatchOperationRe
 }
 
 /**
+ * Batch delete selected accounts.
+ * @param accountIds - Array of account IDs
+ * @returns Batch operation result
+ */
+export async function batchDelete(accountIds: number[]): Promise<BatchOperationResult> {
+  const { data } = await apiClient.post<BatchOperationResult>('/admin/accounts/batch-delete', {
+    account_ids: accountIds
+  }, {
+    timeout: 300000
+  })
+  return data
+}
+
+/**
  * Batch clear account errors
  * @param accountIds - Array of account IDs
  * @returns Batch operation result
@@ -754,6 +768,7 @@ export const accountsAPI = {
   batchCreate,
   batchUpdateCredentials,
   bulkUpdate,
+  batchDelete,
   bulkDeleteGroup,
   previewFromCrs,
   syncFromCrs,

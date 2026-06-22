@@ -85,6 +85,7 @@ type AdminService interface {
 	// 用于刷新流程持久化 account_uuid / org_uuid 等少量键，避免被全量快照覆盖。
 	UpdateAccountExtra(ctx context.Context, id int64, updates map[string]any) error
 	DeleteAccount(ctx context.Context, id int64) error
+	DeleteAccounts(ctx context.Context, accountIDs []int64) (*BulkUpdateAccountsResult, error)
 	DeleteAccountsByGroup(ctx context.Context, groupID int64) (*BulkUpdateAccountsResult, error)
 	RefreshAccountCredentials(ctx context.Context, id int64) (*Account, error)
 	ClearAccountError(ctx context.Context, id int64) (*Account, error)
@@ -2995,6 +2996,54 @@ func (s *adminServiceImpl) DeleteAccount(ctx context.Context, id int64) error {
 	return nil
 }
 
+// DeleteAccounts deletes the explicit account ids in one server-side batch.
+func (s *adminServiceImpl) DeleteAccounts(ctx context.Context, accountIDs []int64) (*BulkUpdateAccountsResult, error) {
+	if len(accountIDs) == 0 {
+		return nil, infraerrors.BadRequest("ACCOUNT_IDS_REQUIRED", "account_ids is required")
+	}
+
+	seen := make(map[int64]struct{}, len(accountIDs))
+	targetIDs := make([]int64, 0, len(accountIDs))
+	for _, accountID := range accountIDs {
+		if accountID <= 0 {
+			continue
+		}
+		if _, ok := seen[accountID]; ok {
+			continue
+		}
+		seen[accountID] = struct{}{}
+		targetIDs = append(targetIDs, accountID)
+	}
+	if len(targetIDs) == 0 {
+		return nil, infraerrors.BadRequest("ACCOUNT_IDS_REQUIRED", "valid account_ids is required")
+	}
+
+	return s.deleteAccountIDs(ctx, targetIDs), nil
+}
+
+func (s *adminServiceImpl) deleteAccountIDs(ctx context.Context, accountIDs []int64) *BulkUpdateAccountsResult {
+	result := &BulkUpdateAccountsResult{
+		SuccessIDs: make([]int64, 0, len(accountIDs)),
+		FailedIDs:  make([]int64, 0, len(accountIDs)),
+		Results:    make([]BulkUpdateAccountResult, 0, len(accountIDs)),
+	}
+	for _, accountID := range accountIDs {
+		entry := BulkUpdateAccountResult{AccountID: accountID}
+		if err := s.DeleteAccount(ctx, accountID); err != nil {
+			entry.Success = false
+			entry.Error = err.Error()
+			result.Failed++
+			result.FailedIDs = append(result.FailedIDs, accountID)
+		} else {
+			entry.Success = true
+			result.Success++
+			result.SuccessIDs = append(result.SuccessIDs, accountID)
+		}
+		result.Results = append(result.Results, entry)
+	}
+	return result
+}
+
 // DeleteAccountsByGroup deletes every account currently bound to a concrete group.
 // The group id is mandatory so callers cannot accidentally delete all accounts.
 func (s *adminServiceImpl) DeleteAccountsByGroup(ctx context.Context, groupID int64) (*BulkUpdateAccountsResult, error) {
@@ -3015,26 +3064,7 @@ func (s *adminServiceImpl) DeleteAccountsByGroup(ctx context.Context, groupID in
 		return nil, err
 	}
 
-	result := &BulkUpdateAccountsResult{
-		SuccessIDs: make([]int64, 0, len(accountIDs)),
-		FailedIDs:  make([]int64, 0, len(accountIDs)),
-		Results:    make([]BulkUpdateAccountResult, 0, len(accountIDs)),
-	}
-	for _, accountID := range accountIDs {
-		entry := BulkUpdateAccountResult{AccountID: accountID}
-		if err := s.DeleteAccount(ctx, accountID); err != nil {
-			entry.Success = false
-			entry.Error = err.Error()
-			result.Failed++
-			result.FailedIDs = append(result.FailedIDs, accountID)
-		} else {
-			entry.Success = true
-			result.Success++
-			result.SuccessIDs = append(result.SuccessIDs, accountID)
-		}
-		result.Results = append(result.Results, entry)
-	}
-	return result, nil
+	return s.deleteAccountIDs(ctx, accountIDs), nil
 }
 
 func (s *adminServiceImpl) RefreshAccountCredentials(ctx context.Context, id int64) (*Account, error) {

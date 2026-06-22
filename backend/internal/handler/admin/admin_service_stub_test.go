@@ -372,6 +372,10 @@ func (s *stubAdminService) DeleteAccount(ctx context.Context, id int64) error {
 	return nil
 }
 
+func (s *stubAdminService) DeleteAccounts(ctx context.Context, accountIDs []int64) (*service.BulkUpdateAccountsResult, error) {
+	return &service.BulkUpdateAccountsResult{Success: len(accountIDs), SuccessIDs: accountIDs}, nil
+}
+
 func (s *stubAdminService) DeleteAccountsByGroup(ctx context.Context, groupID int64) (*service.BulkUpdateAccountsResult, error) {
 	return &service.BulkUpdateAccountsResult{}, nil
 }

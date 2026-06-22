@@ -132,6 +132,10 @@ type UpdateAccountRequest struct {
 	ConfirmMixedChannelRisk *bool          `json:"confirm_mixed_channel_risk"` // 用户确认混合渠道风险
 }
 
+type DeleteAccountsRequest struct {
+	AccountIDs []int64 `json:"account_ids" binding:"required"`
+}
+
 type DeleteGroupAccountsRequest struct {
 	GroupID int64 `json:"group_id" binding:"required"`
 }
@@ -698,6 +702,28 @@ func (h *AccountHandler) Delete(c *gin.Context) {
 	}
 
 	response.Success(c, gin.H{"message": "Account deleted successfully"})
+}
+
+// DeleteAccounts handles deleting explicit account ids in one server-side batch.
+// POST /api/v1/admin/accounts/batch-delete
+func (h *AccountHandler) DeleteAccounts(c *gin.Context) {
+	var req DeleteAccountsRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, err.Error())
+		return
+	}
+	if len(req.AccountIDs) == 0 {
+		response.BadRequest(c, "account_ids is required")
+		return
+	}
+
+	result, err := h.adminService.DeleteAccounts(c.Request.Context(), req.AccountIDs)
+	if err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+
+	response.Success(c, result)
 }
 
 // DeleteGroupAccounts handles deleting every account bound to one concrete group.
