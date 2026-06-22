@@ -22,16 +22,17 @@
           {{ t('admin.accounts.bulkActions.clear') }}
         </button>
       </template>
-      <template v-if="canDeleteGroup">
-        <span class="text-gray-300 dark:text-primary-800">•</span>
-        <button
-          @click="$emit('delete-group')"
-          class="text-xs font-semibold text-red-600 hover:text-red-700 dark:text-red-300 dark:hover:text-red-200"
-          :title="groupName || undefined"
-        >
-          {{ t('admin.accounts.bulkActions.deleteCurrentGroup') }}
-        </button>
-      </template>
+      <span class="text-gray-300 dark:text-primary-800">•</span>
+      <button
+        @click="$emit('delete-group')"
+        class="text-xs font-semibold transition-colors"
+        :class="canDeleteGroup
+          ? 'text-red-600 hover:text-red-700 dark:text-red-300 dark:hover:text-red-200'
+          : 'text-gray-400 hover:text-red-600 dark:text-gray-500 dark:hover:text-red-300'"
+        :title="canDeleteGroup && groupName ? groupName : t('admin.accounts.bulkDeleteGroupSelectRequired')"
+      >
+        {{ t('admin.accounts.bulkActions.deleteCurrentGroup') }}
+      </button>
     </div>
     <div class="flex gap-2">
       <template v-if="selectedIds.length > 0">
