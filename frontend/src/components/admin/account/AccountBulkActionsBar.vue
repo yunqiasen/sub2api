@@ -22,19 +22,17 @@
           {{ t('admin.accounts.bulkActions.clear') }}
         </button>
       </template>
-      <span class="text-gray-300 dark:text-primary-800">•</span>
+    </div>
+    <div class="flex flex-wrap justify-end gap-2">
       <button
         @click="$emit('delete-group')"
-        class="text-xs font-semibold transition-colors"
-        :class="canDeleteGroup
-          ? 'text-red-600 hover:text-red-700 dark:text-red-300 dark:hover:text-red-200'
-          : 'text-gray-400 hover:text-red-600 dark:text-gray-500 dark:hover:text-red-300'"
+        class="btn btn-sm"
+        :class="canDeleteGroup ? 'btn-danger' : 'btn-secondary opacity-70'"
+        :disabled="!canDeleteGroup"
         :title="canDeleteGroup && groupName ? groupName : t('admin.accounts.bulkDeleteGroupSelectRequired')"
       >
-        {{ t('admin.accounts.bulkActions.deleteCurrentGroup') }}
+        {{ canDeleteGroup ? t('admin.accounts.bulkActions.deleteCurrentGroup') : t('admin.accounts.bulkActions.selectGroupToDelete') }}
       </button>
-    </div>
-    <div class="flex gap-2">
       <template v-if="selectedIds.length > 0">
         <button @click="$emit('delete')" class="btn btn-danger btn-sm">{{ t('admin.accounts.bulkActions.delete') }}</button>
         <button @click="$emit('reset-status')" class="btn btn-secondary btn-sm">{{ t('admin.accounts.bulkActions.resetStatus') }}</button>
