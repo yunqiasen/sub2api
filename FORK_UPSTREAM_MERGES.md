@@ -27,6 +27,7 @@
 - 为 OpenAI、Anthropic、Responses、Chat Completions 的流式与非流式成功响应补齐输出文本、摘要和实际工具调用采集。
 - 重新生成 Ent/Wire 文件，并更新受上游接口变化影响的后端断言与前端 mock。
 - 清理合并带入的两处空白格式问题；源冻结补丁文件中的历史空白保持原样。
+- 修正上游 `unit` 构建标签下仍按旧参数数量和索引断言的两个仓储测试，避免 CI 专用测试路径漏报。
 
 ### 验证
 
@@ -35,6 +36,7 @@ cd backend
 go generate ./ent
 go generate ./cmd/server
 go test ./... -count=1
+go test -tags=unit ./... -count=1
 golangci-lint run ./... --timeout=30m
 
 pnpm --dir frontend run lint:check
@@ -45,7 +47,7 @@ pnpm --dir frontend run build
 
 结果：
 
-- 后端全量测试通过。
+- 后端普通构建标签和 `unit` 构建标签的全量测试均通过。
 - golangci-lint 2.9.0：0 issues。
 - 前端 ESLint、TypeScript 检查通过。
 - 前端 190 个测试文件、1306 个测试全部通过。
