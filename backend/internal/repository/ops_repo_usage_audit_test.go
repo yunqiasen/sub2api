@@ -36,7 +36,7 @@ func TestOpsInsertErrorLogArgs_PersistsUsageAuditFields(t *testing.T) {
 
 	args := opsInsertErrorLogArgs(input)
 
-	require.Len(t, args, 54)
+	require.Len(t, args, 51)
 	require.Equal(t, "ua", requireOpsNullStringArg(t, args, 16).String)
 	require.Equal(t, "user prompt", requireOpsNullStringArg(t, args, 17).String)
 	require.Equal(t, "system summary", requireOpsNullStringArg(t, args, 18).String)
