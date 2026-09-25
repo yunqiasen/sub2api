@@ -69,6 +69,10 @@ type UsageLog struct {
 	RequestedModel *string `json:"requested_model,omitempty"`
 	// UpstreamModel holds the value of the "upstream_model" field.
 	UpstreamModel *string `json:"upstream_model,omitempty"`
+	// UpstreamResponseModel holds the value of the "upstream_response_model" field.
+	UpstreamResponseModel *string `json:"upstream_response_model,omitempty"`
+	// UpstreamModelMismatch holds the value of the "upstream_model_mismatch" field.
+	UpstreamModelMismatch *bool `json:"upstream_model_mismatch,omitempty"`
 	// 渠道 ID
 	ChannelID *int64 `json:"channel_id,omitempty"`
 	// 模型映射链
@@ -230,13 +234,13 @@ func (*UsageLog) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case usagelog.FieldToolNames, usagelog.FieldToolCallNames, usagelog.FieldToolCallsJSON, usagelog.FieldTurnMetadata, usagelog.FieldIPLocation, usagelog.FieldImageSizeBreakdown:
 			values[i] = new([]byte)
-		case usagelog.FieldRequestBodyTruncated, usagelog.FieldResponseTextTruncated, usagelog.FieldLongContextBillingApplied, usagelog.FieldStream, usagelog.FieldCacheTTLOverridden:
+		case usagelog.FieldRequestBodyTruncated, usagelog.FieldResponseTextTruncated, usagelog.FieldUpstreamModelMismatch, usagelog.FieldLongContextBillingApplied, usagelog.FieldStream, usagelog.FieldCacheTTLOverridden:
 			values[i] = new(sql.NullBool)
 		case usagelog.FieldInputCost, usagelog.FieldOutputCost, usagelog.FieldCacheCreationCost, usagelog.FieldCacheReadCost, usagelog.FieldTotalCost, usagelog.FieldActualCost, usagelog.FieldRateMultiplier, usagelog.FieldAccountRateMultiplier:
 			values[i] = new(sql.NullFloat64)
 		case usagelog.FieldID, usagelog.FieldUserID, usagelog.FieldAPIKeyID, usagelog.FieldAccountID, usagelog.FieldRequestBodyBytes, usagelog.FieldAuditCaptureVersion, usagelog.FieldChannelID, usagelog.FieldGroupID, usagelog.FieldSubscriptionID, usagelog.FieldInputTokens, usagelog.FieldOutputTokens, usagelog.FieldCacheCreationTokens, usagelog.FieldCacheReadTokens, usagelog.FieldCacheCreation5mTokens, usagelog.FieldCacheCreation1hTokens, usagelog.FieldBillingType, usagelog.FieldDurationMs, usagelog.FieldFirstTokenMs, usagelog.FieldImageCount, usagelog.FieldVideoCount, usagelog.FieldVideoDurationSeconds:
 			values[i] = new(sql.NullInt64)
-		case usagelog.FieldRequestID, usagelog.FieldRequestPrompt, usagelog.FieldSystemPromptSummary, usagelog.FieldSystemPromptText, usagelog.FieldDeveloperPromptText, usagelog.FieldOutputSummary, usagelog.FieldOutputText, usagelog.FieldRequestBodySha256, usagelog.FieldModel, usagelog.FieldRequestedModel, usagelog.FieldUpstreamModel, usagelog.FieldModelMappingChain, usagelog.FieldBillingTier, usagelog.FieldBillingMode, usagelog.FieldUserAgent, usagelog.FieldIPAddress, usagelog.FieldImageSize, usagelog.FieldImageInputSize, usagelog.FieldImageOutputSize, usagelog.FieldImageSizeSource, usagelog.FieldVideoResolution:
+		case usagelog.FieldRequestID, usagelog.FieldRequestPrompt, usagelog.FieldSystemPromptSummary, usagelog.FieldSystemPromptText, usagelog.FieldDeveloperPromptText, usagelog.FieldOutputSummary, usagelog.FieldOutputText, usagelog.FieldRequestBodySha256, usagelog.FieldModel, usagelog.FieldRequestedModel, usagelog.FieldUpstreamModel, usagelog.FieldUpstreamResponseModel, usagelog.FieldModelMappingChain, usagelog.FieldBillingTier, usagelog.FieldBillingMode, usagelog.FieldUserAgent, usagelog.FieldIPAddress, usagelog.FieldImageSize, usagelog.FieldImageInputSize, usagelog.FieldImageOutputSize, usagelog.FieldImageSizeSource, usagelog.FieldVideoResolution:
 			values[i] = new(sql.NullString)
 		case usagelog.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -418,6 +422,20 @@ func (_m *UsageLog) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpstreamModel = new(string)
 				*_m.UpstreamModel = value.String
+			}
+		case usagelog.FieldUpstreamResponseModel:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field upstream_response_model", values[i])
+			} else if value.Valid {
+				_m.UpstreamResponseModel = new(string)
+				*_m.UpstreamResponseModel = value.String
+			}
+		case usagelog.FieldUpstreamModelMismatch:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field upstream_model_mismatch", values[i])
+			} else if value.Valid {
+				_m.UpstreamModelMismatch = new(bool)
+				*_m.UpstreamModelMismatch = value.Bool
 			}
 		case usagelog.FieldChannelID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -814,6 +832,16 @@ func (_m *UsageLog) String() string {
 	if v := _m.UpstreamModel; v != nil {
 		builder.WriteString("upstream_model=")
 		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.UpstreamResponseModel; v != nil {
+		builder.WriteString("upstream_response_model=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	if v := _m.UpstreamModelMismatch; v != nil {
+		builder.WriteString("upstream_model_mismatch=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
 	if v := _m.ChannelID; v != nil {

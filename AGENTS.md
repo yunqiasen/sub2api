@@ -11,7 +11,7 @@
 - 上游主线：`upstream/main`
 - 不要向 `upstream` 推送；`upstream` 只用于拉取更新。
 
-`docs/superpowers` 里的 WSL Ops Panel 规划不是 Sub2API 二开规划。它是另一个 WSL 运维面板项目，只把 Sub2API 当作被管理的 Docker/systemd 对象。不要把它当成本仓库功能路线图。
+`docs/superpowers` 中现有的 `2026-06-21-sub2api-usage-audit` 设计与实施计划属于本项目。历史 WSL Ops Panel 规划属于另一个项目，不作为本项目路线图。计划是否已完成，以代码、测试与实际运行态为准。
 
 `session_context_*.md` 是本地会话记忆。可以参考，但代码、Git 历史、运行容器和数据库状态优先级更高。
 
@@ -45,6 +45,8 @@ docker compose logs --tail=120 sub2api
 
 日常开发只在 `sub2-fork` 上做。`main` 用来跟上游主线保持同步，不放二开代码。
 
+**只维护当前这一个工作区。** 更新主线、合并和二开都在原目录通过 `git switch` 完成；不要为 `main` 或同步任务创建额外 worktree、克隆副本或独立运行目录。切换前检查未提交改动，已有备份和会话文件保持原样。合并验证完毕后停留在 `sub2-fork`。
+
 推荐同步流程：
 
 ```bash
@@ -68,17 +70,13 @@ git merge --no-ff main
 3. 冲突文件逐个看，不要整目录用 ours/theirs 覆盖。
 4. 合并后跑针对测试，再做一次容器构建或启动验证。
 
-上游大版本合并前，建议先停容器：
+Git 同步与合并不需要停止容器。本轮仅更新代码时，不启动、停止或升级本地/VPS 的现有服务。镜像构建可以独立验证；数据库迁移验证使用独立临时数据库，不挂载现有运行数据。
 
-```bash
-docker compose down
-```
-
-涉及数据库迁移时，先备份 `postgres_data/` 或导出数据库，再启动新版本。
+实际部署涉及迁移时，先导出数据库或做一致性备份，再启动新版本；运行中的 PostgreSQL 数据目录不要直接复制当作可靠备份。
 
 ## 当前二开内容
 
-已确认的二开改动主要有三类：
+已确认的二开改动主要有以下几类：
 
 1. 账号错误状态细分筛选
    - 后端：`backend/internal/repository/account_error_filters.go`
@@ -89,14 +87,21 @@ docker compose down
    - 迁移：`backend/migrations/145_usage_log_request_prompt.sql`
    - 提取：`backend/internal/service/request_prompt.go`
    - 展示：`frontend/src/components/admin/usage/UsageTable.vue`
-   - 边界：这是 `usage_logs.request_prompt` 摘要级记录，不等于完整请求体保存。
+   - 扩展迁移：`backend/migrations/151_usage_audit_fields.sql`，采集：`backend/internal/service/usage_audit.go`。
+   - 已实现请求/响应审计、system/developer 提示词、工具声明与实际调用、流式输出聚合、摘要及截断标记；原始完整请求体不保证保存。
+   - 上游重构记账闭包、partial stream usage、SQL 批量插入时，逐条确认审计字段仍接入，避免只保留表字段却丢失采集链路。
 
 3. Docker / CI 交付兼容
    - `Dockerfile` healthcheck 禁用代理，避免本地代理影响 `/health`。
    - `docker-compose.yml` 使用当前目录构建并挂载运行数据。
    - `.github/workflows/docker-build.yml` 用于 `sub2-fork` 推送后构建 GHCR 镜像。
 
-规划中的请求审计二开要优先兼容现有使用记录体系：成功请求扩展 `usage_logs`，失败请求沿用并增强 `ops_error_logs`。不要照抄 CPA 新建独立日志中心；除非后续实测表膨胀或查询压力无法承受，否则不新增主日志表。
+4. 账号批量管理
+   - 保留当前分组全部删除、内置“全部账号”组删除、单页最多 2000 条。
+   - 选中账号批量删除使用上游 `/batch-delete` 的有限并发、失败 ID 与母/影子账号处理。
+   - `/bulk-delete-group` 只删除解析出的目标集合；若母账号有范围外影子账号，保留母账号并报告失败，不跨组级联删除。
+
+请求审计二开持续兼容现有使用记录体系：成功请求扩展 `usage_logs`，失败请求沿用并增强 `ops_error_logs`。不要照抄 CPA 新建独立日志中心；除非后续实测表膨胀或查询压力无法承受，否则不新增主日志表。
 
 ## 二开开发原则
 
@@ -117,7 +122,9 @@ ci: build sub2-fork image to GHCR
 
 ## 后端维护
 
-后端是 Go + Gin + Ent + Wire。
+后端是 Go + Gin + Ent + Wire。Go 版本以 `backend/go.mod` 为准（本次上游为 1.27.0）；使用支持自动工具链下载的 Go，不要误用系统旧版。
+
+访问本机 mock 的测试受 `HTTP_PROXY` 等环境变量影响时，在该次测试进程取消大小写 HTTP/HTTPS/ALL_PROXY；依赖下载仍可使用代理，不修改宿主机全局配置。
 
 常用命令：
 
@@ -150,12 +157,12 @@ go generate ./cmd/server
 
 ## 前端维护
 
-前端是 Vue 3 + TypeScript + pnpm。不要用 npm 改锁文件。
+前端是 Vue 3 + TypeScript + pnpm。使用与 Docker/CI 一致的 **pnpm 9**；先确认 `pnpm --version`，含嵌套脚本调用也要落在同一版本。不要用 npm 或其他 pnpm 主版本重写锁文件。
 
 常用命令：
 
 ```bash
-pnpm --dir frontend install
+pnpm --dir frontend install --frozen-lockfile
 pnpm --dir frontend run lint:check
 pnpm --dir frontend run typecheck
 pnpm --dir frontend run test:run
@@ -207,7 +214,7 @@ docker compose ps
 - 后端改动：目标 `go test`，必要时跑 `go test ./...`。
 - Ent schema 或 migration：跑生成命令和 migration/schema 相关测试。
 - 前端改动：跑相关 Vitest、`lint:check`、`typecheck`。
-- Docker/部署改动：跑 `docker compose build sub2api` 和 `docker compose up -d`。
+- Docker 构建改动：跑 `docker compose build sub2api`；仅在本轮包含部署请求时对运行服务执行 `docker compose up -d`。
 - 管理后台行为：用浏览器或管理 API 验证实际返回和落库结果。
 
 验证结果写清楚命令和结论。不能把“代码看起来对”当作完成。

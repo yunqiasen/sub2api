@@ -93,6 +93,7 @@ WITH combined AS (
     COALESCE(NULLIF(g.platform, ''), NULLIF(a.platform, ''), '') AS platform,
     ul.model AS model,
     ul.duration_ms AS duration_ms,
+    ul.first_token_ms AS first_token_ms,
     NULL::INT AS status_code,
     ul.ip_address AS client_ip,
     ul.request_prompt AS request_prompt,
@@ -119,6 +120,7 @@ WITH combined AS (
     COALESCE(NULLIF(o.platform, ''), NULLIF(g.platform, ''), NULLIF(a.platform, ''), '') AS platform,
     o.model AS model,
     o.duration_ms AS duration_ms,
+    o.time_to_first_token_ms AS first_token_ms,
     o.status_code AS status_code,
     CASE WHEN o.client_ip IS NULL THEN NULL ELSE o.client_ip::text END AS client_ip,
     NULL::TEXT AS request_prompt,
@@ -156,6 +158,8 @@ WITH combined AS (
 			// default
 		case "duration_desc":
 			sort = "ORDER BY duration_ms DESC NULLS LAST, created_at DESC"
+		case "ttft_desc":
+			sort = "ORDER BY first_token_ms DESC NULLS LAST, created_at DESC"
 		default:
 			return nil, 0, fmt.Errorf("invalid sort")
 		}
@@ -170,6 +174,7 @@ SELECT
   platform,
   model,
   duration_ms,
+  first_token_ms,
   status_code,
   client_ip,
   request_prompt,
@@ -234,6 +239,7 @@ LIMIT $%d OFFSET $%d
 			clientIP      sql.NullString
 			requestPrompt sql.NullString
 			errorID       sql.NullInt64
+			firstTokenMs  sql.NullInt64
 
 			phase    sql.NullString
 			severity sql.NullString
@@ -254,6 +260,7 @@ LIMIT $%d OFFSET $%d
 			&platform,
 			&model,
 			&durationMs,
+			&firstTokenMs,
 			&statusCode,
 			&clientIP,
 			&requestPrompt,
@@ -285,6 +292,7 @@ LIMIT $%d OFFSET $%d
 			Phase:         phase.String,
 			Severity:      severity.String,
 			Message:       message.String,
+			FirstTokenMs:  toIntPtr(firstTokenMs),
 
 			UserID:    toInt64Ptr(userID),
 			APIKeyID:  toInt64Ptr(apiKeyID),

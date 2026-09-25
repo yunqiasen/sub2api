@@ -1677,3 +1677,40 @@ func (s *UsageLogRepoSuite) TestListWithFilters_CombinedFilters() {
 	s.Require().Len(logs, 2)
 	s.Require().Equal(int64(2), page.Total)
 }
+
+// Audit and new upstream columns must share the same insert/scan contract.
+func (s *UsageLogRepoSuite) TestCreateGetPreservesForkAuditAndUpstreamFields() {
+	user := mustCreateUser(s.T(), s.client, &service.User{Email: "fork-audit@test.com"})
+	apiKey := mustCreateApiKey(s.T(), s.client, &service.APIKey{UserID: user.ID, Key: "sk-fork-audit", Name: "audit"})
+	account := mustCreateAccount(s.T(), s.client, &service.Account{Name: "fork-audit"})
+	audit := service.ExtractUsageAuditFromRequest([]byte(`{"messages":[{"role":"system","content":"system text"},{"role":"developer","content":"developer text"},{"role":"user","content":"user prompt"}],"tools":[{"type":"function","function":{"name":"lookup"}}]}`), nil)
+	service.ApplyUsageAuditResponse(&audit, []byte(`{"output_text":"final answer","output":[{"type":"function_call","name":"lookup","call_id":"call_1","arguments":"{}"}]}`))
+	upstreamModel := "mapped-model"
+	observedModel := "observed-model"
+	mismatch := true
+	effort := "high"
+	log := &service.UsageLog{
+		UserID: user.ID, APIKeyID: apiKey.ID, AccountID: account.ID, RequestID: uuid.NewString(),
+		Model: "client-model", RequestedModel: "client-model", UpstreamModel: &upstreamModel,
+		UpstreamResponseModel: &observedModel, UpstreamModelMismatch: &mismatch,
+		RequestedReasoningEffort: &effort, InputTokens: 10, OutputTokens: 2,
+	}
+	service.ApplyUsageAuditToUsageLog(log, audit)
+	_, err := s.repo.Create(s.ctx, log)
+	s.Require().NoError(err)
+	got, err := s.repo.GetByID(s.ctx, log.ID)
+	s.Require().NoError(err)
+	s.Require().Equal(log.RequestPrompt, got.RequestPrompt)
+	s.Require().Equal(log.SystemPromptText, got.SystemPromptText)
+	s.Require().Equal(log.DeveloperPromptText, got.DeveloperPromptText)
+	s.Require().Equal(log.ToolNames, got.ToolNames)
+	s.Require().Equal(log.ToolCallNames, got.ToolCallNames)
+	s.Require().Equal(log.ToolCallsJSON, got.ToolCallsJSON)
+	s.Require().Equal(log.OutputText, got.OutputText)
+	s.Require().Equal(log.RequestBodySHA256, got.RequestBodySHA256)
+	s.Require().Equal(log.RequestBodyBytes, got.RequestBodyBytes)
+	s.Require().Equal(log.AuditCaptureVersion, got.AuditCaptureVersion)
+	s.Require().Equal(&observedModel, got.UpstreamResponseModel)
+	s.Require().Equal(&mismatch, got.UpstreamModelMismatch)
+	s.Require().Equal(&effort, got.RequestedReasoningEffort)
+}

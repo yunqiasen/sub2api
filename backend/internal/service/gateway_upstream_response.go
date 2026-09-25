@@ -285,6 +285,12 @@ func ExtractUpstreamErrorMessage(body []byte) string {
 	return extractUpstreamErrorMessage(body)
 }
 
+// SanitizeUpstreamErrorMessage redacts sensitive query parameter values before
+// an upstream error message is recorded or returned to a client.
+func SanitizeUpstreamErrorMessage(message string) string {
+	return sanitizeUpstreamErrorMessage(message)
+}
+
 func extractUpstreamErrorMessage(body []byte) string {
 	// Claude 风格：{"type":"error","error":{"type":"...","message":"..."}}
 	if m := gjson.GetBytes(body, "error.message").String(); strings.TrimSpace(m) != "" {
@@ -356,8 +362,9 @@ func (s *GatewayService) readUpstreamErrorBody(resp *http.Response) ([]byte, err
 }
 
 func (s *GatewayService) handleErrorResponse(ctx context.Context, resp *http.Response, c *gin.Context, account *Account, requestedModel ...string) (*ForwardResult, error) {
-	// Upstream returned a non-success HTTP status; count Ollama Cloud activity.
+	// Upstream returned a non-success HTTP status; count Ollama Cloud / OpenCode Go activity.
 	scheduleOllamaCloudUsageActivity(s.deferredService, account)
+	scheduleOpenCodeGoUsageActivity(s.deferredService, account)
 	body, readErr := s.readUpstreamErrorBody(resp)
 	if readErr != nil {
 		// 读取失败时 body 可能被截断，错误分类会基于不完整数据；记录日志以便排查，
@@ -398,6 +405,8 @@ func (s *GatewayService) handleErrorResponse(ctx context.Context, resp *http.Res
 	}
 	setOpsUpstreamError(c, resp.StatusCode, upstreamMsg, upstreamDetail)
 	appendOpsUpstreamError(c, OpsUpstreamErrorEvent{
+		ProxyID:            opsUpstreamProxyID(account),
+		ProxyName:          opsUpstreamProxyName(account),
 		Platform:           account.Platform,
 		AccountID:          account.ID,
 		UpstreamStatusCode: resp.StatusCode,
@@ -578,6 +587,8 @@ func (s *GatewayService) handleRetryExhaustedError(ctx context.Context, resp *ht
 	}
 	setOpsUpstreamError(c, resp.StatusCode, upstreamMsg, upstreamDetail)
 	appendOpsUpstreamError(c, OpsUpstreamErrorEvent{
+		ProxyID:            opsUpstreamProxyID(account),
+		ProxyName:          opsUpstreamProxyName(account),
 		Platform:           account.Platform,
 		AccountID:          account.ID,
 		UpstreamStatusCode: resp.StatusCode,
@@ -648,7 +659,54 @@ type streamingResult struct {
 	responseAuditBody []byte
 }
 
+// hasObservedTokens 报告流式过程中是否已观测到任何上游计量的 token。
+func (u *ClaudeUsage) hasObservedTokens() bool {
+	if u == nil {
+		return false
+	}
+	return u.InputTokens > 0 || u.OutputTokens > 0 ||
+		u.CacheCreationInputTokens > 0 || u.CacheReadInputTokens > 0 ||
+		u.CacheCreation5mTokens > 0 || u.CacheCreation1hTokens > 0 ||
+		u.ImageOutputTokens > 0
+}
+
+// partialStreamUsageResult 在流式转发中途出错时，把已观测到 usage 的部分结果包装为
+// ForwardResult（与错误一起返回给 handler 记录）。上游一旦下发过 message_start，
+// input/cache token 就已计量，直接丢弃会让请求完全漏记漏计费（issue #5148）。
+// 无已观测 usage 时返回 nil。
+//
+// 不变式：UpstreamFailoverError 必须保持 result=nil——failover 重试成功后按成功请求
+// 计费，若同时返回部分 usage 会造成双重计费，此处显式拦截兜底。
+func partialStreamUsageResult(c *gin.Context, resp *http.Response, streamResult *streamingResult, model, upstreamModel string, startTime time.Time, err error) *ForwardResult {
+	if streamResult == nil || !streamResult.usage.hasObservedTokens() {
+		return nil
+	}
+	var failoverErr *UpstreamFailoverError
+	if errors.As(err, &failoverErr) {
+		return nil
+	}
+	return &ForwardResult{
+		RequestID:                     resp.Header.Get("x-request-id"),
+		ResponseAuditBody:             streamResult.responseAuditBody,
+		UpstreamHeaders:               resp.Header,
+		Usage:                         *streamResult.usage,
+		Model:                         model,
+		UpstreamModel:                 upstreamModel,
+		UpstreamResponseModel:         observedUpstreamResponseModel(c),
+		UpstreamResponseModelConflict: observedUpstreamResponseModelConflict(c),
+		UpstreamResponseServiceTier:   observedUpstreamResponseServiceTier(c),
+		Stream:                        true,
+		Duration:                      time.Since(startTime),
+		FirstTokenMs:                  streamResult.firstTokenMs,
+		ClientDisconnect:              streamResult.clientDisconnect,
+	}
+}
+
 func (s *GatewayService) handleStreamingResponse(ctx context.Context, resp *http.Response, c *gin.Context, account *Account, startTime time.Time, originalModel, mappedModel string, mimicClaudeCode bool) (*streamingResult, error) {
+	observer := upstreamResponseModelObserverFromContext(c)
+	if observer == nil {
+		observer = beginUpstreamResponseModelObservation(c)
+	}
 	// 更新5h窗口状态
 	s.rateLimitService.UpdateSessionWindow(ctx, account, resp.Header)
 
@@ -845,6 +903,7 @@ func (s *GatewayService) handleStreamingResponse(ctx context.Context, resp *http
 		}
 
 		eventType, _ := event["type"].(string)
+		observer.ObserveAnthropic([]byte(dataLine))
 		if eventName == "" {
 			eventName = eventType
 		}
@@ -1194,11 +1253,11 @@ func (s *GatewayService) extractSSEUsagePatch(event map[string]any) *sseUsagePat
 			patch.hasCacheReadInput = true
 		}
 		if cc, ok := usageObj["cache_creation"].(map[string]any); ok {
-			if v, exists := parseSSEUsageInt(cc["ephemeral_5m_input_tokens"]); exists && v > 0 {
+			if v, exists := parseSSEUsageInt(cc["ephemeral_5m_input_tokens"]); exists {
 				patch.cacheCreation5mTokens = v
 				patch.hasCacheCreation5m = true
 			}
-			if v, exists := parseSSEUsageInt(cc["ephemeral_1h_input_tokens"]); exists && v > 0 {
+			if v, exists := parseSSEUsageInt(cc["ephemeral_1h_input_tokens"]); exists {
 				patch.cacheCreation1hTokens = v
 				patch.hasCacheCreation1h = true
 			}
@@ -1341,6 +1400,11 @@ func (s *GatewayService) handleNonStreamingResponse(ctx context.Context, resp *h
 	if err != nil {
 		return nil, nil, err
 	}
+	observer := upstreamResponseModelObserverFromContext(c)
+	if observer == nil {
+		observer = beginUpstreamResponseModelObservation(c)
+	}
+	observer.ObserveAnthropic(body)
 
 	// 解析usage
 	var response struct {
@@ -1348,7 +1412,7 @@ func (s *GatewayService) handleNonStreamingResponse(ctx context.Context, resp *h
 	}
 	if err := json.Unmarshal(body, &response); err != nil {
 		if resp.StatusCode >= http.StatusOK && resp.StatusCode < http.StatusMultipleChoices {
-			return nil, nil, s.invalidNonStreamingJSONFailoverError(ctx, resp, account, body, err, mappedModel)
+			return nil, nil, invalidNonStreamingJSONFailoverError(ctx, s.rateLimitService, resp, account, body, err, mappedModel)
 		}
 		return nil, nil, fmt.Errorf("parse response: %w", err)
 	}
